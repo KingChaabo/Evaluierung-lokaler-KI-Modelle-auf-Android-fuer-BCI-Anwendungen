@@ -13,11 +13,33 @@ EEG-Signale besitzen eine äußerst geringe Amplitude, die in der Regel im Berei
 \paragraph{Herausforderungen durch Rauschen und Artefakte}
 In seiner Rohform ist ein EEG-Signal stark von Rauschen geprägt, weshalb es ein unzureichendes Signal-Rausch-Verhältnis (SNR) aufweist \autocite{blum2017}.
 Da die erwarteten neuronalen Aktivitäten schwach sind, werden sie schnell von amplitudenstarken physiologischen Artefakten (wie z.\,B. Muskel- oder Augenbewegungen) sowie technischen Störeinflüssen überlagert, was zu Verzerrungen des Originalsignals führt \autocite{10353995}.
-% TODO: Was ist EEG, Messung, Signalform (Kanäle, µV, 250 Hz)  \autocite{zhao2025eeg}
 
 \section{Frequenzbänder}
 \label{sec:baender}
-% TODO: Delta–Gamma, Bedeutung, Bandgrenzen, Variabilität in der Literatur  \autocite{sanei2013}
+Frequenzbänder sind Frequenzbereiche, in welche die Gehirnwellen nach ihrer Frequenz eingeteilt werden. Die elekrtischen Schwingungen werden in Hertz (Hz) gemessen, also in Ausschlägen pro Sekunde \autocite{zhao2025eeg}.
+Die gezielte Auswertung spezifischer Frequenzbänder dient somit der fundierten Beurteilung von Gehirnaktivitäten \autocite{10353995}.
+
+\medskip
+
+\noindent Das EEG-Spektrum wird in jeweils 5 Frequenzbänder unterteilt \autocite{zhao2025eeg,10353995}:
+
+
+\begin{table}[H]
+\centering
+\caption{Die fünf EEG-Frequenzbänder und ihre assoziierten Zustände \autocite{zhao2025eeg}}
+\label{tab:eegbaender}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Band} & \textbf{Frequenzbereich} & \textbf{Assoziierter Zustand} \\
+\midrule
+Delta & 0,5--4\,Hz  & Tiefer, sehr entspannter und erholsamer Zustand \\
+Theta & 4--8\,Hz    & Leichte Schlafphase oder Meditation; Zustand zwischen Schlaf und Wachsein \\
+Alpha & 8--12\,Hz   & Ruhiger, stressfreier Zustand; in der Großhirnrinde deutlich nachweisbar, am ausgeprägtesten bei geschlossenen Augen \\
+Beta  & 12--30\,Hz  & Aktives Denken und Problemlösen \\
+Gamma & ab 30\,Hz   & Emotionaler Stress und Angst \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Frequenzanalyse}
 \label{sec:frequenzanalyse}
