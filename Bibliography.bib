@@ -1,63 +1,98 @@
-% This file was created with JabRef 2.8.1.
-% Encoding: Cp1252
+// Signalverarbeitung (FFT / Welch / Hann)
 
-@BOOK{bentley:1999,
-  title = {{P}rogramming {P}earls},
-  publisher = {Addison--Wesley},
-  year = {1999},
-  author = {Jon Bentley}
+@article{harris1978,
+  author  = {Harris, Fredric J.},
+  title   = {On the use of windows for harmonic analysis with the discrete {Fourier} transform},
+  journal = {Proceedings of the IEEE},
+  volume  = {66},
+  number  = {1},
+  pages   = {51--83},
+  year    = {1978},
+  doi     = {10.1109/PROC.1978.10837}
 }
 
-@BOOK{bringhurst:2002,
-  title = {{T}he {E}lements of {T}ypographic {S}tyle},
-  publisher = {Hartley \& Marks Publishers},
-  year = {2008},
-  author = {Robert Bringhurst}
+@article{welch1967,
+  author  = {Welch, Peter D.},
+  title   = {The use of fast {Fourier} transform for the estimation of power spectra: A method based on time averaging over short, modified periodograms},
+  journal = {IEEE Transactions on Audio and Electroacoustics},
+  volume  = {15},
+  number  = {2},
+  pages   = {70--73},
+  year    = {1967},
+  doi     = {10.1109/TAU.1967.1161901}
 }
 
-@BOOK{cormen:2001,
-  title = {{I}ntroduction to {A}lgorithms},
-  publisher = {The MIT Press},
-  year = {2001},
-  author = {Cormen, Thomas H. and Leiserson, Charles E. and Rivest, Ronald L.
-	and Clifford Stein}
+// EEG-Bänder & Artefakte
+
+@ARTICLE{10353995,
+  author={Amer, Nisreen Said and Belhaouari, Samir Brahim},
+  journal={IEEE Access}, 
+  title={EEG Signal Processing for Medical Diagnosis, Healthcare, and Monitoring: A Comprehensive Review}, 
+  year={2023},
+  volume={11},
+  number={},
+  pages={143116-143142},
+  keywords={Electroencephalography;Feature extraction;Electrodes;Neurons;Medical diagnosis;Epilepsy;Classification algorithms;Machine learning;Classification;electroencephalogram (EEG);feature extraction;machine learning;preprocessing},
+  doi={10.1109/ACCESS.2023.3341419}}
+
+@article{blum2017,
+  author  = {Blum, Sarah and Debener, Stefan and Emkes, Reiner and
+             Volkening, Nils and Fudickar, Sebastian and Bleichner, Martin G.},
+  title   = {{EEG} Recording and Online Signal Processing on {Android}:
+             A Multiapp Framework for Brain-Computer Interfaces on Smartphone},
+  journal = {BioMed Research International},
+  volume  = {2017},
+  pages   = {3072870},
+  year    = {2017},
+  doi     = {10.1155/2017/3072870}
 }
 
-@BOOK{dueck:trio,
-  title = {{D}uecks {T}rilogie: {O}mnisophie -- {S}upramanie -- {T}opothesie},
-  publisher = {Springer},
-  year = {2005},
-  author = {Gunter Dueck},
-  note = {\url{http://www.omnisophie.com}}
+@book{zhao2025eeg,
+  editor    = {Zhao, Yifan and He, Fei and Guo, Yuzhu},
+  title     = {{EEG} Signal Processing Techniques and Applications},
+  edition   = {2},
+  publisher = {MDPI},
+  address   = {Basel},
+  year      = {2025},
+  isbn      = {978-3-7258-3608-6},
+  doi       = {10.3390/books978-3-7258-3608-6}
 }
 
-@ARTICLE{knuth:1976,
-  author = {Knuth, Donald E.},
-  title = {{B}ig {O}micron and {B}ig {O}mega and {B}ig {T}heta},
-  journal = {SIGACT News},
-  year = {1976},
-  volume = {8},
-  pages = {18--24},
-  number = {2},
-  publisher = {ACM Press}
+// Lokale LLMs / On-Device
+
+@misc{smalllm2024,
+  author = {Lu, Zhenyan and others},
+  title = {Small Language Models: Survey, Measurements, and Insights},
+  year = {2024}, eprint = {2409.15790}, archivePrefix = {arXiv}
+}
+@misc{ondevice2024,
+  title = {On-Device Language Models: A Comprehensive Review},
+  year = {2024}, eprint = {2409.00088}, archivePrefix = {arXiv}
+}
+@misc{melting2024,
+  author = {Laskaridis, Stefanos and others},
+  title = {{MELTing} point: Mobile Evaluation of Language Transformers},
+  year = {2024}, eprint = {2403.12844}, archivePrefix = {arXiv}
 }
 
-@ARTICLE{knuth:1974,
-  author = {Knuth, Donald E.},
-  title = {{C}omputer {P}rogramming as an {A}rt},
-  journal = {Communications of the ACM},
-  year = {1974},
-  volume = {17},
-  pages = {667--673},
-  number = {12},
-  publisher = {ACM Press}
+// Gemma (Modell)
+
+@misc{gemma2_2024,
+  author = {{Gemma Team, Google DeepMind}},
+  title = {Gemma 2: Improving Open Language Models at a Practical Size},
+  year = {2024}, eprint = {2408.00118}, archivePrefix = {arXiv}
+}
+@misc{gemma3_2025,
+  author = {{Gemma Team, Google DeepMind}},
+  title = {Gemma 3 Technical Report},
+  year = {2025}, eprint = {2503.19786}, archivePrefix = {arXiv}
 }
 
-@BOOK{sommerville:1992,
-  title = {{S}oftware {E}ngineering},
-  publisher = {Addison-Wesley},
-  year = {1992},
-  author = {Ian Sommerville},
-  address = {Boston, MA, USA}
-}
+// MediaPipe (Framework)
 
+@misc{mediapipe_llm,
+  author = {{Google}},
+  title = {{MediaPipe} {LLM} Inference Guide},
+  howpublished = {\url{https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference}},
+  note = {Zugriff: 2026}, year = {2024}
+}
