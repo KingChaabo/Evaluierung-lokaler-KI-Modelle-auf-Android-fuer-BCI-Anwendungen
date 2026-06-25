@@ -47,4 +47,56 @@ Gamma & ab 30\,Hz   & Emotionaler Stress und Angst \\
 
 \section{Lokale Sprachmodelle auf mobilen Geräten}
 \label{sec:llm-grundlagen}
-% TODO: was sind LLMs, On-Device-Inferenz, Quantisierung  \autocite{smalllm2024,ondevice2024}
+Im folgenden Abschnitt werden die relevanten Grundlagen dargestellt, die für das
+Ausführen von Sprachmodellen auf mobilen Geräten notwendig sind. Zunächst werden
+große Sprachmodelle, deren Vor- und Nachteile sowie die Quantisierung vorgestellt.
+
+\subsection{Large Language Models}
+\label{subsec:llm}
+Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache
+(Natural Language Processing) grundlegend transformiert. LLMs sind hochkomplex
+und basieren auf der Transformer-Architektur \autocite{edgellm_review}.
+Das Besondere daran ist der Self-Attention-Mechanismus (Selbstaufmerksamkeit).
+Dieser dient dazu, globale Abhängigkeiten zwischen Ein- und Ausgabesequenzen
+effizient zu modellieren \autocite{vaswani2017attention}.
+Die hohe Leistungsfähigkeit der Modelle wird durch die gelernten Werte von
+Milliarden von Parametern erreicht. Ihnen werden herausragende
+Eigenschaften im Sprachverstehen, in der Textsynthese, im logischen
+Schlussfolgern sowie in der generativen Texterstellung verliehen
+\autocite{edgellm_review}.
+Dadurch entstehen Herausforderungen, die es zu bewältigen gilt, etwa wenn man
+sie auf ressourcenbeschränkten Endgeräten wie Smartphones (sogenannten
+Edge-Geräten) zum Laufen bringen möchte. So benötigen LLMs enorm viel
+Speicherplatz und sehr viel Rechenleistung \autocite{edgellm_review}.
+
+
+\subsection{On-Device-Inferenz und Quantisierung}
+\label{subsec:ondevice}
+On-Device-Inferenz beschreibt die lokale ausführung von KI-Modellen direkt auf den lokalen Endgeräten 
+(beispielsweise einem Smartphone), anstatt die Daten zur Verarbeitung an einen externen 
+Cloud-Server zu senden \autocite{edgellm_review}.
+
+\medskip
+\noindent Dieser Ansatz bietet daher drei wesentliche Vorteile:
+
+\begin{itemize}
+    \item \textbf{Datenschutz:} Da die Daten das Gerät nicht verlassen, wird die Privatsphäre der Nutzer besser geschützt \autocite{edgellm_review}.
+    \item \textbf{Offline-Fähigkeit:} Auch ohne Internetverbindung ist die Anwendung nutzbar \autocite{edgellm_review}.
+    \item \textbf{Kostenersparnis:} Es fallen keine Kosten durch die Abhängigkeit von Cloud-Diensten an \autocite{edgellm_review}.
+\end{itemize}
+
+\noindent Neben den Vorteilen gibt es auch gewisse Herausforderungen, die man zu bewältigen hat:
+
+\begin{itemize}
+    \item \textbf{Speicher und Rechenleistung:} Da LLMs sehr große Sprachmodelle sind, benötigen sie aufgrund ihrer hohen Anzahl an Parametern ausreichend großen Arbeitsspeicher (RAM) und Rechenkapazität. Oft ist dies mehr, als herkömmliche Smartphones bieten \autocite{edgellm_review}.
+    \item \textbf{Vielfalt der Endgeräte:} Verschiedene Endgeräte besitzen unterschiedliche Prozessoren und Spezialchips. Eine Lösung zu programmieren, die auf allen Endgeräten funktioniert, ist sehr schwierig \autocite{edgellm_review}.
+    \item \textbf{Katastrophales Vergessen:} Ein häufiges und bekanntes Phänomen ist, dass ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
+\end{itemize}
+
+\noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein essenzielles Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 4-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}.
+
+\medskip
+\noindent Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
+
+%  - Überleitung zu \autoref{ch:standdertechnik} (konkrete Modelle/Frameworks)
+%  (1 Absatz)
