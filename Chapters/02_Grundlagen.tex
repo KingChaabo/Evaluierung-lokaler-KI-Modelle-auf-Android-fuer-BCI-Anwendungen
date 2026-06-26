@@ -53,21 +53,23 @@ Dies wird verwendet um bei der Analyse der Gehirnströme, die spektralen eigensc
 
 \subsection{Fensterung und spektrale Leckage}
 \label{subsec:fensterung}
-% TODO:
-%  - FFT nimmt das Fenster als periodisch an
-%  - nicht zusammenpassende Ränder -> spektrale Leckage (Fake-Frequenzen)
-%  - Hann-Fenster zieht die Ränder weich auf 0 -> sauberes Spektrum
-%  \autocite{harris1978}
+Die Fensterung ist ein Verfahren, um Signale zu analysieren, deren Frequenzen sich im Laufe der Zeit verändern \autocite{10353995}.
+Die Auswertung geschieht in zeitlich verschiebbaren Abschnitten (den Fenstern) statt im gesamten Signal auf einmal \autocite{10353995}.
+Wenn ein Signal für die Datenverarbeitung abgeschnitten wird, entsteht eine spektrale Leckage. Dies geschieht häufig dann, wenn die Länge des erfassten Signalabschnitts kein exaktes Vielfaches der eigentlichen Signalperiode ist.
+Durch dieses harte Abschneiden wird die Energie des Signals im Frequenzspektrum verfälscht und auf einen breiteren Frequenzbereich verteilt, was zu Störfrequenzen führt.
+Um diese Leckage auszugleichen, nutzt man die Fensterfunktion, bei der man die Stärke des Signals an den Rändern des Abschnitts sanft abschwächt \autocite{windowing_welch2021}.
 
 \subsection{Welch-Methode}
 \label{subsec:welch}
-% TODO:
-%  - Signal in überlappende Fenster zerlegen
-%  - pro Fenster Spektrum, dann mitteln
-%  - Ergebnis: stabilere, verlässlichere Werte
-%  \autocite{welch1967}
+Um Frequenzspektren robuster zu schätzen und Rauschen zu reduzieren, wird die Welch-Methode verwendet \autocite{windowing_welch2021}.
+Es ist ein Rechenverfahren, das in drei Schritten vorgeht:
 
-% TODO: FFT, Spektrum/Band-Power, spektrale Leckage + Hann \autocite{harris1978}, Welch \autocite{welch1967}
+\begin{enumerate}
+    \item Das ursprüngliche Signal wird in mehrere kürzere Abschnitte unterteilt, die sich teilweise überlappen dürfen \autocite{windowing_welch2021}.
+    \item Auf jeden Abschnitt wird eine Fensterfunktion angewendet, um dann für jeden Abschnitt einzeln das Spektrum zu berechnen \autocite{windowing_welch2021}.
+    \item Ganz am Ende werden die Einzelspektren zu einem Durchschnittswert gemittelt \autocite{windowing_welch2021}.
+\end{enumerate}
+
 
 \section{Lokale Sprachmodelle auf mobilen Geräten}
 \label{sec:llm-grundlagen}
