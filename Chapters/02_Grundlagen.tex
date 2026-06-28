@@ -121,7 +121,17 @@ Cloud-Server zu senden \autocite{edgellm_review}.
 
 \noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein essenzielles Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 4-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}.
 
+\subsection{Modell und Laufzeitumgebung}
+\label{subsec:MvsL}
+Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) lässt sich grundlegend wie folgt beschreiben:
+
+\begin{itemize}
+    \item \textbf{Modell:} Ein Modell ist die Basis, die durch das Training Fähigkeiten wie Textverständnis, logisches Schließen oder die Generierung von Inhalten erlernt hat \autocite{edgellm_review}.
+    \item \textbf{Runtime:} Die Runtime (oder auch Framework) ist hingegen die Software, die das Modell auf dem Endgerät ausführt \autocite{edgellm_review,mediapipe_llm}. Sie stellt die notwendigen Ressourcen und Schnittstellen bereit, um das Modell zu betreiben \autocite{edgellm_review}.
+\end{itemize}
 \medskip
+
+
 \noindent Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
 
 %  - Überleitung zu \autoref{ch:standdertechnik} (konkrete Modelle/Frameworks)
