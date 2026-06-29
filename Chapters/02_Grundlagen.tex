@@ -7,11 +7,13 @@ In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit be
 
 Die Elektroenzephalographie (EEG) ist ein Verfahren zur Aufzeichnung der elektrischen Aktivität des menschlichen Gehirns. Die aufgezeichneten Signale bestehen aus Spannungsschwankungen im Mikrovoltbereich, welche aus der synchronen elektrischen Aktivität von Neuronen resultieren \autocite{blum2017}. Die Messung erfolgt über Elektroden, die auf der Kopfhaut platziert werden und die Potenzialdifferenzen zwischen verschiedenen Punkten erfassen \autocite{10353995}.
 
-\paragraph{Eigenschaften des Signals}
+\subsection{Eigenschaften des Signals}
+\label{subsec:eds}
 EEG-Signale haben die Eigenschaft, extrem gerige Amplitude im Mikrovoltbereich zu besitzen, weshalb es beid er Erfassung systematisch verstärkt werden muss \autocite{blum2017,10353995}.
 Das Frequenzspektrum erstreckt sich dabei meist von 0,1~Hz bis 100~Hz \autocite{10353995}.
 
-\paragraph{Herausforderungen durch Rauschen und Artefakte}
+\subsection{Herausforderungen durch Rauschen und Artefakte}
+\label{subsec:HdRuA}
 In seiner Rohform ist ein EEG-Signal stark von Rauschen geprägt, weshalb es ein unzureichendes Signal-Rausch-Verhältnis (SNR) aufweist \autocite{blum2017}.
 Da die erwarteten neuronalen Aktivitäten schwach sind, werden sie schnell von amplitudenstarken physiologischen Artefakten (wie z.\,B. Muskel- oder Augenbewegungen) sowie technischen Störeinflüssen überlagert, was zu Verzerrungen des Originalsignals führt \autocite{10353995}.
 
@@ -44,6 +46,7 @@ Gamma & ab 30\,Hz   & Konzentration und Multitasking \\
 
 \section{Frequenzanalyse}
 \label{sec:frequenzanalyse}
+Wichtig ist es zu bestimmen, welche Frequenzbänder in EEG-Signalen wie stark vertreten sind. Im Folgenden wird beschrieben, welche Verfahren dafür nötig sind.
 
 \subsection{Fourier-Transformation}
 \label{subsec:fft}
@@ -127,10 +130,25 @@ Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) läss
 
 \begin{itemize}
     \item \textbf{Modell:} Ein Modell ist die Basis, die durch das Training Fähigkeiten wie Textverständnis, logisches Schließen oder die Generierung von Inhalten erlernt hat \autocite{edgellm_review}.
-    \item \textbf{Runtime:} Die Runtime (oder auch Framework) ist hingegen die Software, die das Modell auf dem Endgerät ausführt \autocite{edgellm_review,mediapipe_llm}. Sie stellt die notwendigen Ressourcen und Schnittstellen bereit, um das Modell zu betreiben \autocite{edgellm_review}.
+    \item \textbf{Runtime:} Die Runtime ist hingegen die Software, die das Modell auf dem Endgerät ausführt \autocite{edgellm_review,mediapipe_llm}. Sie stellt die notwendigen Ressourcen und Schnittstellen bereit, um das Modell zu betreiben \autocite{edgellm_review}.
 \end{itemize}
 \medskip
 
+\section{Brain-Computer-Interface (BCI)}
+\label{sec:bci}
+Ein Brain-Computer-Interface (BCI), zu Deutsch Gehirn-Computer-Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
+Häufig gemessen durch EEG, werden mentale Zustände und Absichten in Echtzeit erkannt. Dadurch sind Steuerungsbefehle möglich, die ganz ohne Muskelkraft auskommen \autocite{blum2017}.
+
+\noindent Ein funktionsfähiges BCI-System erfasst die Gehirndaten, verarbeitet und analysiert diese Signale sofort in einem geschlossenen System. Der Nutzer erhält basierend auf der Klassifizierung dieser Signale eine unmittelbare Rückmeldung \autocite{blum2017}.
+\medskip
+
+
+\noindent Vor allem körperlich stark beeinträchtigte Menschen profitieren von BCI-Systemen. Zu den bekannten Beispielen zählen \autocite{blum2017, 10353995}:
+\begin{itemize}
+    \item \textbf{Kommunikationssysteme:} Spezielle Systeme ermöglichen gelähmten Personen die Kommunikation mit ihrer Umwelt.
+    \item \textbf{Bewegung und Steuerung:} BCI-Systeme erlauben die gedankliche Steuerung von Prothesen, Rollstühlen sowie das Steuern eines Cursors auf dem Computerbildschirm.
+    \item \textbf{Assistenzsysteme:} Auch bei der Fehlerüberwachung können anhand der Gehirnaktivität die Absichten einer Notbremsung erkannt und ausgeführt werden, noch bevor das Bremspedal physisch betätigt wird.
+\end{itemize}
 
 \noindent Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
 
