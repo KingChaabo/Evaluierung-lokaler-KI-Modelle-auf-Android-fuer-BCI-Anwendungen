@@ -3,12 +3,34 @@
 
 \section{On-Device-Inferenz-Lösungen}
 \label{sec:ondevice-loesungen}
-% TODO: Gemini Nano/AICore, MediaPipe LLM Inference \autocite{mediapipe_llm}, llama.cpp
+Um ein Sprachmodell lokal auf einem Mobilgerät auszuführen, wird eine Laufzeitumgebung (Runtime) benötigt. Dafür stehen unterschiedliche Lösungen zur Verfügung. Eine solche Lösung ist die MediaPipe LLM Inference API \autocite{mediapipe_llm}. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um eine reibungslose Ende-zu-Ende-Verarbeitung zu gewährleisten \autocite{mediapipe_llm}.
+\medskip
+
+\noindent Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem Hauptprozessor (CPU) oder dem Grafikprozessor (GPU) des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}.
+\medskip
+
+\noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, etwa Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Für die folgenden Abschnitte sind vor allem diese beiden sehr kompakten Modelle wichtig.
 
 \section{Die Gemma-Modellfamilie}
 \label{sec:gemma}
-% TODO: Gemma 2 \autocite{gemma2_2024}, Gemma 3 \autocite{gemma3_2025}
+Die Gemma-Modellfamilie gehört zu den offenen und ressourcenschonenden Modellen, die vom Gemma-Team bei Google DeepMind entwickelt wurden \autocite{gemma3_2025}.
+\medskip
+Besondere Merkmale der Gemma-Modelle sind:
+\begin{itemize}
+    \item \textbf{Offenheit und Effizienz:} Neben der freien Zugänglichkeit der Modelle zeichnen sie sich durch eine ressourcenschonende Ausführung auf herkömmlicher Standardhardware wie Smartphones aus \autocite{gemma3_2025,gemma2_2024}.
+    \item \textbf{Skalierbarkeit:} Um unterschiedlichen technischen Anforderungen gerecht zu werden, sind die Modelle in mehreren Größen verfügbar. Diese werden in Milliarden von Parametern gemessen. So bietet die zweite Generation (Gemma 2) Varianten mit 2, 9 und 27 Milliarden Parametern \autocite{gemma2_2024}. Die dritte Generation (Gemma 3) erweitert diese Skalierung auf Modelle mit 1, 4, 12 und 27 Milliarden Parametern \autocite{gemma3_2025}.
+    \item \textbf{Erweiterter Funktionsumfang:} Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}.
+    \item \textbf{Einsatzbereitschaft:} Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}.
+\end{itemize}
+
+\noindent In dieser Arbeit werden aus dieser Familie die kompakten Modelle Gemma 3 1B und Gemma 2 2B eingesetzt und verglichen.
+% - Gemma = offene, kleine Google-Modelle
+% - Gemma 2 \autocite{gemma2_2024}, Gemma 3 \autocite{gemma3_2025}
+% - Warum: leichtgewichtig + Größen ermöglichen Vergleich 1B vs 2B
+% - Gewählt: Gemma 3 1B + Gemma 2 2B
 
 \section{Ausgangslage: bestehende Anwendung}
 \label{sec:ausgangslage}
-% TODO: Unicorn-App (Vorgängerarbeit), Datenpfad (BT → Room-DB), Abgrenzung der Eigenleistung
+% - Unicorn Hybrid Black: 8 Kanäle, 250 Hz
+% - Bestehende App: Aufnahme, Bluetooth -> Room-DB, Live-FFT
+% - DEIN Beitrag: features/, llm/, analyse/ (Bestandscode nur 1 Button + 1 Zeile)
