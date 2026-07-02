@@ -14,6 +14,7 @@ Um ein Sprachmodell lokal auf einem Mobilgerät auszuführen, wird eine Laufzeit
 \section{Die Gemma-Modellfamilie}
 \label{sec:gemma}
 Die Gemma-Modellfamilie gehört zu den offenen und ressourcenschonenden Modellen, die vom Gemma-Team bei Google DeepMind entwickelt wurden \autocite{gemma3_2025}.
+
 \medskip
 Besondere Merkmale der Gemma-Modelle sind:
 \begin{itemize}
@@ -24,13 +25,45 @@ Besondere Merkmale der Gemma-Modelle sind:
 \end{itemize}
 
 \noindent In dieser Arbeit werden aus dieser Familie die kompakten Modelle Gemma 3 1B und Gemma 2 2B eingesetzt und verglichen.
-% - Gemma = offene, kleine Google-Modelle
-% - Gemma 2 \autocite{gemma2_2024}, Gemma 3 \autocite{gemma3_2025}
-% - Warum: leichtgewichtig + Größen ermöglichen Vergleich 1B vs 2B
-% - Gewählt: Gemma 3 1B + Gemma 2 2B
 
 \section{Ausgangslage: bestehende Anwendung}
 \label{sec:ausgangslage}
-% - Unicorn Hybrid Black: 8 Kanäle, 250 Hz
-% - Bestehende App: Aufnahme, Bluetooth -> Room-DB, Live-FFT
-% - DEIN Beitrag: features/, llm/, analyse/ (Bestandscode nur 1 Button + 1 Zeile)
+
+Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für die Implementierung der neuen Funktionalität dient.
+
+\begin{itemize}
+    \item \textbf{Unicorn Hybrid Black: } Das Unicorn Hybrid Black ist die BCI-Plattform, die in dieser Arbeit verwendet wird. Er ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
+    Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
+    Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet er sich für den mobilen Einsatz.
+    \item \textbf{Datenübertragung \& Anbindung:} Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth, wobei jedes Sample aus den jeweils folgenden 17 Werten besteht \autocite{unicornbtprotocol}.
+
+    \begin{table}[H]
+\centering
+\caption{Aufbau eines Samples des Unicorn Hybrid Black \autocite{unicornbtprotocol}}
+\label{tab:unicorn-sample}
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Werte} & \textbf{Bezeichnung} & \textbf{Anzahl} \\
+\midrule
+1--8   & EEG-Kanäle                          & 8 \\
+9--11  & Beschleunigungssensor (x, y, z)     & 3 \\
+12--14 & Gyroskop (x, y, z)                  & 3 \\
+15     & Batteriestand                       & 1 \\
+16     & Counter (fortlaufender Zähler)      & 1 \\
+17     & Validation Indicator (valid-Flag)   & 1 \\
+\midrule
+       & \textbf{Gesamt}                     & \textbf{17} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+    \item \textbf{Bestehende Anwendung: }Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, EEG-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-FFT visualisiert.
+    Die Daten werden dauerhaft gespeichert und können zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
+    \item \textbf{Beitrag dieser Arbeit: }Die bestehende Grundlage wird um Funktionalitäten erweitert. Die grundsätzliche Erweiterung ist die Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
+    \begin{itemize}
+        \item Schicht zur Merkmalsextraktion \texttt{features}
+        \item Anbindung eines oder mehrerer Sprachmodelle \texttt{llm}
+        \item Benutzeroberfläche zur KI-gestützten Analyse \texttt{analyse}
+    \end{itemize}
+    Im Originalcode wurden nur minimale Änderungen vorgenommen.
+\end{itemize}
