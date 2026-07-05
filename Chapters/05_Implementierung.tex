@@ -3,7 +3,25 @@
 
 \section{Architektur}
 \label{sec:architektur}
-% TODO: Überblick, Paket features/, Datenfluss
+Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in \autoref{fig:architektur} dargestellt sind:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Graphics/Projektarchitektur.drawio.pdf}
+    \caption{Architektur und Datenfluss der Anwendung (eigene Darstellung)}
+    \label{fig:architektur}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Datenbank:} Der Weg startet über die Datenbank, aus der die Samples abgerufen werden.
+\item \textbf{EegFeatureExtractor:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
+\item \textbf{FeatureFormatter:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
+\item \textbf{PromptBuilder:} Baut die Anweisung für den Prompt (je Szenario).
+\item \textbf{LlmEngine:} Führt das Modell (Gemma via MediaPipe) aus und gibt die Antwort zurück.
+\item \textbf{Analyse-Oberfläche:} Zeigt letztlich die Antwort an.
+\item \textbf{Benchmark:} Misst die Verarbeitung (Laufzeit, Speicherverbrauch etc.).
+\end{itemize}
+
+\noindent Die Architektur ist in drei Schichten unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Durch die Trennung dieser Pakete bleibt der Code übersichtlich, wartbar und erweiterbar.
 
 \section{Merkmalsextraktion}
 \label{sec:impl-features}
