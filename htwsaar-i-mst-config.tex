@@ -43,10 +43,10 @@
  \RequirePackage{babel}					
  \RequirePackage{csquotes}
 	
-\PassOptionsToPackage{language=auto,style=numeric-comp,backend=bibtex8,bibencoding=ascii,maxbibnames=50}{biblatex} % backend ggf. auf neueres Werkzeug (z.B. biber) anpassen
- \RequirePackage{biblatex}	
+\PassOptionsToPackage{language=auto,style=numeric-comp,backend=biber,bibencoding=ascii,maxbibnames=50}{biblatex} % backend ggf. auf neueres Werkzeug (z.B. biber) anpassen
+ \RequirePackage{biblatex}
  %\bibliography{Bibliography}	% alter Befehl
- \addbibresource{Bibliography}
+ \addbibresource{Bibliography.bib}
 
 \PassOptionsToPackage{fleqn}{amsmath}		% math environments and more by the AMS 
  \RequirePackage{amsmath}
@@ -96,6 +96,7 @@
 \captionsetup{format=hang,font=small}
 \usepackage{subfig}
 \usepackage{wrapfig}
+\usepackage{tikz}
 % ****************************************************************************************************
 
 
@@ -252,3 +253,4 @@ belowcaptionskip=1\baselineskip,
 \setkomafont{disposition}{\bfseries}
 % ****************************************************************************************************
 \usepackage{float}
+\usepackage{tikz}
