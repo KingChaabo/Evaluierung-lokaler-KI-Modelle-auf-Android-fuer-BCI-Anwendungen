@@ -64,7 +64,7 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 \noindent Die Fensterfunktion wird mathematisch wie folgt beschrieben:
 \begin{equation} w(n) = 0.5 - 0.5 \cos\left(\frac{2\pi n}{N-1}\right) \end{equation}
 
-wobei (N) die Fenstergröße (256) bezeichnet \autocite{windowing_welch2021}.
+\noindent wobei (N) die Fenstergröße (256) bezeichnet \autocite{windowing_welch2021}.
 \medskip
 
 \noindent Jedes Fenster wird per FFT in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert.
@@ -78,10 +78,20 @@ wobei (N) die Fenstergröße (256) bezeichnet \autocite{windowing_welch2021}.
             \node at (\x+2,\y+0.3) {\small Fenster \i};
         }
     \end{tikzpicture}
-    \caption{Zerlegung eines Segments in überlappende Analysefenster (50\,\% Überlappung) für die Welch-Methode (eigene Darstellung).}
+    \caption{Zerlegung eines Segments in überlappende Analysefenster (50\,\% Überlappung) für die Welch-Methode.}
     \label{fig:welch-fenster}
 \end{figure}
-% TODO: Pipeline, Segmentierung, Band-Power (Welch/Hann), Zeit-Features, relative Power
+
+\subsection{Zeitstatistische Merkmale}
+Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jeden Abschnitt berechnet \autocite{10353995}. Hierfür ist keine FFT notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.
+Ein zentrales Merkmal ist die Spannweite (Peak-to-Peak-Amplitude), welche die Differenz zwischen dem größten und dem kleinsten Amplitudenwert beschreibt \autocite{jas2017}.
+Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung eines absoluten Maximalwertes die Unabhängigkeit von einem potenziellen Gleichanteil des Signals gewährleistet. Aus diesem Grund stellt die Peak-to-Peak-Amplitude ein robustes Kriterium dar, um extreme Signalausschläge und Drifts zu identifizieren, wie sie bei Artefakten auftreten können \autocite{jas2017}.
+\medskip
+
+\noindent Des Weiteren wird zur Beurteilung der Signalqualität der Anteil der ungültigen Messwerte betrachtet. Dies ist der Anteil der Datenpunkte, die vom Erfassungsgerät selbst als fehlerhaft markiert wurden. Man kann durch diesen wichtigen Indikator erkennen, ob Messfehler vorliegen, wie beispielsweise ein unzureichender Kontakt an der Kopfhaut \autocite{10353995}.
+\medskip
+
+\noindent Im Allgemeinen bilden statistische Merkmale ergänzend zu den spektralen Merkmalen eine gute Grundlage, um die Datenqualität zu beurteilen und Artefakte zu erkennen.
 
 \section{Modellauswahl}
 \label{sec:modellauswahl}
