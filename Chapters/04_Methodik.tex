@@ -129,8 +129,46 @@ Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden
 
 \noindent Der Prompt-Aufbau ist in allen drei Szenarien identisch. Er beginnt mit der szenariospezifischen Anweisung, gefolgt von einem textuell aufbereiteten Merkmalssatz. Das Niveau steigt dabei mit jedem Szenario. Während der Report lediglich ein Zusammenfassen erfordert, ist beim Artefakt-Erklärungsszenario zusätzlich das Deuten notwendig. Das Vergleichsszenario erfordert schließlich ein Schlussfolgern über zwei Datensätze hinweg. Dadurch kann man die Grenzen der Modelle in Bezug auf die Komplexität der Aufgabenstellung untersuchen.
 
-% TODO: Session-Report, Artefakt-Erklärung, Session-Vergleich; Prompt-Aufbau
-
 \section{Messprotokoll}
 \label{sec:messprotokoll}
-% TODO: Metriken (Latenz, Ressourcen, Stabilität, Qualität), Mess-Hygiene  \autocite{melting2024}
+Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen durchgeführt werden. Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
+
+\subsection{Metriken}
+\label{subsec:metriken}
+Zur Bewertung der Modelle werden mehrere Metriken erfasst, die sich in Latenz, Ressourcenverbrauch und Stabilität gliedern.
+
+\begin{table}[H]
+    \centering
+    \caption{Übersicht der erfassten Metriken.}
+    \label{tab:metriken}
+    \begin{tabularx}{\textwidth}{l l X}
+        \toprule
+        \textbf{Kategorie} & \textbf{Metrik} & \textbf{Beschreibung} \\
+        \midrule
+        \multirow{4}{*}{Latenz}
+            & Ladezeit    & Zeit zum Laden des Modells \\
+            & TTFT        & Zeit bis zum ersten erzeugten Token \\
+            & Gesamtdauer & Dauer der gesamten Inferenz \\
+            & Tokens/s    & Durchsatz, unabhängig von der Ausgabelänge \\
+        \midrule
+        \multirow{2}{*}{Ressourcen}
+            & RAM (PSS) & Speicherverbrauch inkl. nativem Speicher \\
+            & Akku      & Energieverbrauch (µAh) über eine Messreihe \\
+        \midrule
+        Stabilität & Status           & erfolgreich, Fehler oder Speicherüberlauf \\
+        \midrule
+        Qualität   & Ausgabequalität  & qualitative Bewertung (siehe \autoref{ch:evaluation}) \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent Die Tokens pro Sekunde sind vor allem wichtig, da sie einen fairen Vergleich unabhängig von der Länge der Ausgabe erlauben. Eine reine Zeitmessung würde längere Antworten offensichtlich benachteiligen.
+\medskip
+
+\noindent Der Speicherverbrauch wird über die Proportional Set Size (PSS) erfasst, da diese exklusiv von der Applikation genutzte Speicherseiten sowie den proportionalen Anteil an gemeinsam verwendeten Seiten (Shared Pages) berücksichtigt.
+Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbedarfs, da durch sie gemeinsam genutzte Ressourcen (wie beispielsweise Bibliotheken oder Systemdienste) nicht mehrfach gezählt werden \autocite{android_memory}.
+\medskip
+
+\noindent Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
+
+\subsection{Messbedingungen}
