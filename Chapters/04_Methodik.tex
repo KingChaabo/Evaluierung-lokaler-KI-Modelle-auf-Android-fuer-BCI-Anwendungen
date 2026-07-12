@@ -67,7 +67,7 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 \noindent wobei (N) die Fenstergröße (256) bezeichnet \autocite{windowing_welch2021}.
 \medskip
 
-\noindent Jedes Fenster wird per FFT in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert.
+\noindent Jedes Fenster wird per FFT in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert \autocite{10353995}.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -93,9 +93,30 @@ Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung e
 
 \noindent Im Allgemeinen bilden statistische Merkmale ergänzend zu den spektralen Merkmalen eine gute Grundlage, um die Datenqualität zu beurteilen und Artefakte zu erkennen.
 
+\subsection{Aufbereitung für das Sprachmodell}
+\label{subsec:aufbereitung}
+Im letzten Schritt der Merkmalsextraktion werden die berechneten Merkmale in eine textuelle Form gebracht, die vom Sprachmodell verarbeitet werden kann.
+Dabei enthält der Text folgende Informationen:
+\begin{itemize}
+\item aggregierte Kennzahlen
+\item relative Bandleistung der fünf Frequenzbänder (pro Abschnitt)
+\item Spannweite (Peak-to-Peak-Amplitude)
+\item Anteil der ungültigen Messwerte
+\end{itemize}
+
+\noindent Dabei werden bewusst keine Bewertungen oder Interpretationen in den Text aufgenommen.
+Alle Informationen sind objektive Messwerte, deren Bedeutung allein dem Sprachmodell überlassen wird.
+Dadurch wird gewährleistet, dass die eigentliche Analysearbeit vom Modell erledigt wird.
+
 \section{Modellauswahl}
 \label{sec:modellauswahl}
-% TODO: Gemma 2B (Haupt), 1B (Vergleich), 4B (optional); warum
+Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen systemintegrierte Modelle auf dem verwendeten Testgerät nicht zur Verfügung. Daher konzentriert sich diese Arbeit auf frei deploybare Modelle, wie sie in \autoref{sec:gemma} beschrieben sind.
+\medskip
+
+\noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden zwei Modelle der Gemma-Familie vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}. Da beide Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich der Effekt der Parameteranzahl auf die Systemperformanz methodisch kontrolliert und isoliert untersuchen.
+\medskip
+
+\noindent Beide Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich allein auf die Modellgröße bezieht.
 
 \section{Anwendungsszenarien}
 \label{sec:szenarien}

@@ -97,7 +97,12 @@ Dadurch entstehen Herausforderungen, die es zu bewältigen gilt, etwa wenn man
 sie auf ressourcenbeschränkten Endgeräten wie Smartphones (sogenannten
 Edge-Geräten) zum Laufen bringen möchte. So benötigen LLMs enorm viel
 Speicherplatz und sehr viel Rechenleistung \autocite{edgellm_review}.
+\medskip
 
+\noindent In der maschinellen Sprachverarbeitung werden Texte in Token zerlegt, die als kleinste Informationseinheiten dienen. So wird im Fachartikel \autocite{ibm_contextwindow} gesagt: \enquote{Ein Token kann für ein einzelnes Zeichen, einen Teil eines Wortes (z.,B. ein Suffix oder Präfix), ein ganzes Wort oder sogar eine kurze, aus mehreren Wörtern bestehende Phrase stehen.} Damit die benötigte Rechenleistung reduziert wird, enthält jedes Token eine eindeutige numerische Identifikationsnummer (ID), anhand derer das Modell die Sprache lernt und verarbeitet \autocite{ibm_contextwindow}.
+\medskip
+
+\noindent Das Kontextfenster ist die maximale Anzahl an Token, die das Modell gleichzeitig verarbeiten kann \autocite{ibm_contextwindow}. Es ist sozusagen das Arbeitsgedächtnis des Modells. Sollte das Kontextfenster überschritten werden, werden die älteren Informationen gekürzt oder zusammengefasst, damit das Modell weiterhin im selben Kontext arbeiten kann \autocite{ibm_contextwindow}.
 
 \subsection{On-Device-Inferenz und Quantisierung}
 \label{subsec:ondevice}
@@ -133,6 +138,15 @@ Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) läss
     \item \textbf{Runtime:} Die Runtime ist hingegen die Software, die das Modell auf dem Endgerät ausführt \autocite{edgellm_review,mediapipe_llm}. Sie stellt die notwendigen Ressourcen und Schnittstellen bereit, um das Modell zu betreiben \autocite{edgellm_review}.
 \end{itemize}
 \medskip
+
+\subsection{Systemintegrierte und frei deploybare Modelle}
+\label{subsec:systemintegrierte-und-frei-deploybare-modelle}
+Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle die unterschieden werken können:
+\begin{itemize}
+\item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte Programmierschnittstellen (APIs) auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation erheblich reduziert.
+\item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Dadurch kann eine maximale Flexibilität gewährleistet werden, da sie unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten funktionieren. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um eine reibungslose Ende-zu-Ende-Verarbeitung zu gewährleisten \autocite{mediapipe_llm}.
+Dieser Ansatz erhöht jedoch den Speicherbedarf der Anwendung.
+\end{itemize}
 
 \section{Brain-Computer-Interface (BCI)}
 \label{sec:bci}
