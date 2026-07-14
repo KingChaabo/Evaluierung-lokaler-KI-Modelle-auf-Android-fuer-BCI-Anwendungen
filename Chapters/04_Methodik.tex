@@ -1,5 +1,7 @@
 \chapter{Methodik}
 \label{ch:methodik}
+In diesem Kapitel geht es um die Methodik der Arbeit. Dabei wird als Erstes die Merkmalsextraktion näher erläutert, bei der die rohen EEG-Daten in kompakte Kennzahlen überführt werden. Anschließend werden die Modellauswahl beschrieben und die Anwendungsszenarien definiert.
+Abschließend folgt das Messprotokoll, das die Vorgehensweise der Messungen und die erfassten Metriken beschreibt.
 
 \section{Merkmalsextraktion}
 \label{sec:merkmalsextraktion}
@@ -131,7 +133,7 @@ Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden
 
 \section{Messprotokoll}
 \label{sec:messprotokoll}
-Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen durchgeführt werden. Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
+Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen durchgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
 
 \subsection{Metriken}
 \label{subsec:metriken}
@@ -172,3 +174,18 @@ Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbeda
 \noindent Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
 
 \subsection{Messbedingungen}
+\label{subsec:messbedingungen}
+Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können, werden sie unter den folgenden Rahmenbedingungen durchgeführt:
+\begin{itemize}
+\item Der Flugmodus im Testgerät ist aktiviert, um Netzwerkaktivitäten auszuschließen.
+\item Die Bildschirmhelligkeit wird auf einen festen Wert eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
+\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde.
+\item Alle unnötigen Hintergrundprozesse werden beendet, um die Systemlast zu minimieren.
+\item Alle Messungen finden möglichst innerhalb von 20 Minuten statt, um die Temperatur des Geräts konstant zu halten.
+\item Alle Messungen werden auf demselben Testgerät (Samsung Galaxy S23) durchgeführt, um die Hardwarebedingungen konstant zu halten.
+\item Für alle Messungen werden dieselben Sessions als Eingabe verwendet, sodass alle Metriken unter identischen Bedingungen erfasst werden.
+\end{itemize}
+
+\noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung standardmäßig verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die verbleibenden Werte werden gemittelt.
+
+

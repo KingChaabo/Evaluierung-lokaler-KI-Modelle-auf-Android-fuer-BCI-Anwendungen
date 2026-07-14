@@ -32,8 +32,27 @@ In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den W
 
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
+\noindent Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Eine Session wird als Erstes aus der Datenbank geladen. Dabei wird geprüft, ob die gesamte Session die Mindestlänge erfüllt und nicht zu stark durch ungültige Messwerte gestört ist. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt. Andernfalls wird sie in gleich große Zeitabschnitte aufgeteilt. Dabei werden zwei verschiedene Arten von Merkmalen berechnet: zum einen spektrale Merkmale, also die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) (\autoref{lst:powerspectrum} zeigt die Berechnung des Leistungsspektrums); zum anderen statistische Merkmale wie Mittelwert, Standardabweichung und der Anteil ungültiger Werte. Die Klasse \texttt{SessionFeatures} dient als Objekt, in dem alle Merkmale gesammelt werden. Schlussendlich wird alles vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann.
+\newpage
+\begin{lstlisting}[language=Java, caption={Berechnung des Leistungsspektrums eines Fensters}, label={lst:powerspectrum}]
+    private double[] powerSpectrum(double[] window) {
+    double mean = mittelwert(window);
+    for (int n = 0; n < WINDOW_SIZE; n++) {
+        // Mittelwert abziehen + Hann
+        data[n] = (window[n] - mean) * hann[n];
+    }
+    fft.realForward(data); // FFT
 
-\noindent Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Eine Session wird als Erstes aus der Datenbank geladen. Dabei wird geprüft, ob die gesamte Session die Mindestlänge erfüllt und nicht zu stark durch ungültige Messwerte gestört ist. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt. Andernfalls wird sie in gleich große Zeitabschnitte aufgeteilt. Dabei werden zwei verschiedene Arten von Merkmalen berechnet: zum einen spektrale Merkmale, also die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)); zum anderen statistische Merkmale wie Mittelwert, Standardabweichung und der Anteil ungültiger Werte. Die Klasse \texttt{SessionFeatures} dient als Objekt, in dem alle Merkmale gesammelt werden. Schlussendlich wird alles vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann.
+    double[] power = new double[WINDOW_SIZE / 2];
+    for (int k = 1; k < WINDOW_SIZE / 2; k++) {
+        double re = data[2*k], im = data[2*k + 1];
+        // Leistung pro Bin
+        power[k] = re*re + im*im;
+    }
+    return power;
+}
+\end{lstlisting}
+
 
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
