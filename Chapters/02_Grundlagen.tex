@@ -52,6 +52,16 @@ Wichtig ist es zu bestimmen, welche Frequenzbänder in EEG-Signalen wie stark ve
 \label{subsec:fft}
 Die Fast Fourier Transform (FFT) ist ein mathematisches Verfahren, das komplexe Signale in ihre sinusförmigen Bestandteile zerlegt und sie vom Zeitbereich in den Frequenzbereich überführt \autocite{10353995}.
 Dies wird verwendet um bei der Analyse der Gehirnströme, die spektralen eigenschaften von signalen zu untersuchen und Frequenspitzen (Peaks) zu berechnen. \autocite{10353995}.
+\medskip
+
+\noindent Ein zentrales Merkmal der FFT ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
+\begin{equation}
+    \Delta f = \frac{f_s}{N}.
+    \label{eq:freqaufloesung}
+\end{equation}
+
+\noindent Je größer das Fenster $N$ gewählt wird, desto kleiner wird $\Delta f$ und desto feiner ist folglich die Auflösung \autocite{windowing_welch2021}.
+
 
 
 \subsection{Fensterung und spektrale Leckage}

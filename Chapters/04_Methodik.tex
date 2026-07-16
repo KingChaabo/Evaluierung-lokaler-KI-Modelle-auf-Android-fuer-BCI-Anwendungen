@@ -59,7 +59,7 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 \subsection{Spektrale Merkmale}
 \label{subsec:spektral}
 Die spektralen Merkmale werden für jeden Abschnitt bestimmt, indem die Signalenergie auf die einzelnen Frequenzbänder verteilt wird. 
-Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Abschnitts in überlappende Fenster unterteilt; im vorliegenden Fall beträgt die Fenstergröße 256 Samples (siehe \autoref{fig:welch-fenster}). 
+Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Abschnitts in überlappende Fenster unterteilt; im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples (siehe \autoref{fig:welch-fenster}). 
 Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließend über alle Fenster gemittelt wird. Durch diese Mittelung wird das resultierende Spektrum deutlich stabiler und weniger rauschanfällig als bei einer einzelnen FFT. Allerdings ist dann mit einer geringeren Frequenzauflösung zu rechnen \autocite{windowing_welch2021}.
 \medskip
 
@@ -69,7 +69,7 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 \noindent Die Fensterfunktion wird mathematisch wie folgt beschrieben:
 \begin{equation} w(n) = 0.5 - 0.5 \cos\left(\frac{2\pi n}{N-1}\right) \end{equation}
 
-\noindent wobei (N) die Fenstergröße (256) bezeichnet \autocite{windowing_welch2021}.
+\noindent wobei $N$ die Fenstergröße (Standard: 256) bezeichnet \autocite{windowing_welch2021}.
 \medskip
 
 \noindent Jedes Fenster wird per FFT in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert \autocite{10353995}.
@@ -115,13 +115,13 @@ Dadurch wird gewährleistet, dass die eigentliche Analysearbeit vom Modell erled
 
 \section{Modellauswahl}
 \label{sec:modellauswahl}
-Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen systemintegrierte Modelle auf dem verwendeten Testgerät nicht zur Verfügung. Daher konzentriert sich diese Arbeit auf frei deploybare Modelle, wie sie in \autoref{sec:gemma} beschrieben sind.
+Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen systemintegrierte Modelle auf dem verwendeten Testgerät nicht zur Verfügung. Daher konzentriert sich diese Arbeit auf frei deploybare Modelle, wie sie in \autoref{sec:gemma} und \autoref{sec:qwen} beschrieben sind.
 \medskip
 
 \noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden drei Modelle vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}, sowie das Modell Qwen 2.5 1.5B des Herstellers Alibaba \autocite{qwen2025,mediapipe_llm}, dessen Größe zwischen den beiden Gemma-Modellen liegt. Da alle drei Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich bei gleicher Laufzeitumgebung sowohl der Effekt der Modellgröße als auch der Einfluss des Herstellers auf die Systemperformanz untersuchen.
 \medskip
 
-\noindent Beide Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich allein auf die Modellgröße bezieht.
+\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich allein auf die Modellgröße und dem Hersteller bezieht.
 
 \section{Anwendungsszenarien}
 \label{sec:szenarien}
