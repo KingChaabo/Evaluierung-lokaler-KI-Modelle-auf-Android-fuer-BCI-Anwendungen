@@ -28,10 +28,13 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 
 \noindent Damit die Aufteilung der Session möglich ist, muss die Aufnahme eine Mindestlänge haben. Damit pro Segment mindestens ein vollständiges Analysefenster für die spektrale Berechnung zur Verfügung steht, sind bei vier Abschnitten und einer Fenstergröße von 256 Werten mindestens
 \begin{equation}
-4 \ \text{Abschnitte} \times 256 \ \text{Werte} = 1024 \ \text{Samples} \approx 4 \ \text{s}
+4 \ \text{Abschnitte} \times 256 \ \text{Werte (Fenster)} = 1024 \ \text{Samples} \approx 4 \ \text{s}
 \end{equation}
 
 \noindent erforderlich. Wenn die Aufnahme zu kurz ist, um die Mindestlänge zu erfüllen, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt.
+\medskip
+
+\noindent Die Fenstergröße ist kein fester, unveränderlicher Wert, sondern variabel einstellbar. Eine größere Fenstergröße erhöht die Frequenzauflösung \autocite{windowing_welch2021}, erfordert jedoch eine längere Mindestdauer der Session. Für alle folgenden Untersuchungen wird mit der Standardfenstergröße von 256 Samples gearbeitet, da sie in etwa eine Sekunde abbildet.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[xscale=0.9, yscale=0.9]
@@ -115,7 +118,7 @@ Dadurch wird gewährleistet, dass die eigentliche Analysearbeit vom Modell erled
 Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen systemintegrierte Modelle auf dem verwendeten Testgerät nicht zur Verfügung. Daher konzentriert sich diese Arbeit auf frei deploybare Modelle, wie sie in \autoref{sec:gemma} beschrieben sind.
 \medskip
 
-\noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden zwei Modelle der Gemma-Familie vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}. Da beide Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich der Effekt der Parameteranzahl auf die Systemperformanz methodisch kontrolliert und isoliert untersuchen.
+\noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden drei Modelle vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}, sowie das Modell Qwen 2.5 1.5B des Herstellers Alibaba \autocite{qwen2025,mediapipe_llm}, dessen Größe zwischen den beiden Gemma-Modellen liegt. Da alle drei Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich bei gleicher Laufzeitumgebung sowohl der Effekt der Modellgröße als auch der Einfluss des Herstellers auf die Systemperformanz untersuchen.
 \medskip
 
 \noindent Beide Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich allein auf die Modellgröße bezieht.
