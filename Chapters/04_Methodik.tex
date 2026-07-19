@@ -121,7 +121,7 @@ Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen syst
 \noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden drei Modelle vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}, sowie das Modell Qwen 2.5 1.5B des Herstellers Alibaba \autocite{qwen2025,mediapipe_llm}, dessen Größe zwischen den beiden Gemma-Modellen liegt. Da alle drei Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich bei gleicher Laufzeitumgebung sowohl der Effekt der Modellgröße als auch der Einfluss des Herstellers auf die Systemperformanz untersuchen.
 \medskip
 
-\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich allein auf die Modellgröße und dem Hersteller bezieht.
+\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich einzig auf die Modellgröße und den Hersteller bezieht.
 
 \section{Anwendungsszenarien}
 \label{sec:szenarien}
@@ -181,12 +181,14 @@ Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbeda
 Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können, werden sie unter den folgenden Rahmenbedingungen durchgeführt:
 \begin{itemize}
 \item Der Flugmodus im Testgerät ist aktiviert, um Netzwerkaktivitäten auszuschließen.
-\item Die Bildschirmhelligkeit wird auf einen festen Wert eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
-\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde.
+\item Die Bildschirmhelligkeit wird auf einen festen Wert (Ungefähr 50\,\%) eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
+\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde. Bei Start der Messung befindet sich der Akkustand bei ungefähr 80\,\%.
 \item Alle unnötigen Hintergrundprozesse werden beendet, um die Systemlast zu minimieren.
-\item Alle Messungen finden möglichst innerhalb von 20 Minuten statt, um die Temperatur des Geräts konstant zu halten.
-\item Alle Messungen werden auf demselben Testgerät (Samsung Galaxy S23) durchgeführt, um die Hardwarebedingungen konstant zu halten.
+\item Alle Messungen finden möglichst innerhalb von 15 Minuten statt, um die Temperatur des Geräts konstant zu halten.
+\item Alle Messungen werden auf demselben Testgerät durchgeführt, um die Hardwarebedingungen konstant zu halten. Dabei handelt es sich um ein Samsung Galaxy S23 mit dem Prozessor Qualcomm Snapdragon~8 Gen~2 und 8\,GB Arbeitsspeicher, betrieben unter Android~16 (One~UI~8.5), mit einer Akkukapazität von 3900\,mAh \autocite{samsung_s23_specs, s23_oneui85_android16}.
 \item Für alle Messungen werden dieselben Sessions als Eingabe verwendet, sodass alle Metriken unter identischen Bedingungen erfasst werden.
+\item Unmittelbar vor der Messung wurde das Testgerät für mindestens 30~Minuten nicht genutzt, damit es abkühlen konnte.
+\item Während der gesamten Messung bleibt das Testgerät eingeschaltet und die Session-Detailansicht geöffnet, da der Benchmark sonst unterbrochen wird.
 \end{itemize}
 
 \noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung standardmäßig verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die verbleibenden Werte werden gemittelt.

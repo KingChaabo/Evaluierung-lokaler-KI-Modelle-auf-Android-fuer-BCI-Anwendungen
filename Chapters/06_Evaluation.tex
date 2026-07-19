@@ -1,22 +1,105 @@
 \chapter{Evaluation}
 \label{ch:evaluation}
+Dieses Kapitel präsentiert die Durchführung (\autoref{subsec:messbedingungen}) sowie die Ergebnisse der Metriken (\autoref{subsec:metriken}), um zu beurteilen, inwiefern sich die lokalen Modelle für die Verarbeitung von EEG-Daten eignen.
 
-\section{Versuchsaufbau}
-\label{sec:versuchsaufbau}
-% TODO: Gerät (S23), Bedingungen, Datenbasis
+\section{Durchführung der Messungen}
+\label{sec:eval-durchfuehrung}
+Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt wurden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten CSV-Datei protokolliert. Dies geschieht je 5 mal, wobei die erste Messung jeder Kombination verworfen wird.
+% Kurzer Recap (kein Wiederholen der ganzen Methodik):
+% - 3 Modelle x 3 Szenarien, N=5, erste Messung verworfen
+% - Bedingungen -> \autoref{subsec:messbedingungen}
+% - Testgerat S23
+% 3-4 Satze reichen.
 
 \section{Latenz}
 \label{sec:eval-latenz}
-% TODO: Messtabelle
+% Deutung: welches Modell schneller? TTFT vs Gesamtdauer? Tokens/s als fairer Vergleich.
+
+\begin{table}[H]
+    \centering
+    \caption{Latenzmetriken je Modell und Szenario (Mittel aus vier Wiederholungen).}
+    \label{tab:eval-latenz}
+    \begin{tabularx}{\textwidth}{l l r r r r}
+        \toprule
+        \textbf{Modell} & \textbf{Szenario} & \textbf{Ladezeit (s)} & \textbf{TTFT (s)} & \textbf{Gesamtdauer (s)} & \textbf{Tok/s} \\
+        \midrule
+        \multirow{3}{*}{Gemma 3 1B}
+            & Report    & 0,53 & 1,72 & 4,25  & 20,25 \\
+            & Artefakt  & 0,16 & 1,82 & 4,76  & 20,60 \\
+            & Vergleich & 0,19 & 4,76 & 8,76  & 13,81 \\
+        \midrule
+        \multirow{3}{*}{Qwen 2.5 1.5B}
+            & Report    & 0,73 & 5,33 & 41,18 & 14,52 \\
+            & Artefakt  & 0,26 & 5,28 & 13,83 & 10,34 \\
+            & Vergleich & 0,26 & 14,62 & 43,80 & 10,89 \\
+        \midrule
+        \multirow{3}{*}{Gemma 2 2B}
+            & Report    & 0,85 & 5,32 & 13,12 & 5,27 \\
+            & Artefakt  & 0,52 & 6,36 & 29,83 & 5,99 \\
+            & Vergleich & 0,51 & 16,66 & 31,58 & 3,39 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
 
 \section{Ressourcenverbrauch}
 \label{sec:eval-ressourcen}
-% TODO: RAM, Akku
+% Deutung: RAM waechst mit Modellgroesse? Akku-Tradeoff (2B ~1,5x 1B, aus deinem 1. Lauf).
+
+\begin{table}[H]
+    \centering
+    \caption{Ressourcenverbrauch je Modell.}
+    \label{tab:eval-ressourcen}
+    \begin{tabularx}{\textwidth}{l l r r}
+        \toprule
+        \textbf{Modell} & \textbf{Szenario} & \textbf{RAM / PSS (MB)} & \textbf{Akku (mAh)\textsuperscript{*}} \\
+        \midrule
+        \multirow{3}{*}{Gemma 3 1B}
+            & Report    & 1542 & \multirow{3}{*}{\textasciitilde30} \\
+            & Artefakt  & 1575 & \\
+            & Vergleich & 1626 & \\
+        \midrule
+        \multirow{3}{*}{Qwen 2.5 1.5B}
+            & Report    & 2003 & \multirow{3}{*}{\textasciitilde174} \\
+            & Artefakt  & 2030 & \\
+            & Vergleich & 2108 & \\
+        \midrule
+        \multirow{3}{*}{Gemma 2 2B}
+            & Report    & 3743 & \multirow{3}{*}{\textasciitilde144} \\
+            & Artefakt  & 3618 & \\
+            & Vergleich & 3729 & \\
+        \bottomrule
+    \end{tabularx}
+    \\[4pt]
+    \footnotesize\textsuperscript{*}Verbrauch über den gesamten Messblock (15 Läufe) des jeweiligen Modells.
+\end{table}
 
 \section{Stabilität}
 \label{sec:eval-stabilitaet}
-% TODO: OOM, Throttling
+% Status-Verteilung (erfolgreich/Fehler/OOM), Throttling-Beobachtungen,
+% ob ein Modell an die RAM-Grenze des S23 kam. Meist Fliesstext + evtl. kleine Tabelle.
 
 \section{Ausgabequalität}
 \label{sec:eval-qualitaet}
-% TODO: qualitative Bewertung
+% Qualitative Bewertung. Erst Kriterien definieren, dann Beispielausgaben einordnen.
+
+\subsection{Bewertungskriterien}
+\label{subsec:eval-kriterien}
+\begin{itemize}
+    \item \textbf{Korrektheit:} Stimmt die Aussage mit den Merkmalen überein?
+    \item \textbf{Verständlichkeit:} Ist die Ausgabe für Laien lesbar?
+    \item \textbf{Relevanz:} Geht sie auf das Wesentliche ein?
+    \item \textbf{Halluzination:} Werden Dinge erfunden, die nicht in den Daten stehen?
+\end{itemize}
+
+\subsection{Beispielausgaben je Szenario}
+\label{subsec:eval-beispiele}
+% Pro Szenario 1-2 Beispielausgaben (z.B. als \begin{quote} oder lstlisting)
+% + kurze Einordnung anhand der Kriterien oben.
+% Szenario 1: Session-Report
+% Szenario 2: Artefakt-Erklarung
+% Szenario 3: Session-Vergleich
+
+\section{Zusammenfassende Gegenüberstellung}
+\label{sec:eval-vergleich}
+% Ein Gesamtbild: welches Modell fuer welchen Zweck? Tabelle oder Ampel-Uebersicht.
+% Ueberleitung zur Diskussion (\autoref{ch:diskussion}).
