@@ -4,7 +4,10 @@ Dieses Kapitel präsentiert die Durchführung (\autoref{subsec:messbedingungen})
 
 \section{Durchführung der Messungen}
 \label{sec:eval-durchfuehrung}
-Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt wurden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten CSV-Datei protokolliert. Dies geschieht je 5 mal, wobei die erste Messung jeder Kombination verworfen wird.
+Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten CSV-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird.
+\medskip
+
+\noindent Als Eingabe für das Modell werden zwei bestimmte Sessions verwendet. Beide sind beim Tragen des Unicorn-Hybrid-Headsets entstanden und haben eine Laufzeit von knapp über 120 Sekunden.
 % Kurzer Recap (kein Wiederholen der ganzen Methodik):
 % - 3 Modelle x 3 Szenarien, N=5, erste Messung verworfen
 % - Bedingungen -> \autoref{subsec:messbedingungen}
@@ -13,66 +16,78 @@ Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle
 
 \section{Latenz}
 \label{sec:eval-latenz}
+Im folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
 % Deutung: welches Modell schneller? TTFT vs Gesamtdauer? Tokens/s als fairer Vergleich.
-
+\setlength{\tabcolsep}{4pt}
 \begin{table}[H]
     \centering
-    \caption{Latenzmetriken je Modell und Szenario (Mittel aus vier Wiederholungen).}
+    \caption{Latenzmetriken je Modell und Szenario (Mittel aus vier Wiederholungen $\pm$ Standardabweichung).}
     \label{tab:eval-latenz}
     \begin{tabularx}{\textwidth}{l l r r r r}
         \toprule
         \textbf{Modell} & \textbf{Szenario} & \textbf{Ladezeit (s)} & \textbf{TTFT (s)} & \textbf{Gesamtdauer (s)} & \textbf{Tok/s} \\
         \midrule
         \multirow{3}{*}{Gemma 3 1B}
-            & Report    & 0,53 & 1,72 & 4,25  & 20,25 \\
-            & Artefakt  & 0,16 & 1,82 & 4,76  & 20,60 \\
-            & Vergleich & 0,19 & 4,76 & 8,76  & 13,81 \\
+            & Report    & 0,53 & 1,72 $\pm$ 0,05 & 4,25 $\pm$ 0,07 & 20,25 $\pm$ 0,35 \\
+            & Artefakt  & 0,16 & 1,82 $\pm$ 0,02 & 4,76 $\pm$ 0,04 & 20,60 $\pm$ 0,17 \\
+            & Vergleich & 0,19 & 4,76 $\pm$ 0,12 & 8,76 $\pm$ 0,11 & 13,81 $\pm$ 0,17 \\
         \midrule
         \multirow{3}{*}{Qwen 2.5 1.5B}
-            & Report    & 0,73 & 5,33 & 41,18 & 14,52 \\
-            & Artefakt  & 0,26 & 5,28 & 13,83 & 10,34 \\
-            & Vergleich & 0,26 & 14,62 & 43,80 & 10,89 \\
+            & Report    & 0,73 & 5,33 $\pm$ 0,14 & 41,18 $\pm$ 0,25 & 14,52 $\pm$ 0,09 \\
+            & Artefakt  & 0,26 & 5,28 $\pm$ 0,04 & 13,83 $\pm$ 0,08 & 10,34 $\pm$ 0,06 \\
+            & Vergleich & 0,26 & 14,62 $\pm$ 0,12 & 43,80 $\pm$ 0,46 & 10,89 $\pm$ 0,12 \\
         \midrule
         \multirow{3}{*}{Gemma 2 2B}
-            & Report    & 0,85 & 5,32 & 13,12 & 5,27 \\
-            & Artefakt  & 0,52 & 6,36 & 29,83 & 5,99 \\
-            & Vergleich & 0,51 & 16,66 & 31,58 & 3,39 \\
+            & Report    & 0,85 & 5,32 $\pm$ 0,53 & 13,12 $\pm$ 0,67 & 5,27 $\pm$ 0,28 \\
+            & Artefakt  & 0,52 & 6,36 $\pm$ 0,80 & 29,83 $\pm$ 2,24 & 5,99 $\pm$ 0,47 \\
+            & Vergleich & 0,51 & 16,66 $\pm$ 0,07 & 31,58 $\pm$ 0,04 & 3,39 $\pm$ 0,01 \\
         \bottomrule
     \end{tabularx}
 \end{table}
 
+\noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 20,60 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 3,39 Tok/s).
+Die \textbf{Ladezeit} steigt von Gemma 3 1B über Qwen 2.5 1.5B bis hin zu Gemma 2 2B an. Sie liegt durchweg unter einer Sekunde (zwischen 0,16 und 0,85,s).
+Die \textbf{Zeit bis zum ersten Token (TTFT)} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die TTFT mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,66,s.
+Die \textbf{Gesamtdauer} reicht von etwa 4,25 bis 43,80,s und steigt mit dem Szenarioniveau an, mit Ausnahme von Qwen 2.5 1.5B.
+\medskip
+
+\noindent Da die \textbf{Standardabweichungen} überwiegend gering ausfallen, weisen sie auf stabile Messungen hin. Lediglich bei Gemma 2 2B/Artefakt ist die Standardabweichung mit 2,24,s deutlich höher als bei allen anderen Messungen.
 \section{Ressourcenverbrauch}
 \label{sec:eval-ressourcen}
+Daraufolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorgestellt.
 % Deutung: RAM waechst mit Modellgroesse? Akku-Tradeoff (2B ~1,5x 1B, aus deinem 1. Lauf).
 
 \begin{table}[H]
     \centering
-    \caption{Ressourcenverbrauch je Modell.}
+    \caption{Ressourcenverbrauch je Modell (RAM als Mittel $\pm$ Standardabweichung).}
     \label{tab:eval-ressourcen}
     \begin{tabularx}{\textwidth}{l l r r}
         \toprule
         \textbf{Modell} & \textbf{Szenario} & \textbf{RAM / PSS (MB)} & \textbf{Akku (mAh)\textsuperscript{*}} \\
         \midrule
         \multirow{3}{*}{Gemma 3 1B}
-            & Report    & 1542 & \multirow{3}{*}{\textasciitilde30} \\
-            & Artefakt  & 1575 & \\
-            & Vergleich & 1626 & \\
+            & Report    & 1542 $\pm$ 32 & \multirow{3}{*}{\textasciitilde30} \\
+            & Artefakt  & 1575 $\pm$ 1  & \\
+            & Vergleich & 1626 $\pm$ 28 & \\
         \midrule
         \multirow{3}{*}{Qwen 2.5 1.5B}
-            & Report    & 2003 & \multirow{3}{*}{\textasciitilde174} \\
-            & Artefakt  & 2030 & \\
-            & Vergleich & 2108 & \\
+            & Report    & 2003 $\pm$ 2  & \multirow{3}{*}{\textasciitilde174} \\
+            & Artefakt  & 2030 $\pm$ 39 & \\
+            & Vergleich & 2108 $\pm$ 4  & \\
         \midrule
         \multirow{3}{*}{Gemma 2 2B}
-            & Report    & 3743 & \multirow{3}{*}{\textasciitilde144} \\
-            & Artefakt  & 3618 & \\
-            & Vergleich & 3729 & \\
+            & Report    & 3743 $\pm$ 2   & \multirow{3}{*}{\textasciitilde144} \\
+            & Artefakt  & 3618 $\pm$ 151 & \\
+            & Vergleich & 3729 $\pm$ 151 & \\
         \bottomrule
     \end{tabularx}
     \\[4pt]
     \footnotesize\textsuperscript{*}Verbrauch über den gesamten Messblock (15 Läufe) des jeweiligen Modells.
 \end{table}
 
+\noindent \autoref{tab:eval-ressourcen} zeigt, dass der RAM (PSS) eine klare Rangfolge zwischen den Modellen besitzt. Während Gemma 3 1B mit (1542 MB) den geringsten Wert aufweist, liegt Qwen in der Mitte (ca. 2000 MB) und Gemma 2 2B am höchsten (3743 MB).
+Während das 1B-Modell von Gemma mit (ca. 30 mAh) den geringsten Akkuverbrauch aufweist, liegt der Verbrauch von Qwen 2.5 1.5B (ca. 174 mAh) und Gemma 2 2B (ca. 144 mAh) deutlich höher.
+Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht.
 \section{Stabilität}
 \label{sec:eval-stabilitaet}
 % Status-Verteilung (erfolgreich/Fehler/OOM), Throttling-Beobachtungen,
