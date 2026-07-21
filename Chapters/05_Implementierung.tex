@@ -58,6 +58,61 @@ In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den W
 \label{sec:impl-llm}
 % TODO: MediaPipe, Modell-Handling, LlmEngine
 
+\section{Prompt-Design und iterative Optimierung}
+\label{sec:impl-prompt}
+Wie schon in \autoref{sec:szenarien} erwähnt, besteht der Prompt aus den aufbereiteten Merkmalen mit einer szenariospezifischen Anweisung. Dieser ist für alle Modelle identisch.
+Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zum finalen Prompt war iterativ: Er wurde anhand der Modellausgaben verfeinert und anschließend für die Evaluation final festgehalten.
+\medskip
+
+\noindent Bei der Optimierung des Prompts ergaben sich folgende Design-Vorgaben, die jeweils auf ein beobachtetes Problem der frühen Ausgaben zurückgehen:
+\begin{itemize}
+\item \textbf{Datentreue:} Es wird darauf hingewiesen, nur die Werte zu verwenden, die genannt werden. Dies soll verhindern, dass das Modell eigene Annahmen trifft. Dieses Problem trat in früheren Ausgaben auf, so wurden Begriffe wie \enquote{Dominanzindex} genannt.
+\item \textbf{Reines Textformat:} Es wird sichergestellt, dass die Ausgaben des Modells nur textuelle Informationen enthalten. Es werden Sonderzeichen (Markdown) verboten, da sonst Formatierungszeichen (z.,B. \texttt{**}) auftraten.
+\item \textbf{Eindeutige Merkmalsbenennung:} Im \texttt{FeatureFormatter} wird der Anteil ungültiger Werte als \enquote{Ungültige Messwerte: X\,\%} statt als \enquote{Qualität: X\,\%} ausgegeben. Zuvor interpretierte das Modell \enquote{Qualität: X\,\%} fälschlich als schlechte Qualität.
+\item \textbf{Begrenzung der Interpretation:} Ausgaben mit falscher Interpretation, etwa durch die Einbeziehung medizinischer Diagnosen, werden verhindert, da sie zuvor ein Problem darstellten.
+\item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.
+\end{itemize}
+
+\noindent Nach der Optimierung wurde der finale Prompt eingefroren und für alle Messungen verwendet. Er stellt auch die Grundlage für den Benchmark dar. In \autoref{lst:prompts} sind die finalen Prompts je Szenario dargestellt.
+\begin{lstlisting}[language=Java, framextopmargin=5pt, framexbottommargin=5pt, xleftmargin=5pt, xrightmargin=5pt, basicstyle=\footnotesize\ttfamily, breaklines=true, caption={Aufbau der Prompts je Szenario (finale, eingefrorene Fassung)}, label={lst:prompts}]
+    // Szenario 1: Session-Report
+public String buildReport(String featureText) {
+    
+    return "Fasse die folgenden EEG-Messwerte in 3 bis 4 Saetzen sachlich zusammen. "
+         + "Schreibe nur den Bericht: keine Begruessung, keine Rueckfragen, kein Schlusssatz. "
+         + "Schreibe reinen Fliesstext ohne Sonderzeichen (kein Markdown). "
+         + "Nenne das dominante Frequenzband, die Signalqualitaet und auffaellige Ausschlaege. "
+         + "Erfinde nichts und nutze nur die folgenden Werte:\n\n"
+         + featureText;
+}
+
+// Szenario 2: Artefakt-Erklaerung
+public String buildArtefaktErklaerung(String featureText) {
+    
+    return "Analysiere die folgenden EEG-Messwerte und beziehe dich konkret auf die genannten Werte. "
+         + "Benenne die auffaelligsten Punkte dieser Session (z. B. sehr hohe Ausschlaege, "
+         + "ungueltige Daten oder ein stark dominantes Band) und erklaere kurz ihre moegliche "
+         + "technische Ursache (z. B. Bewegung, Elektroden, Verbindung). Stelle keine "
+         + "medizinischen Diagnosen. Schreibe wenige Saetze als sachlichen Fliesstext, ohne "
+         + "Begruessung und ohne Sonderzeichen (kein Markdown). Erfinde nichts und nutze nur "
+         + "die folgenden Werte:\n\n"
+         + featureText;
+}
+
+// Szenario 3: Session-Vergleich
+public String buildVergleich(String featureTextA, String featureTextB) {
+    
+    return "Vergleiche die folgenden zwei EEG-Sessions und beschreibe die wichtigsten "
+         + "Unterschiede in einfachen Worten (z. B. Banddominanz, Signalqualitaet, Ausschlaege). "
+         + "Schreibe sachlichen Fliesstext ohne Sonderzeichen (kein Markdown). Erfinde keine "
+         + "Kennzahlen oder Begriffe. Schreibe nur den Vergleich, keine Begruessung. "
+         + "Nutze nur die folgenden Werte.\n\n"
+         + "Session A:\n" + featureTextA
+         + "\n\nSession B:\n" + featureTextB;
+}
+\end{lstlisting}
+
+
 \section{Benutzeroberfläche}
 \label{sec:impl-ui}
 % TODO: KI-Analyse-Screen (kurz)
