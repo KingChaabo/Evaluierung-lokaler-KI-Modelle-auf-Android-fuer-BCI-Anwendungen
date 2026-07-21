@@ -4,6 +4,22 @@
 
 \section{Motivation}
 \label{sec:motivation}
+Die Elektroenzephalographie (EEG) ist ein etabliertes Verfahren, das es ermöglicht, die elektrische Aktivität des Gehirns nicht-invasiv aufzuzeichnen \autocite{blum2017}.
+Eine Gehirn-Computer-Schnittstelle (Brain-Computer-Interface, BCI) zielt auf dieser Grundlage darauf ab, kognitive Zustände in Echtzeit zu identifizieren, um eine Steuerung und Kommunikation ohne jeglichen Einsatz von Muskeln zu ermöglichen \autocite{blum2017}.
+Vor allem körperlich stark beeinträchtigte Menschen profitieren von BCI-Systemen. Gelähmte Personen ist es so möglich, BCI-basierte Buchstabiersysteme zu nutzen, die einen wichtigen Kommunikationskanal darstellen \autocite{blum2017}.
+\medskip
+
+\noindent Traditionelle EEG-Laborhardware, wie sie oft stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung. Demgegenüber erlauben moderne, kabellose und am Kopf getragene EEG-Geräte (wie das Unicorn Hybrid Black) inzwischen auch Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
+\medskip
+
+\noindent Dennoch ist das Deuten der aufgezeichneten Signale komplex und benötigt oft Fachwissen.
+Gleichzeitig haben große Sprachmodelle (Large Language Models, LLMs) die Verarbeitung natürlicher Sprache grundlegend revolutioniert \autocite{edgellm_review}.
+Da lokal ausführbare Inferenzen keine Cloud-Anbindung benötigen und zudem datenschutzfreundlich sind, gibt es ein wachsendes Interesse daran, LLMs direkt auf Endgeräten auszuführen \autocite{edgellm_review}.
+\medskip
+
+\noindent Durch die Kombination lokaler Sprachmodelle und der aufbereiteten EEG-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
+Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingungen tatsächlich für die Verarbeitung von EEG-Daten eignen, ist bislang offen.
+
 % TODO
 
 \section{Zielsetzung}
