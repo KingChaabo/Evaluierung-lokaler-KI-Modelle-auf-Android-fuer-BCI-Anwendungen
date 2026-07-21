@@ -137,6 +137,7 @@ Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden
 \section{Messprotokoll}
 \label{sec:messprotokoll}
 Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen durchgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
+Bevor die eigentliche Messung beginnt, wird eine Aufwärmphase durchgeführt, um Kaltstart-Effekte zu vermeiden. Dadurch wird verhindert, dass die erste Konfiguration verzerrt gemessen wird.
 
 \subsection{Metriken}
 \label{subsec:metriken}
@@ -182,12 +183,12 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 \begin{itemize}
 \item Der Flugmodus im Testgerät ist aktiviert, um Netzwerkaktivitäten auszuschließen.
 \item Die Bildschirmhelligkeit wird auf einen festen Wert (Ungefähr 50\,\%) eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
-\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde. Bei Start der Messung befindet sich der Akkustand bei ungefähr 80\,\%.
+\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde. Bei Start der Messung befindet sich der Akkustand bei ungefähr 60\,\%.
 \item Alle unnötigen Hintergrundprozesse werden beendet, um die Systemlast zu minimieren.
 \item Alle Messungen finden möglichst innerhalb von 20 Minuten statt, um die Temperatur des Geräts konstant zu halten.
 \item Alle Messungen werden auf demselben Testgerät durchgeführt, um die Hardwarebedingungen konstant zu halten. Dabei handelt es sich um ein Samsung Galaxy S23 mit dem Prozessor Qualcomm Snapdragon~8 Gen~2 und 8\,GB Arbeitsspeicher, betrieben unter Android~16 (One~UI~8.5), mit einer Akkukapazität von 3900\,mAh \autocite{samsung_s23_specs, s23_oneui85_android16}.
 \item Für alle Messungen werden dieselben Sessions als Eingabe verwendet, sodass alle Metriken unter identischen Bedingungen erfasst werden.
-\item Unmittelbar vor der Messung wurde das Testgerät für mindestens 30~Minuten nicht genutzt, damit es abkühlen konnte.
+\item Unmittelbar vor der Messung wurde das Testgerät für mindestens 20~Minuten nicht genutzt, damit es abkühlen konnte.
 \item Während der gesamten Messung bleibt das Testgerät eingeschaltet und die Session-Detailansicht geöffnet, da der Benchmark sonst unterbrochen wird.
 \end{itemize}
 
