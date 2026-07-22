@@ -1,10 +1,10 @@
 \chapter{Einleitung}
 \label{ch:einleitung}
-% ganz am Ende schreiben
+Gehirn-Computer-Schnittstellen und lokal ausführbare künstliche Intelligenz haben sich in den letzten Jahren stark weiterentwickelt. Die Kombination beider Technologien eröffnet neue Möglichkeiten, unter anderem den Einsatz lokaler Sprachmodelle zur Verarbeitung von EEG-Daten auf einem mobilen Android-Gerät. Die vorliegende Arbeit untersucht wie diese Kombination in der Praxis funktioniert. Dieses Kapitel gibt einen Überblick über die Motivation, Zielsetzung und den Aufbau der Arbeit.
 
 \section{Motivation}
 \label{sec:motivation}
-Die Elektroenzephalographie (EEG) ist ein etabliertes Verfahren, das es ermöglicht, die elektrische Aktivität des Gehirns nicht-invasiv aufzuzeichnen \autocite{blum2017}.
+Die Elektroenzephalographie (EEG) ist ein etabliertes Verfahren zur nicht-invasiven Aufzeichnung der elektrischen Aktivität des Gehirns \autocite{blum2017}.
 Eine Gehirn-Computer-Schnittstelle (Brain-Computer-Interface, BCI) zielt auf dieser Grundlage darauf ab, kognitive Zustände in Echtzeit zu identifizieren, um eine Steuerung und Kommunikation ohne jeglichen Einsatz von Muskeln zu ermöglichen \autocite{blum2017}.
 Vor allem körperlich stark beeinträchtigte Menschen profitieren von BCI-Systemen. Gelähmte Personen ist es so möglich, BCI-basierte Buchstabiersysteme zu nutzen, die einen wichtigen Kommunikationskanal darstellen \autocite{blum2017}.
 \medskip
@@ -20,12 +20,31 @@ Da lokal ausführbare Inferenzen keine Cloud-Anbindung benötigen und zudem date
 \noindent Durch die Kombination lokaler Sprachmodelle und der aufbereiteten EEG-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
 Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingungen tatsächlich für die Verarbeitung von EEG-Daten eignen, ist bislang offen.
 
-% TODO
-
 \section{Zielsetzung}
 \label{sec:zielsetzung}
-% TODO
+Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von EEG-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen. Damit stellt sich folgende Forschungsfrage:
+
+\begin{quote}
+\itshape Inwieweit eignen sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von EEG-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen?
+\end{quote}
+
+\noindent Um diese Frage zu beantworten, wird eine bestehende Android-EEG-Anwendung um lokale Sprachmodelle erweitert, die dann aufbereitete EEG-Merkmale in verständliche, textuelle Beschreibungen übersetzen. Dabei werden drei verschiedene Anwendungsszenarien sowie drei verschiedene Sprachmodelle mit unterschiedlicher Größe und unterschiedlichem Hersteller betrachtet. So ist es möglich, sowohl den Einfluss der Modellgröße als auch des Herstellers auf die jeweiligen Szenarien zu untersuchen.
+\medskip
+
+\noindent Die Eignung wird schlussendlich anhand verschiedener Kriterien bewertet. Dazu zählen Latenz, Ressourcenverbrauch (Arbeitsspeicher und Akku), Stabilität sowie die Qualität der ausgegebenen Texte. Darüber hinaus werden praktische Einschränkungen wie die Geräteabhängigkeit systemintegrierter Modelle dokumentiert. Das Ergebnis dieser Arbeit liefert einen systematischen Vergleich, aus dem sich Handlungsempfehlungen für den Einsatz lokaler Sprachmodelle in mobilen BCI-Anwendungen ableiten lassen.
+\medskip
+
+\noindent Der Fokus liegt dabei nicht auf dem Training der Modelle, sondern auf ihrer Integration, Leistungsfähigkeit und ihren Grenzen im mobilen Einsatz.
 
 \section{Aufbau der Arbeit}
 \label{sec:aufbau}
-% TODO
+Der Aufbau der Arbeit gliedert sich in acht Kapitel.
+\medskip
+
+\noindent \autoref{ch:grundlagen} vermittelt alles an notwendigem Wissen, das für das Verständnis der Arbeit erforderlich ist.
+\autoref{ch:standdertechnik} beschreibt den derzeitigen Stand der Technik.
+\autoref{ch:methodik} erläutert die Methodik, also wie die Forschungsfrage beantwortet werden soll.
+\autoref{ch:implementierung} stellt dar, wie die konkrete Implementierung der Anwendung erfolgt ist.
+\autoref{ch:evaluation} präsentiert die Ergebnisse der Evaluation.
+\autoref{ch:diskussion} diskutiert diese Ergebnisse sowie die praktischen Einschränkungen.
+\autoref{ch:fazit} schließt die Arbeit mit einem Fazit und einem Ausblick auf mögliche Weiterentwicklungen ab.
