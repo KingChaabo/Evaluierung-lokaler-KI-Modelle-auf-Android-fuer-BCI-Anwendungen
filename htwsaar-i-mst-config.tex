@@ -136,7 +136,29 @@ belowcaptionskip=1\baselineskip,
   commentstyle=\itshape\color{purple!40!black},
   identifierstyle=\color{blue},
   stringstyle=\color{orange}}
-% ****************************************************************************************************    		   
+
+% Eigener Stil fuer Quellcode-Listings: Padding, kein Umbruch, nicht ueber Seiten splitten
+\lstdefinestyle{code}{
+  language=Java,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  showstringspaces=false,
+  texcl=false,               % Kommentare literal (kein LaTeX) -> % und -> sind unproblematisch
+  breaklines=false,          % kein Zeilenumbruch
+  frame=single,
+  frameround=ftff,
+  framesep=8pt,              % Innenabstand: Rahmen -> Code (Padding)
+  xleftmargin=14pt,          % Abstand links
+  xrightmargin=14pt,         % Abstand rechts
+  aboveskip=1.2\baselineskip,
+  belowskip=1.2\baselineskip,
+  belowcaptionskip=1\baselineskip,
+  captionpos=b,
+}
+% ****************************************************************************************************
 
 
 % ****************************************************************************************************

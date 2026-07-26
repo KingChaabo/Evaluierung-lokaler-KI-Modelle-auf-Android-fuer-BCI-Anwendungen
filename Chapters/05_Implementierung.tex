@@ -32,26 +32,167 @@ In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den W
 
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
-\noindent Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Eine Session wird als Erstes aus der Datenbank geladen. Dabei wird geprüft, ob die gesamte Session die Mindestlänge erfüllt und nicht zu stark durch ungültige Messwerte gestört ist. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt. Andernfalls wird sie in gleich große Zeitabschnitte aufgeteilt. Dabei werden zwei verschiedene Arten von Merkmalen berechnet: zum einen spektrale Merkmale, also die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) (\autoref{lst:powerspectrum} zeigt die Berechnung des Leistungsspektrums); zum anderen statistische Merkmale wie Mittelwert, Standardabweichung und der Anteil ungültiger Werte. Die Klasse \texttt{SessionFeatures} dient als Objekt, in dem alle Merkmale gesammelt werden. Schlussendlich wird alles vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann.
-\newpage
-\begin{lstlisting}[language=Java, caption={Berechnung des Leistungsspektrums eines Fensters}, label={lst:powerspectrum}]
-    private double[] powerSpectrum(double[] window) {
-    double mean = mittelwert(window);
-    for (int n = 0; n < WINDOW_SIZE; n++) {
-        // Mittelwert abziehen + Hann
+Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie statistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
+\medskip
+
+\noindent\textbf{Vorbereitung.} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt (\autoref{lst:konstruktor}). Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
+\begin{lstlisting}[style=code, caption={Vorberechnung von Hann-Fenster und FFT-Objekt im Konstruktor}, label={lst:konstruktor}]
+public EegFeatureExtractor(int windowSize) {
+    this.windowSize = windowSize;
+    this.hann       = hannWindow(windowSize);
+    // Hann-Fenster vorberechnen
+    this.fft        = new DoubleFFT_1D(windowSize);
+    // FFT-Objekt aus JTransforms
+    this.minSamples = windowSize * SEGMENT_COUNT;
+}
+\end{lstlisting}
+
+\noindent\textbf{Validierung.} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
+\begin{lstlisting}[style=code, caption={Vorabprüfung der Session}, label={lst:validate}]
+public enum Check { OK, TOO_SHORT, TOO_MANY_INVALID; }
+
+public Check validate(List<SampleEntity> samples) {
+    if (samples == null || samples.size() < minSamples) {
+        return Check.TOO_SHORT;
+        // zu wenige Samples
+    }
+    int invalidCount = 0;
+    for (SampleEntity sample : samples) {
+        if (sample.valid == 0) invalidCount++;
+    }
+    if (invalidCount > MAX_INVALID_RATIO * samples.size()) {
+        return Check.TOO_MANY_INVALID;
+        // zu viele ungueltige Werte
+    }
+    return Check.OK;
+}
+\end{lstlisting}
+
+\noindent\textbf{Segmentierung.} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Abschnitte (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\begin{lstlisting}[style=code, caption={Zerlegung der Session in Segmente}, label={lst:extract}]
+public SessionFeatures extract(List<SampleEntity> samples) {
+    SessionFeatures features = new SessionFeatures();
+    features.sessionId       = samples.get(0).sessionId;
+    features.sampleCount     = samples.size();
+    features.durationSeconds = samples.get(samples.size() - 1).sampleCounterSeconds;
+    features.segments        = new ArrayList<>();
+
+    int segLength = samples.size() / SEGMENT_COUNT;
+    for (int i = 0; i < SEGMENT_COUNT; i++) {
+        int start = i * segLength;
+        int end   = (i == SEGMENT_COUNT - 1) ? samples.size() : start + segLength;
+        List<SampleEntity> slice = samples.subList(start, end);
+        features.segments.add(buildSegment(slice));
+        // Merkmale pro Abschnitt berechnen
+    }
+    return features;
+}
+\end{lstlisting}
+
+\noindent\textbf{Spektrale Merkmale (Welch-Methode).} Für jeden der acht EEG-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
+\begin{lstlisting}[style=code, caption={Band-Power je Kanal nach dem Welch-Verfahren}, label={lst:bandpower}]
+private double[][] computeBandPower(List<SampleEntity> slice) {
+    double[][] result = new double[CHANNELS][NUM_BANDS];
+    int hop = windowSize / 2;
+    // 50% Ueberlappung
+
+    for (int i = 0; i < CHANNELS; i++) {
+        double[] signal = extractChannelSignal(slice, i);
+        double[] bandAccum = new double[NUM_BANDS];
+        int windowCount = 0;
+
+        for (int start = 0; start + windowSize <= signal.length; start += hop) {
+            double[] window = Arrays.copyOfRange(signal, start, start + windowSize);
+            double[] power  = powerSpectrum(window);
+            // Fenster -> Spektrum
+            double[] bands  = sumBands(power);
+            // Spektrum -> Baender
+            for (int b = 0; b < NUM_BANDS; b++) bandAccum[b] += bands[b];
+            windowCount++;
+        }
+        if (windowCount > 0) {
+            for (int b = 0; b < NUM_BANDS; b++) {
+                result[i][b] = bandAccum[b] / windowCount;
+                // ueber alle Fenster mitteln (Welch)
+            }
+        }
+    }
+    return result;
+}
+\end{lstlisting}
+
+\noindent Die Methode \texttt{powerSpectrum} berechnet das Leistungsspektrum eines Fensters (\autoref{lst:powerspectrum}). Zunächst wird der Mittelwert (Gleichanteil) abgezogen. Danach wird das Hann-Fenster angewendet, um anschließend die Fourier-Transformation durchzuführen. Schließlich wird die Leistung je Frequenz-Bin berechnet, indem die Real- und Imaginärteile quadriert und summiert werden.
+\begin{lstlisting}[style=code, caption={Berechnung des Leistungsspektrums eines Fensters}, label={lst:powerspectrum}]
+private double[] powerSpectrum(double[] window) {
+    // 1. Mittelwert (Gleichanteil)
+    double mean = 0;
+    for (double v : window) mean += v;
+    mean /= window.length;
+
+    // 2. Mittelwert abziehen + Hann anwenden
+    double[] data = new double[windowSize];
+    for (int n = 0; n < windowSize; n++) {
         data[n] = (window[n] - mean) * hann[n];
     }
-    fft.realForward(data); // FFT
 
-    double[] power = new double[WINDOW_SIZE / 2];
-    for (int k = 1; k < WINDOW_SIZE / 2; k++) {
-        double re = data[2*k], im = data[2*k + 1];
-        // Leistung pro Bin
-        power[k] = re*re + im*im;
+    // 3. FFT (in-place, JTransforms)
+    fft.realForward(data);
+
+    // 4. Leistung pro Frequenz-Bin
+    double[] power = new double[windowSize / 2];
+    power[0] = data[0] * data[0];
+    // DC-Bin
+    for (int k = 1; k < windowSize / 2; k++) {
+        double re = data[2 * k], im = data[2 * k + 1];
+        power[k] = re * re + im * im;
     }
     return power;
 }
 \end{lstlisting}
+
+\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Sie bietet eine Java-basierte Implementierung der Fourier-Transformation, die den Aufruf \texttt{realForward} für reelle Eingangssignale bereitstellt. Das Ergebnis wird dabei in dasselbe Array geschrieben, sodass die geraden Indizes die Real- und die ungeraden Indizes die Imaginärteile der Frequenz-Bins enthalten.
+\medskip
+
+\noindent\textbf{Zuordnung zu den Frequenzbändern.} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
+\begin{lstlisting}[style=code, caption={Zuordnung der Frequenz-Bins zu den Bändern}, label={lst:sumbands}]
+private double[] sumBands(double[] power) {
+    double[] bandSum = new double[NUM_BANDS];
+    for (int i = 1; i < power.length; i++) {
+        double freq = (double) (i * SAMPLE_RATE) / windowSize;
+        // Bin-Index -> Frequenz
+        for (FrequencyBand band : FrequencyBand.values()) {
+            if (freq >= band.lowHz && freq < band.highHz) {
+                bandSum[band.ordinal()] += power[i];
+            }
+        }
+    }
+    return bandSum;
+}
+\end{lstlisting}
+
+\noindent Die Einteilung in die jeweiligen Frequenzbänder wird durch den Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} realisiert, der als zentrale Definitionsstelle der Bänder dient (\autoref{lst:frequencyband}). Jedes Band ist dort mit seiner unteren und oberen Grenzfrequenz hinterlegt.
+\begin{lstlisting}[style=code, caption={Zentrale Definition der Frequenzbänder mit ihren Grenzen}, label={lst:frequencyband}]
+public enum FrequencyBand {
+    DELTA(0.5f, 4f),
+    THETA(4f,   8f),
+    ALPHA(8f,   13f),
+    BETA(13f,   30f),
+    GAMMA(30f,  45f);
+
+    public final float lowHz;
+    public final float highHz;
+
+    FrequencyBand(float lowHz, float highHz) {
+        this.lowHz  = lowHz;
+        this.highHz = highHz;
+    }
+}
+\end{lstlisting}
+
+\noindent\textbf{Statistische Merkmale.} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
+\medskip
+
+\noindent\textbf{Ergebnis.} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung durch den \texttt{FeatureFormatter}.
 
 
 \section{Integration des Sprachmodells}
