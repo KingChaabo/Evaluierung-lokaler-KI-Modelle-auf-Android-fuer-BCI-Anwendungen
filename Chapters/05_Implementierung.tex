@@ -35,7 +35,7 @@ In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den W
 Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie statistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
 \medskip
 
-\noindent\textbf{Vorbereitung.} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt (\autoref{lst:konstruktor}). Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
+\noindent\textbf{Vorbereitung.} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt (\autoref{lst:konstruktor}). Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
 \begin{lstlisting}[style=code, caption={Vorberechnung von Hann-Fenster und FFT-Objekt im Konstruktor}, label={lst:konstruktor}]
 public EegFeatureExtractor(int windowSize) {
     this.windowSize = windowSize;
@@ -74,13 +74,15 @@ public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
     features.sessionId       = samples.get(0).sessionId;
     features.sampleCount     = samples.size();
-    features.durationSeconds = samples.get(samples.size() - 1).sampleCounterSeconds;
+    features.durationSeconds = samples.get(samples.size() - 1)
+        .sampleCounterSeconds;
     features.segments        = new ArrayList<>();
 
     int segLength = samples.size() / SEGMENT_COUNT;
     for (int i = 0; i < SEGMENT_COUNT; i++) {
         int start = i * segLength;
-        int end   = (i == SEGMENT_COUNT - 1) ? samples.size() : start + segLength;
+        int end   = (i == SEGMENT_COUNT - 1) ? samples.size() : start 
+            + segLength;
         List<SampleEntity> slice = samples.subList(start, end);
         features.segments.add(buildSegment(slice));
         // Merkmale pro Abschnitt berechnen
@@ -197,6 +199,63 @@ public enum FrequencyBand {
 
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
+Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
+\medskip
+
+\noindent\textbf{Modellauswahl und Pfade.} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt (\autoref{lst:modellpfade}). Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
+\begin{lstlisting}[style=code, caption={Modellpfade und Auswahl des Modells}, label={lst:modellpfade}]
+public static final String MODELL_1B   = "/data/local/tmp/llm/Gemma3-1B-IT-...q8_ekv1280.task";
+public static final String MODELL_2B   = "/data/local/tmp/llm/gemma2-2b.task";
+public static final String MODELL_QWEN = "/data/local/tmp/llm/Qwen2.5-1.5B-...q8_ekv1280.task";
+
+public static String pathFor(String modell) {
+    if ("2b".equals(modell))   return MODELL_2B;
+    if ("qwen".equals(modell)) return MODELL_QWEN;
+    return MODELL_1B;
+}
+\end{lstlisting}
+
+\noindent\textbf{Laden und Konfiguration.} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
+\begin{lstlisting}[style=code, caption={Laden und Konfigurieren des Modells}, label={lst:llmload}]
+public void load(Context context) {
+    LlmInferenceOptions options = LlmInferenceOptions.builder()
+            .setModelPath(modelPath)
+            .setMaxTopK(64)
+            // Sampling-Obergrenze
+            .setMaxTokens(1280)
+            // Kontextgroesse (Prompt + Ausgabe)
+            .build();
+
+    llm = LlmInference.createFromOptions(context, options);
+}
+\end{lstlisting}
+
+\noindent\textbf{Streamende Ausgabe.} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{generateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
+\begin{lstlisting}[style=code, caption={Streamende Ausgabe mit Messung der Latenz}, label={lst:llmstream}]
+public void questionStreaming(String prompt, StreamCallback callback) {
+    StringBuilder full = new StringBuilder();
+    long start = System.nanoTime();
+    long[] ttft = {-1};
+
+    llm.generateResponseAsync(prompt, (partial, done) -> {
+        if (ttft[0] < 0) {
+            ttft[0] = (System.nanoTime() - start) / 1_000_000;
+            // erstes Token -> TTFT festhalten
+        }
+        full.append(partial);
+        callback.onChunk(partial);
+        // Teilstueck weiterreichen
+        if (done) {
+            long totalMs = (System.nanoTime() - start) / 1_000_000;
+            callback.onDone(full.toString(), ttft[0], totalMs);
+        }
+    });
+}
+\end{lstlisting}
+
+\noindent\textbf{Freigabe.} Letztendlich wird das Modell über \texttt{close} wieder freigegeben.
+
+
 % TODO: MediaPipe, Modell-Handling, LlmEngine
 
 \section{Prompt-Design und iterative Optimierung}
