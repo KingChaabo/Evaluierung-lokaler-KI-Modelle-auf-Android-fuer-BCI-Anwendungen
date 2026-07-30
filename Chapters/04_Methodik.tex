@@ -121,7 +121,7 @@ Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen syst
 \noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden drei Modelle vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}, sowie das Modell Qwen 2.5 1.5B des Herstellers Alibaba \autocite{qwen2025,mediapipe_llm}, dessen Größe zwischen den beiden Gemma-Modellen liegt. Da alle drei Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich bei gleicher Laufzeitumgebung sowohl der Effekt der Modellgröße als auch der Einfluss des Herstellers auf die Systemperformanz untersuchen.
 \medskip
 
-\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich einzig auf die Modellgröße und den Hersteller bezieht.
+\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich einzig auf die Modellgröße und den Hersteller bezieht. Zudem wird die Token-Auswahl über einen festen Top-K-Wert von 64 begrenzt, was bedeutet, dass immer nur die 64 wahrscheinlichsten Token als Kandidaten betrachtet werden.
 
 \section{Anwendungsszenarien}
 \label{sec:szenarien}
@@ -133,7 +133,6 @@ Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden
 \end{itemize}
 
 \noindent Der Prompt-Aufbau ist in allen drei Szenarien und Modellen identisch. Er beginnt mit der szenariospezifischen Anweisung, gefolgt von einem textuell aufbereiteten Merkmalssatz. Das Niveau steigt dabei mit jedem Szenario. Während der Report lediglich ein Zusammenfassen erfordert, ist beim Artefakt-Erklärungsszenario zusätzlich das Deuten notwendig. Das Vergleichsszenario erfordert schließlich ein Schlussfolgern über zwei Datensätze hinweg. Dadurch kann man die Grenzen der Modelle in Bezug auf die Komplexität der Aufgabenstellung untersuchen.
-
 \section{Messprotokoll}
 \label{sec:messprotokoll}
 Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen durchgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.

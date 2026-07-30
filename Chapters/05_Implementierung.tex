@@ -256,8 +256,6 @@ public void questionStreaming(String prompt, StreamCallback callback) {
 \noindent\textbf{Freigabe.} Letztendlich wird das Modell über \texttt{close} wieder freigegeben.
 
 
-% TODO: MediaPipe, Modell-Handling, LlmEngine
-
 \section{Prompt-Design und iterative Optimierung}
 \label{sec:impl-prompt}
 Wie schon in \autoref{sec:szenarien} erwähnt, besteht der Prompt aus den aufbereiteten Merkmalen mit einer szenariospezifischen Anweisung. Dieser ist für alle Modelle identisch.
@@ -274,10 +272,9 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 \end{itemize}
 
 \noindent Nach der Optimierung wurde der finale Prompt eingefroren und für alle Messungen verwendet. Er stellt auch die Grundlage für den Benchmark dar. In \autoref{lst:prompts} sind die finalen Prompts je Szenario dargestellt.
-\begin{lstlisting}[language=Java, framextopmargin=5pt, framexbottommargin=5pt, xleftmargin=5pt, xrightmargin=5pt, basicstyle=\footnotesize\ttfamily, breaklines=true, caption={Aufbau der Prompts je Szenario (finale, eingefrorene Fassung)}, label={lst:prompts}]
-    // Szenario 1: Session-Report
+\begin{lstlisting}[style=code, breaklines=true, caption={Aufbau der Prompts je Szenario (finale, eingefrorene Fassung)}, label={lst:prompts}]
+// Szenario 1: Session-Report
 public String buildReport(String featureText) {
-    
     return "Fasse die folgenden EEG-Messwerte in 3 bis 4 Saetzen sachlich zusammen. "
          + "Schreibe nur den Bericht: keine Begruessung, keine Rueckfragen, kein Schlusssatz. "
          + "Schreibe reinen Fliesstext ohne Sonderzeichen (kein Markdown). "
@@ -288,7 +285,6 @@ public String buildReport(String featureText) {
 
 // Szenario 2: Artefakt-Erklaerung
 public String buildArtefaktErklaerung(String featureText) {
-    
     return "Analysiere die folgenden EEG-Messwerte und beziehe dich konkret auf die genannten Werte. "
          + "Benenne die auffaelligsten Punkte dieser Session (z. B. sehr hohe Ausschlaege, "
          + "ungueltige Daten oder ein stark dominantes Band) und erklaere kurz ihre moegliche "
@@ -301,7 +297,6 @@ public String buildArtefaktErklaerung(String featureText) {
 
 // Szenario 3: Session-Vergleich
 public String buildVergleich(String featureTextA, String featureTextB) {
-    
     return "Vergleiche die folgenden zwei EEG-Sessions und beschreibe die wichtigsten "
          + "Unterschiede in einfachen Worten (z. B. Banddominanz, Signalqualitaet, Ausschlaege). "
          + "Schreibe sachlichen Fliesstext ohne Sonderzeichen (kein Markdown). Erfinde keine "

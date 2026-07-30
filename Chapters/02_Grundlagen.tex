@@ -54,6 +54,12 @@ Die Fast Fourier Transform (FFT) ist ein mathematisches Verfahren, das komplexe 
 Dies wird verwendet um bei der Analyse der Gehirnströme, die spektralen eigenschaften von signalen zu untersuchen und Frequenspitzen (Peaks) zu berechnen. \autocite{10353995}.
 \medskip
 
+\noindent Das Ergebnis der FFT ist je Frequenz-Bin eine komplexe Zahl, bestehend aus einem Real- und einem Imaginärteil. Der Realteil beschreibt die Amplitude des Kosinus-Anteils und der Imaginärteil die Amplitude des Sinus-Anteils der jeweiligen Frequenz. Indem man, wie in der folgenden Gleichung, die Summe der quadrierten Real- und Imaginärteile berechnet, erhält man die Leistung eines Bins \autocite{smith1997dsp}.
+\begin{equation}
+    P = \mathrm{Re}^2 + \mathrm{Im}^2
+    \label{eq:power}
+\end{equation}
+
 \noindent Ein zentrales Merkmal der FFT ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
 \begin{equation}
     \Delta f = \frac{f_s}{N}.
