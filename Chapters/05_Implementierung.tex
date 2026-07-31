@@ -1,6 +1,6 @@
 \chapter{Implementierung}
 \label{ch:implementierung}
-
+Der Code wurde als native Android-App in der Programmiersprache Java umgesetzt. Android Studio wurde dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt.
 \section{Architektur}
 \label{sec:architektur}
 Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in \autoref{fig:architektur} dargestellt sind:
@@ -177,8 +177,8 @@ private double[] sumBands(double[] power) {
 public enum FrequencyBand {
     DELTA(0.5f, 4f),
     THETA(4f,   8f),
-    ALPHA(8f,   13f),
-    BETA(13f,   30f),
+    ALPHA(8f,   12f),
+    BETA(12f,   30f),
     GAMMA(30f,  45f);
 
     public final float lowHz;
@@ -311,3 +311,8 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 \section{Benutzeroberfläche}
 \label{sec:impl-ui}
 % TODO: KI-Analyse-Screen (kurz)
+
+
+\section{Benchmark}
+\label{sec:impl-benchmark}
+% TODO: runAll (3x3, N=5), Aufwaermphase, CountDownLatch, BenchmarkLogger/CSV; Rueckverweis \autoref{sec:messprotokoll}

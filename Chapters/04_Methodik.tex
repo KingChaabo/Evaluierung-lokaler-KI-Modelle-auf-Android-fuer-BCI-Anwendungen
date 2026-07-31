@@ -175,7 +175,9 @@ Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbeda
 \medskip
 
 \noindent Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
+\medskip
 
+\noindent Im Gegensatz zum Benchmark, bei dem es gleich fünf Messungen gibt, werden für die reine Analyse einer Session nur Latenzmetriken erfasst. Der Grund liegt hierbei an der Menge der Messungen. Der Energieverbrauch lässt sich nur über eine ganze Messreihe sinnvoll bestimmen, da er sich erst aus der Differenz des Akkustands über mehrere aufeinanderfolgende Durchläufe ergibt. Zudem schwankt der Arbeitsspeicherbedarf stark \autocite{android_memory}, sodass eine Messung keine verlässliche Aussage über den Speicherbedarf zulässt. Die Metriken Status und Ausgabequalität sind nur für die Evaluation relevant und werden daher nicht in der Analyse erfasst.
 \subsection{Messbedingungen}
 \label{subsec:messbedingungen}
 Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können, werden sie unter den folgenden Rahmenbedingungen durchgeführt:
