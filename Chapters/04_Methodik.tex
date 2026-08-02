@@ -172,6 +172,13 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 \item Während der gesamten Messung bleibt das Testgerät eingeschaltet und die Session-Detailansicht geöffnet, da der Benchmark sonst unterbrochen wird.
 \end{itemize}
 
-\noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung standardmäßig verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die verbleibenden Werte werden gemittelt.
-Zusätzlich wird die Standardabweichung berechnet, die die Streuung der Messwerte um den Mittelwert beschreibt. Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
+\noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung standardmäßig verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die verbleibenden Werte werden gemittelt. Zusätzlich wird die Standardabweichung berechnet, die die Streuung der Messwerte um den Mittelwert beschreibt. Der Mittelwert $\bar{x}$ und die Standardabweichung $s$ über die $n$ einbezogenen Messwerte ergeben sich dabei wie folgt:
+\begin{equation}
+    \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+    \qquad
+    s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}\left(x_i - \bar{x}\right)^2}
+\end{equation}
+Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
+\medskip
 
+\noindent Das Verwerfen der ersten Messung, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen nicht in der Anwendung selbst. Sie werden stattdessen manuell auf Grundlage der in der CSV-Datei gespeicherten Rohwerte durchgeführt.
