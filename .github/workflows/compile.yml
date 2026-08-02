@@ -11,10 +11,10 @@ jobs:
       - name: LaTeX kompilieren
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: htwsaar-i-mst-config.tex
+          root_file: htwsaar-i-mst-vorlage.tex
 
       - name: PDF speichern
         uses: actions/upload-artifact@v4
         with:
           name: Bachelorarbeit-PDF
-          path: htwsaar-i-mst-config.pdf
+          path: "*.pdf"
