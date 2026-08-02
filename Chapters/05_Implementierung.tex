@@ -6,7 +6,7 @@ Der Code wurde als native Android-App in der Programmiersprache Java umgesetzt. 
 Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in \autoref{fig:architektur} dargestellt sind:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{Graphics/Projektarchitektur.drawio.pdf}
+    \includegraphics[width=0.6\textwidth]{Graphics/Architektur.pdf}
     \caption{Architektur und Datenfluss der Anwendung \autocite{drawio}}
     \label{fig:architektur}
 \end{figure}
@@ -312,7 +312,102 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 \label{sec:impl-ui}
 % TODO: KI-Analyse-Screen (kurz)
 
-
 \section{Benchmark}
 \label{sec:impl-benchmark}
+Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die CSV-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht.
+\medskip
+
+\noindent\textbf{Ablauf.} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
+\begin{lstlisting}[style=code, caption={Ablauf des Benchmarks mit Aufwaermphase}, label={lst:runall}]
+public void runAll(long sessionA, long sessionB, int numberConfig, Runnable done) {
+    new Thread(() -> {
+        String[] modelle   = {"1b", "2b", "qwen"};
+        String[] szenarien = {"report", "artefakt", "vergleich"};
+
+        // Aufwaermphase: eine Wegwerf-Inferenz gegen Kaltstart-Effekte
+        try {
+            LlmEngine warm = new LlmEngine(LlmEngine.pathFor(modelle[0]));
+            warm.load(context);
+            warm.question("Test");
+            warm.close();
+        } catch (Exception ignored) {}
+
+        for (String modell : modelle) {
+            for (String szenario : szenarien) {
+                runConfig(modell, szenario, sessionA, sessionB, numberConfig);
+            }
+        }
+        if (done != null) done.run();   // Benchmark fertig -> UI benachrichtigen
+    }).start();
+}
+\end{lstlisting}
+
+\noindent\textbf{Messung je Konfiguration.} Für jede Kombination wird \texttt{runConfig} einmal aufgerufen. Dabei wird das Modell geladen und die Ladezeit gemessen, bevor dieselbe Anfrage n = 5 mal wiederholt wird (\autoref{lst:messloop}). \texttt{questionStreaming} ist für die asynchrone Verarbeitung zuständig. Diese wird mithilfe eines \texttt{CountDownLatch} synchronisiert, der das Warten bei jeder Wiederholung übernimmt. Die Schleife wartet bei \texttt{await}, bis der \texttt{onDone}-Callback per \texttt{countDown} das Ende der Inferenz meldet. Erst danach werden die Speicher- und Akkuwerte ausgelesen und als eine Zeile gespeichert. Bei einem Fehler wird dies in der CSV-Datei gekennzeichnet.
+\begin{lstlisting}[style=code, caption={Wiederholte Messung mit Synchronisation ueber CountDownLatch}, label={lst:messloop}]
+for (int i = 0; i < nc; i++) {
+    long[]   ttftHolder  = {0};
+    long[]   totalHolder = {0};
+    String[] textHolder  = {""};
+    CountDownLatch latch = new CountDownLatch(1);
+
+    engine.questionStreaming(prompt, new LlmEngine.StreamCallback() {
+        @Override public void onChunk(String partial) { /* im Benchmark egal */ }
+        @Override public void onDone(String fullText, long ttftMs, long totalMs) {
+            ttftHolder[0]  = ttftMs;
+            totalHolder[0] = totalMs;
+            textHolder[0]  = fullText;
+            latch.countDown();          // Riegel oeffnen
+        }
+    });
+
+    latch.await();                      // warten, bis onDone kam
+
+    long inferMs = totalHolder[0];
+    int outputTokens = engine.tokenCount(textHolder[0]);
+    double tokensPerSec = outputTokens / (inferMs / 1000.0);
+
+    long pssMb   = Metrics.pssMb();
+    long battUAh = Metrics.batteryUAh(context);
+    int  battPct = Metrics.batteryPct(context);
+
+    logger.logRow(modell, szenario, promptTokens, outputTokens,
+                  loadMs, inferMs, ttftHolder[0], tokensPerSec,
+                  pssMb, battUAh, battPct, "ok");
+}
+\end{lstlisting}
+
+\noindent\textbf{Erfassung der Ressourcen.} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert (\autoref{lst:metrics}). Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
+Die Klasse \texttt{Metrics} bildet eine Hilfsklasse dar, von der aus die Speicher- und Akkuwerte geliefert werden (\autoref{lst:metrics}). Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperstunden (uAh) ermittelt. 
+\begin{lstlisting}[style=code, caption={Auslesen von Speicher und Akku}, label={lst:metrics}]
+public static long pssMb() {
+    Debug.MemoryInfo mi = new Debug.MemoryInfo();
+    Debug.getMemoryInfo(mi);
+    return mi.getTotalPss() / 1024;   // KB -> MB
+}
+
+public static long batteryUAh(Context context) {
+    BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+    return bm.getLongProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER); // uAh
+}
+
+public static int batteryPct(Context context) {
+    BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+    return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);        // Prozent
+}
+\end{lstlisting}
+
+\noindent\textbf{Protokollierung.} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv} (\autoref{lst:logger}). Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
+(\autoref{ch:evaluation}).
+\begin{lstlisting}[style=code, caption={Anlegen der CSV-Datei mit Kopfzeile}, label={lst:logger}]
+public BenchmarkLogger(Context context) {
+    File dir = new File(context.getExternalFilesDir(
+            Environment.DIRECTORY_DOCUMENTS), "UnicornART");
+    if (!dir.exists()) dir.mkdirs();
+    file = new File(dir, "benchmark.csv");
+
+    if (file.exists()) file.delete();   // alte Datei loeschen -> frische CSV
+    writeRow("timestamp,modell,szenario,promptTokens,outputTokens,loadMs,"
+           + "inferMs,ttftMs,tokensPerSec,pssMb,batteryUAh,batteryPct,status");
+}
+\end{lstlisting}
 % TODO: runAll (3x3, N=5), Aufwaermphase, CountDownLatch, BenchmarkLogger/CSV; Rueckverweis \autoref{sec:messprotokoll}
