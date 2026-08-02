@@ -58,7 +58,14 @@ Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für d
 \begin{itemize}
     \item \textbf{Unicorn Hybrid Black: } Das Unicorn Hybrid Black ist die BCI-Plattform, die in dieser Arbeit verwendet wird. Er ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
     Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
-    Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet er sich für den mobilen Einsatz.
+    Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet er sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=1.00\textwidth]{Graphics/UnicornHybrid.pdf}
+    \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung) \autocite{unicornproduct}.}
+    \label{fig:unicorn}
+\end{figure}
+    
     \item \textbf{Datenübertragung \& Anbindung:} Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth, wobei jedes Sample aus den jeweils folgenden 17 Werten besteht \autocite{unicornbtprotocol}.
 
     \begin{table}[H]
