@@ -50,7 +50,12 @@ Wichtig ist es zu bestimmen, welche Frequenzbänder in EEG-Signalen wie stark ve
 \label{subsec:fft}
 Die Fast Fourier Transform (FFT) ist ein mathematisches Verfahren, das komplexe Signale in ihre sinusförmigen Bestandteile zerlegt und sie vom Zeitbereich in den Frequenzbereich überführt \autocite{10353995}.
 Dies wird verwendet um bei der Analyse der Gehirnströme, die spektralen eigenschaften von signalen zu untersuchen und Frequenspitzen (Peaks) zu berechnen. \autocite{10353995}.
-\medskip
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.00\textwidth]{Graphics/ZeitFreq.pdf}
+    \caption{Überführung eines Signals vom Zeit- in den Frequenzbereich mittels FFT.}
+    \label{fig:fft-zeitfreq}
+\end{figure}
 
 \noindent Das Ergebnis der FFT ist je Frequenz-Bin eine komplexe Zahl, bestehend aus einem Real- und einem Imaginärteil. Der Realteil beschreibt die Amplitude des Kosinus-Anteils und der Imaginärteil die Amplitude des Sinus-Anteils der jeweiligen Frequenz. Indem man, wie in der folgenden Gleichung, die Summe der quadrierten Real- und Imaginärteile berechnet, erhält man die Leistung eines Bins \autocite{smith1997dsp}.
 \begin{equation}
