@@ -1,6 +1,6 @@
 \chapter{Implementierung}
 \label{ch:implementierung}
-Der Code wurde als native Android-App in der Programmiersprache Java umgesetzt. Android Studio wurde dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt.
+Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung auf sie aufbaut, wird sie ebenfalls in derselben Programmiersprache realisiert. Android Studio wird dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt.
 \section{Architektur}
 \label{sec:architektur}
 Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in \autoref{fig:architektur} dargestellt sind:
@@ -377,7 +377,6 @@ for (int i = 0; i < nc; i++) {
 \end{lstlisting}
 
 \noindent\textbf{Erfassung der Ressourcen.} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert (\autoref{lst:metrics}). Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
-Die Klasse \texttt{Metrics} bildet eine Hilfsklasse dar, von der aus die Speicher- und Akkuwerte geliefert werden (\autoref{lst:metrics}). Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperstunden (uAh) ermittelt. 
 \begin{lstlisting}[style=code, caption={Auslesen von Speicher und Akku}, label={lst:metrics}]
 public static long pssMb() {
     Debug.MemoryInfo mi = new Debug.MemoryInfo();
@@ -397,7 +396,6 @@ public static int batteryPct(Context context) {
 \end{lstlisting}
 
 \noindent\textbf{Protokollierung.} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv} (\autoref{lst:logger}). Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
-(\autoref{ch:evaluation}).
 \begin{lstlisting}[style=code, caption={Anlegen der CSV-Datei mit Kopfzeile}, label={lst:logger}]
 public BenchmarkLogger(Context context) {
     File dir = new File(context.getExternalFilesDir(
@@ -410,4 +408,3 @@ public BenchmarkLogger(Context context) {
            + "inferMs,ttftMs,tokensPerSec,pssMb,batteryUAh,batteryPct,status");
 }
 \end{lstlisting}
-% TODO: runAll (3x3, N=5), Aufwaermphase, CountDownLatch, BenchmarkLogger/CSV; Rueckverweis \autoref{sec:messprotokoll}

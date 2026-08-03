@@ -146,8 +146,12 @@ Zur Bewertung der Modelle werden mehrere Metriken erfasst, die sich in Latenz, R
     \end{tabularx}
 \end{table}
 
-\noindent Die Tokens pro Sekunde sind vor allem wichtig, da sie einen fairen Vergleich unabhängig von der Länge der Ausgabe erlauben. Eine reine Zeitmessung würde längere Antworten offensichtlich benachteiligen.
-\medskip
+\noindent Die Tokens pro Sekunde sind vor allem wichtig, da sie einen fairen Vergleich unabhängig von der Länge der Ausgabe erlauben. Eine reine Zeitmessung würde längere Antworten offensichtlich benachteiligen. Die Metrik erhält man, wie in folgender Gleichung dargestellt, indem man die Anzahl der erzeugten Token durch die gesamte Inferenzdauer teilt:
+\begin{equation}
+    \text{Tokens/s} = \frac{N_{\text{Token}}}{t_{\text{Inferenz}}}
+\end{equation}
+wobei $N_{\text{Token}}$ die Anzahl der erzeugten Token und $t_{\text{Inferenz}}$ die Inferenzdauer in Sekunden bezeichnet.
+
 
 \noindent Der Speicherverbrauch wird über die Proportional Set Size (PSS) erfasst, da diese exklusiv von der Applikation genutzte Speicherseiten sowie den proportionalen Anteil an gemeinsam verwendeten Seiten (Shared Pages) berücksichtigt.
 Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbedarfs, da durch sie gemeinsam genutzte Ressourcen (wie beispielsweise Bibliotheken oder Systemdienste) nicht mehrfach gezählt werden \autocite{android_memory}.
