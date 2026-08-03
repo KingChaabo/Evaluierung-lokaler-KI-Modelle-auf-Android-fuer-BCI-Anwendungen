@@ -50,23 +50,24 @@ Besondere Merkmale der Qwen-Modelle sind:
     \item \textbf{Erweiterter Funktionsumfang:} Die neueste Generation der Familie ist Qwen3, die eine hybride Integration eines „Thinking-Modus“ sowie eines „Non-Thinking-Modus“ für schnelle Antworten innerhalb eines einheitlichen Modells bereitstellt \autocite{qwen3_2025}.
 \end{itemize}
 
-\section{Ausgangslage: bestehende Anwendung}
+\section{Bestehende Anwendung}
 \label{sec:ausgangslage}
 
 Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für die Implementierung der neuen Funktionalität dient.
 
-\begin{itemize}
-    \item \textbf{Unicorn Hybrid Black: } Das Unicorn Hybrid Black ist die BCI-Plattform, die in dieser Arbeit verwendet wird. Er ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
+\subsection{Unicorn Hybrid Black}
+Das Unicorn Hybrid Black ist die BCI-Plattform, die in dieser Arbeit verwendet wird. Er ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
     Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
     Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet er sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
     \begin{figure}[H]
     \centering
     \includegraphics[width=1.00\textwidth]{Graphics/UnicornHybrid.pdf}
-    \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung) \autocite{unicornproduct}.}
+    \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung, erstellt mit draw.io) \autocite{unicornproduct, drawio}.}
     \label{fig:unicorn}
 \end{figure}
     
-    \item \textbf{Datenübertragung \& Anbindung:} Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth, wobei jedes Sample aus den jeweils folgenden 17 Werten besteht \autocite{unicornbtprotocol}.
+\subsection{Datenübertragung und Anbindung}
+Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth, wobei jedes Sample aus den jeweils folgenden 17 Werten besteht \autocite{unicornbtprotocol}.
 
     \begin{table}[H]
 \centering
@@ -88,13 +89,15 @@ Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für d
 \end{tabularx}
 \end{table}
 
-    \item \textbf{Bestehende Anwendung: }Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, EEG-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-FFT visualisiert.
+\subsection{Funktionsumfang der Anwendung}
+Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, EEG-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-FFT visualisiert.
     Die Daten werden dauerhaft gespeichert und können zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
-    \item \textbf{Beitrag dieser Arbeit: }Die bestehende Grundlage wird um Funktionalitäten erweitert. Die grundsätzliche Erweiterung ist die Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
+\subsection{Beitrag dieser Arbeit}
+Die bestehende Grundlage wird um neue Funktionalitäten erweitert. Die grundsätzliche Erweiterung ist die Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
     \begin{itemize}
-        \item Schicht zur Merkmalsextraktion \texttt{features}
-        \item Anbindung eines oder mehrerer Sprachmodelle \texttt{llm}
-        \item Benutzeroberfläche zur KI-gestützten Analyse \texttt{analyse}
+        \item Schicht zur Merkmalsextraktion (\texttt{features}).
+        \item Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}).
+        \item Benutzeroberfläche zur KI-gestützten Analyse (\texttt{analyse}).
     \end{itemize}
+Darüber hinaus wird für die in der Evaluation benötigten Messungen ein Benchmark implementiert, bei dem systematisch und automatisiert gemessen wird (\texttt{benchmark}).
     Im Originalcode wurden nur minimale Änderungen vorgenommen.
-\end{itemize}
