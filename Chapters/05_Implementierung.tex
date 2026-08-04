@@ -27,11 +27,10 @@ Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in 
 
 \noindent Ein zentrales Merkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
 In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
-
-\noindent Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
+Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
 \medskip
 
-\noindent Darüber hinaus zeigt \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das zusammenspiel der Komponenten zur Laufzeit besser nachvolziehbar.
+\noindent Darüber hinaus zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das zusammenspiel der Komponenten zur Laufzeit besser nachvolziehbar.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
@@ -39,7 +38,7 @@ In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B all
     \label{fig:seq-analyse}
 \end{figure}
 
-\noindent Der gesamte Messablauf des Benchmarks ist in \autoref{fig:seq-benchmark} dargestellt.
+\noindent Bisher wurde die vom Nutzer ausgelöste Einzelanalyse betrachtet. Für die Evaluation wird eine systematische und automatisierte Folge von Messungen benötigt. Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt und wird nur für die Evaluation verwendet.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
@@ -47,15 +46,17 @@ In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B all
     \label{fig:seq-benchmark}
 \end{figure}
 
+\noindent Nun werden die einzelnen Komponenten der Architektur im Detail erläutert, beginnend mit der Merkmalsextraktion.
+
 
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
 Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie statistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
 \medskip
 
-\noindent\textbf{Vorbereitung.} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
+\subsection{Vorbereitung} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
 
-\noindent\textbf{Validierung.} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
+\subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 \begin{lstlisting}[style=code, caption={Vorabprüfung der Session}, label={lst:validate}]
 public enum Check { OK, TOO_SHORT, TOO_MANY_INVALID; }
 
@@ -76,7 +77,7 @@ public Check validate(List<SampleEntity> samples) {
 }
 \end{lstlisting}
 
-\noindent\textbf{Segmentierung.} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Abschnitte (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Abschnitte (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
 \begin{lstlisting}[style=code, caption={Zerlegung der Session in Segmente}, label={lst:extract}]
 public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
@@ -99,7 +100,7 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 }
 \end{lstlisting}
 
-\noindent\textbf{Spektrale Merkmale (Welch-Methode).} Für jeden der acht EEG-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
+\subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht EEG-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
 \begin{lstlisting}[style=code, caption={Band-Power je Kanal nach dem Welch-Verfahren}, label={lst:bandpower}]
 private double[][] computeBandPower(List<SampleEntity> slice) {
     double[][] result = new double[CHANNELS][NUM_BANDS];
@@ -163,7 +164,7 @@ private double[] powerSpectrum(double[] window) {
 \noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Sie bietet eine Java-basierte Implementierung der Fourier-Transformation, die den Aufruf \texttt{realForward} für reelle Eingangssignale bereitstellt. Das Ergebnis wird dabei in dasselbe Array geschrieben, sodass die geraden Indizes die Real- und die ungeraden Indizes die Imaginärteile der Frequenz-Bins enthalten.
 \medskip
 
-\noindent\textbf{Zuordnung zu den Frequenzbändern.} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
+\subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
 \begin{lstlisting}[style=code, caption={Zuordnung der Frequenz-Bins zu den Bändern}, label={lst:sumbands}]
 private double[] sumBands(double[] power) {
     double[] bandSum = new double[NUM_BANDS];
@@ -182,10 +183,10 @@ private double[] sumBands(double[] power) {
 
 \noindent Die Einteilung in die Frequenzbänder ist zentral im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen.
 
-\noindent\textbf{Statistische Merkmale.} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
+\subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
 \medskip
 
-\noindent\textbf{Ergebnis.} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung durch den \texttt{FeatureFormatter}.
+\subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung durch den \texttt{FeatureFormatter}.
 
 
 \section{Integration des Sprachmodells}
@@ -193,10 +194,10 @@ private double[] sumBands(double[] power) {
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \medskip
 
-\noindent\textbf{Modellauswahl und Pfade.} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
+\subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
 \medskip
 
-\noindent\textbf{Laden und Konfiguration.} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
+\subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
 \begin{lstlisting}[style=code, caption={Laden und Konfigurieren des Modells}, label={lst:llmload}]
 public void load(Context context) {
     LlmInferenceOptions options = LlmInferenceOptions.builder()
@@ -211,7 +212,7 @@ public void load(Context context) {
 }
 \end{lstlisting}
 
-\noindent\textbf{Streamende Ausgabe.} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{generateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
+\subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{generateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
 \begin{lstlisting}[style=code, caption={Streamende Ausgabe mit Messung der Latenz}, label={lst:llmstream}]
 public void questionStreaming(String prompt, StreamCallback callback) {
     StringBuilder full = new StringBuilder();
@@ -234,7 +235,7 @@ public void questionStreaming(String prompt, StreamCallback callback) {
 }
 \end{lstlisting}
 
-\noindent\textbf{Freigabe.} Letztendlich wird das Modell über \texttt{close} wieder freigegeben.
+\subsection{Freigabe} Letztendlich wird das Modell über \texttt{close} wieder freigegeben.
 
 
 \section{Prompt-Design und iterative Optimierung}
@@ -298,7 +299,7 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die CSV-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht.
 \medskip
 
-\noindent\textbf{Ablauf.} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
+\subsection{Ablauf} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
 \begin{lstlisting}[style=code, caption={Ablauf des Benchmarks mit Aufwaermphase}, label={lst:runall}]
 public void runAll(long sessionA, long sessionB, int numberConfig, Runnable done) {
     new Thread(() -> {
@@ -323,7 +324,7 @@ public void runAll(long sessionA, long sessionB, int numberConfig, Runnable done
 }
 \end{lstlisting}
 
-\noindent\textbf{Messung je Konfiguration.} Für jede Kombination wird \texttt{runConfig} einmal aufgerufen. Dabei wird das Modell geladen und die Ladezeit gemessen, bevor dieselbe Anfrage n = 5 mal wiederholt wird (\autoref{lst:messloop}). \texttt{questionStreaming} ist für die asynchrone Verarbeitung zuständig. Diese wird mithilfe eines \texttt{CountDownLatch} synchronisiert, der das Warten bei jeder Wiederholung übernimmt. Die Schleife wartet bei \texttt{await}, bis der \texttt{onDone}-Callback per \texttt{countDown} das Ende der Inferenz meldet. Erst danach werden die Speicher- und Akkuwerte ausgelesen und als eine Zeile gespeichert. Bei einem Fehler wird dies in der CSV-Datei gekennzeichnet.
+\subsection{Messung je Konfiguration} Für jede Kombination wird \texttt{runConfig} einmal aufgerufen. Dabei wird das Modell geladen und die Ladezeit gemessen, bevor dieselbe Anfrage n = 5 mal wiederholt wird (\autoref{lst:messloop}). \texttt{questionStreaming} ist für die asynchrone Verarbeitung zuständig. Diese wird mithilfe eines \texttt{CountDownLatch} synchronisiert, der das Warten bei jeder Wiederholung übernimmt. Die Schleife wartet bei \texttt{await}, bis der \texttt{onDone}-Callback per \texttt{countDown} das Ende der Inferenz meldet. Erst danach werden die Speicher- und Akkuwerte ausgelesen und als eine Zeile gespeichert. Bei einem Fehler wird dies in der CSV-Datei gekennzeichnet.
 \begin{lstlisting}[style=code, caption={Wiederholte Messung mit Synchronisation ueber CountDownLatch}, label={lst:messloop}]
 for (int i = 0; i < nc; i++) {
     long[]   ttftHolder  = {0};
@@ -357,7 +358,7 @@ for (int i = 0; i < nc; i++) {
 }
 \end{lstlisting}
 
-\noindent\textbf{Erfassung der Ressourcen.} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert. Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
+\subsection{Erfassung der Ressourcen} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert. Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
 \medskip 
 
-\noindent\textbf{Protokollierung.} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv}. Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
+\subsection{Protokollierung} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv}. Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
