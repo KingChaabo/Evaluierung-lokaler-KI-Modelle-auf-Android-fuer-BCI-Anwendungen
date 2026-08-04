@@ -93,7 +93,7 @@ Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth
 Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, EEG-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-FFT visualisiert.
     Die Daten werden dauerhaft gespeichert und können zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
 \subsection{Beitrag dieser Arbeit}
-Die bestehende Grundlage wird um neue Funktionalitäten erweitert. Die grundsätzliche Erweiterung ist die Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
+Die bestehende Grundlage wird um neue Funktionalitäten erweitert. Die Erweiterung besteht aus der Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
     \begin{itemize}
         \item Schicht zur Merkmalsextraktion (\texttt{features}).
         \item Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}).

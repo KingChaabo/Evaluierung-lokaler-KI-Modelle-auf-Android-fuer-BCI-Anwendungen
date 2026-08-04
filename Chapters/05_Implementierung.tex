@@ -6,7 +6,7 @@ Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung au
 Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in \autoref{fig:architektur} dargestellt sind:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{Graphics/Architektur.pdf}
+    \includegraphics[width=0.5\textwidth]{Graphics/Architektur.pdf}
     \caption{Architektur und Datenfluss der Anwendung \autocite{drawio}}
     \label{fig:architektur}
 \end{figure}
@@ -29,23 +29,22 @@ Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in 
 In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
 
 \noindent Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
+\medskip
+
+\noindent Darüber hinaus zeigt \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das zusammenspiel der Komponenten zur Laufzeit besser nachvolziehbar.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
+    \caption{Sequenzdiagramm des Analyse-Ablaufs \autocite{drawio}.}
+    \label{fig:seq-analyse}
+\end{figure}
 
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
 Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie statistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
 \medskip
 
-\noindent\textbf{Vorbereitung.} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt (\autoref{lst:konstruktor}). Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
-\begin{lstlisting}[style=code, caption={Vorberechnung von Hann-Fenster und FFT-Objekt im Konstruktor}, label={lst:konstruktor}]
-public EegFeatureExtractor(int windowSize) {
-    this.windowSize = windowSize;
-    this.hann       = hannWindow(windowSize);
-    // Hann-Fenster vorberechnen
-    this.fft        = new DoubleFFT_1D(windowSize);
-    // FFT-Objekt aus JTransforms
-    this.minSamples = windowSize * SEGMENT_COUNT;
-}
-\end{lstlisting}
+\noindent\textbf{Vorbereitung.} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
 
 \noindent\textbf{Validierung.} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 \begin{lstlisting}[style=code, caption={Vorabprüfung der Session}, label={lst:validate}]
@@ -172,24 +171,7 @@ private double[] sumBands(double[] power) {
 }
 \end{lstlisting}
 
-\noindent Die Einteilung in die jeweiligen Frequenzbänder wird durch den Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} realisiert, der als zentrale Definitionsstelle der Bänder dient (\autoref{lst:frequencyband}). Jedes Band ist dort mit seiner unteren und oberen Grenzfrequenz hinterlegt.
-\begin{lstlisting}[style=code, caption={Zentrale Definition der Frequenzbänder mit ihren Grenzen}, label={lst:frequencyband}]
-public enum FrequencyBand {
-    DELTA(0.5f, 4f),
-    THETA(4f,   8f),
-    ALPHA(8f,   12f),
-    BETA(12f,   30f),
-    GAMMA(30f,  45f);
-
-    public final float lowHz;
-    public final float highHz;
-
-    FrequencyBand(float lowHz, float highHz) {
-        this.lowHz  = lowHz;
-        this.highHz = highHz;
-    }
-}
-\end{lstlisting}
+\noindent Die Einteilung in die Frequenzbänder ist zentral im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen.
 
 \noindent\textbf{Statistische Merkmale.} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
 \medskip
@@ -202,18 +184,8 @@ public enum FrequencyBand {
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \medskip
 
-\noindent\textbf{Modellauswahl und Pfade.} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt (\autoref{lst:modellpfade}). Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
-\begin{lstlisting}[style=code, caption={Modellpfade und Auswahl des Modells}, label={lst:modellpfade}]
-public static final String MODELL_1B   = "/data/local/tmp/llm/Gemma3-1B-IT-...q8_ekv1280.task";
-public static final String MODELL_2B   = "/data/local/tmp/llm/gemma2-2b.task";
-public static final String MODELL_QWEN = "/data/local/tmp/llm/Qwen2.5-1.5B-...q8_ekv1280.task";
-
-public static String pathFor(String modell) {
-    if ("2b".equals(modell))   return MODELL_2B;
-    if ("qwen".equals(modell)) return MODELL_QWEN;
-    return MODELL_1B;
-}
-\end{lstlisting}
+\noindent\textbf{Modellauswahl und Pfade.} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
+\medskip
 
 \noindent\textbf{Laden und Konfiguration.} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
 \begin{lstlisting}[style=code, caption={Laden und Konfigurieren des Modells}, label={lst:llmload}]
@@ -376,35 +348,16 @@ for (int i = 0; i < nc; i++) {
 }
 \end{lstlisting}
 
-\noindent\textbf{Erfassung der Ressourcen.} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert (\autoref{lst:metrics}). Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
-\begin{lstlisting}[style=code, caption={Auslesen von Speicher und Akku}, label={lst:metrics}]
-public static long pssMb() {
-    Debug.MemoryInfo mi = new Debug.MemoryInfo();
-    Debug.getMemoryInfo(mi);
-    return mi.getTotalPss() / 1024;   // KB -> MB
-}
+\noindent\textbf{Erfassung der Ressourcen.} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert. Der Speicherverbrauch wird als PSS über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
+\medskip 
 
-public static long batteryUAh(Context context) {
-    BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-    return bm.getLongProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER); // uAh
-}
+\noindent\textbf{Protokollierung.} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv}. Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
+\medskip
 
-public static int batteryPct(Context context) {
-    BatteryManager bm = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-    return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);        // Prozent
-}
-\end{lstlisting}
-
-\noindent\textbf{Protokollierung.} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv} (\autoref{lst:logger}). Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
-\begin{lstlisting}[style=code, caption={Anlegen der CSV-Datei mit Kopfzeile}, label={lst:logger}]
-public BenchmarkLogger(Context context) {
-    File dir = new File(context.getExternalFilesDir(
-            Environment.DIRECTORY_DOCUMENTS), "UnicornART");
-    if (!dir.exists()) dir.mkdirs();
-    file = new File(dir, "benchmark.csv");
-
-    if (file.exists()) file.delete();   // alte Datei loeschen -> frische CSV
-    writeRow("timestamp,modell,szenario,promptTokens,outputTokens,loadMs,"
-           + "inferMs,ttftMs,tokensPerSec,pssMb,batteryUAh,batteryPct,status");
-}
-\end{lstlisting}
+\noindent Der gesamte Messablauf des Benchmarks ist in \autoref{fig:seq-benchmark} dargestellt.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
+    \caption{Sequenzdiagramm des Benchmark-Ablaufs \autocite{drawio}.}
+    \label{fig:seq-benchmark}
+\end{figure}
