@@ -22,11 +22,11 @@ Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in 
 \end{itemize}
 
 
-\noindent Die Architektur ist in drei Kernbereiche unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Durch die Trennung dieser Pakete bleibt der Code übersichtlich, wartbar und erweiterbar.
+\noindent Die Architektur ist in drei Kernbereiche unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Ergänzend übernimmt das Paket \texttt{benchmark} die systematische Messung der Modelle. Durch die Trennung dieser Pakete bleibt der Code übersichtlich, wartbar und erweiterbar.
 \medskip
 
 \noindent Ein zentrales Merkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
-In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
+In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
 
 \noindent Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
 \medskip
@@ -38,6 +38,15 @@ In dieser Arbeit werden die Modelle Gemma 3 1B und Gemma 2 2B allein durch den W
     \caption{Sequenzdiagramm des Analyse-Ablaufs \autocite{drawio}.}
     \label{fig:seq-analyse}
 \end{figure}
+
+\noindent Der gesamte Messablauf des Benchmarks ist in \autoref{fig:seq-benchmark} dargestellt.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
+    \caption{Sequenzdiagramm des Benchmark-Ablaufs \autocite{drawio}.}
+    \label{fig:seq-benchmark}
+\end{figure}
+
 
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
@@ -352,12 +361,3 @@ for (int i = 0; i < nc; i++) {
 \medskip 
 
 \noindent\textbf{Protokollierung.} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv}. Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende CSV bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
-\medskip
-
-\noindent Der gesamte Messablauf des Benchmarks ist in \autoref{fig:seq-benchmark} dargestellt.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
-    \caption{Sequenzdiagramm des Benchmark-Ablaufs \autocite{drawio}.}
-    \label{fig:seq-benchmark}
-\end{figure}
