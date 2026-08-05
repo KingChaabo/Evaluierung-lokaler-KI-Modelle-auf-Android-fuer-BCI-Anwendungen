@@ -30,7 +30,7 @@ In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B all
 Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
 \medskip
 
-\noindent Darüber hinaus zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das zusammenspiel der Komponenten zur Laufzeit besser nachvolziehbar.
+\noindent Darüber hinaus zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
@@ -56,7 +56,7 @@ Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig 
 
 \subsection{Vorbereitung} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das FFT-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
 
-\subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
+\subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit (\autoref{lst:validate}). Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 \begin{lstlisting}[style=code, caption={Vorabprüfung der Session}, label={lst:validate}]
 public enum Check { OK, TOO_SHORT, TOO_MANY_INVALID; }
 
@@ -186,9 +186,37 @@ private double[] sumBands(double[] power) {
 \subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
 \medskip
 
-\subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung durch den \texttt{FeatureFormatter}.
+\subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung.
 
+\subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in einen lesbaren format für das Sprachmdoell umgewandelt werden.
+\medskip
 
+\noindent Die Aufbereitung läuft wie folgt: Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
+\begin{lstlisting}[style=code, caption={Umrechnung der absoluten Band-Power in relative Anteile}, label={lst:relbandpower}]
+private double[] relativeBandPower(SessionFeatures.Segment seg) {
+    int channels = seg.bandPower.length;
+    int bands    = seg.bandPower[0].length;
+
+    double[] bandTotal = new double[bands];
+    for (int c = 0; c < channels; c++) {
+        for (int b = 0; b < bands; b++) {
+            bandTotal[b] += seg.bandPower[c][b];   // ueber alle Kanaele summieren
+        }
+    }
+    double sumAll = 0;
+    for (double v : bandTotal) sumAll += v;
+
+    double[] rel = new double[bands];
+    if (sumAll > 0) {
+        for (int b = 0; b < bands; b++) {
+            rel[b] = bandTotal[b] / sumAll * 100;   // Anteil in Prozent
+        }
+    }
+    return rel;
+}
+\end{lstlisting}
+
+\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}).
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
@@ -296,12 +324,12 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 \begin{figure}[H]
     \centering
     \screenshot[0.40\textwidth]{Graphics/session_detail.png}
-    \caption{Session-Detailansicht mit dem Einstieg in die Analyse.}
+    \caption{Session-Detailansicht mit dem Einstieg in die Analyse und Benchmark.}
     \label{fig:session-detail}
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implemntiert. Nachdem der starten knopf betätigt wird, werden die ausgewählten parameter als intent-Extras in die Klasse  \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
 \begin{figure}[H]
     \centering
     \screenshot[0.40\textwidth]{Graphics/analyse_dialog.png}
@@ -310,7 +338,7 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
-Die Logik der gesamten Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnisActivity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert \autoref{lst:onchunk}. Dort befinden sich die beiden Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+Die Logik der gesamten Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnisActivity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die beiden Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
 Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach (\autoref{fig:analyse-ergebnis}). Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar.
 \begin{lstlisting}[style=code, caption={Live-Anzeige der streamenden Ausgabe}, label={lst:onchunk}]
 @Override
