@@ -276,3 +276,11 @@ belowcaptionskip=1\baselineskip,
 % ****************************************************************************************************
 \usepackage{float}
 \usepackage{tikz}
+
+% Screenshot mit abgerundeten Ecken und dezentem Rahmen
+\newcommand{\screenshot}[2][\linewidth]{%
+  \begin{tikzpicture}
+    \node[inner sep=0pt, rounded corners=8pt, clip] (im) {\includegraphics[width=#1]{#2}};
+    \draw[rounded corners=8pt, black!30, line width=0.5pt] (im.south west) rectangle (im.north east);
+  \end{tikzpicture}%
+}

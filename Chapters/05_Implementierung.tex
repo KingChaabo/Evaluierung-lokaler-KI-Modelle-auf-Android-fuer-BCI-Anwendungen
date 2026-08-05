@@ -292,7 +292,46 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 
 \section{Benutzeroberfläche}
 \label{sec:impl-ui}
-% TODO: KI-Analyse-Screen (kurz)
+Die Benutzeroberfläche, die für die KI-Analyse zuständig ist, befindet sich im Paket \texttt{analyse}. Die Oberfläche startet mit dem Auslösen des Analyseknopfes in der Session-Detailansicht. Daraufhin erfolgt ein Dialog zum Einstellen der Parameter und anschließend die Anzeige der Ergebnisse.
+\begin{figure}[H]
+    \centering
+    \screenshot[0.40\textwidth]{Graphics/session_detail.png}
+    \caption{Session-Detailansicht mit dem Einstieg in die Analyse.}
+    \label{fig:session-detail}
+\end{figure}
+
+\subsection{Analyse-Dialog}
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Nach dem Starten werden die ausgewählten Parameter an die Ergebnis-Ansicht übergeben, bei der dann die eigentliche Analyse startet.
+\begin{figure}[H]
+    \centering
+    \screenshot[0.40\textwidth]{Graphics/analyse_dialog.png}
+    \caption{Analyse-Dialog.}
+    \label{fig:analyse-dialog}
+\end{figure}
+
+\subsection{Ergebnis-Ansicht}
+Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach (\autoref{fig:analyse-ergebnis}). Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar.
+\medskip
+
+\noindent Die streamende Anzeige wird durch einen \texttt{onChunk}-Callback realisiert, bei dem nach und nach Tokens an die Anzeige angehängt werden (\autoref{lst:onchunk}).
+\begin{lstlisting}[style=code, caption={Live-Anzeige der streamenden Ausgabe}, label={lst:onchunk}]
+@Override
+public void onChunk(String partial) {
+    runOnUiThread(() -> {
+        progressBar.setVisibility(View.GONE);
+        tvReport.append(partial);   // live anhaengen, nicht setText
+    });
+}
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \screenshot[0.40\textwidth]{Graphics/analyse_ergebnis.png}
+    \caption{Ergebnis-Ansicht der KI-Analyse.}
+    \label{fig:analyse-ergebnis}
+\end{figure}
+
+\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (siehe \autoref{sec:impl-features}).
 
 \section{Benchmark}
 \label{sec:impl-benchmark}
