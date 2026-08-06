@@ -217,6 +217,31 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
 \end{lstlisting}
 
 \noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}).
+Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featuretext}. Dieser bildet gemeinsam mit der szenariospezifischen Anweisung den Prompt (\autoref{sec:impl-prompt}).
+\begin{figure}[H]
+\centering
+{\setlength{\fboxsep}{12pt}%
+\fcolorbox{black!30}{gray!5}{%
+\begin{minipage}{0.88\linewidth}
+\sffamily\small
+EEG-Session, Dauer 60.0s, 8 Kanäle.\\[5pt]
+Abschnitt 1 (0.0--15.0s):\\
+\hspace*{2em}Delta 42\%, Theta 18\%, Alpha 21\%, Beta 14\%, Gamma 5\%\\
+\hspace*{2em}Ungültige Messwerte: 2.0\% ungültig, größter Ausschlag Kanal 3 (128 µV)\\[5pt]
+Abschnitt 2 (15.0--30.0s):\\
+\hspace*{2em}Delta 38\%, Theta 20\%, Alpha 24\%, Beta 13\%, Gamma 5\%\\
+\hspace*{2em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 5 (96 µV)\\[5pt]
+Abschnitt 3 (30.0--45.0s):\\
+\hspace*{2em}Delta 51\%, Theta 16\%, Alpha 18\%, Beta 11\%, Gamma 4\%\\
+\hspace*{2em}Ungültige Messwerte: 6.0\% ungültig, größter Ausschlag Kanal 3 (210 µV)\\[5pt]
+Abschnitt 4 (45.0--60.0s):\\
+\hspace*{2em}Delta 40\%, Theta 19\%, Alpha 22\%, Beta 14\%, Gamma 5\%\\
+\hspace*{2em}Ungültige Messwerte: 1.0\% ungültig, größter Ausschlag Kanal 2 (105 µV)
+\end{minipage}}}
+\caption{Beispiel eines vom \texttt{FeatureFormatter} erzeugten Feature-Texts (Werte illustrativ).}
+\label{fig:featuretext}
+\end{figure}
+
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
