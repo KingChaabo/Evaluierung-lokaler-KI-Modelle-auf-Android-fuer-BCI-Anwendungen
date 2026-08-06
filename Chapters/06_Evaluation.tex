@@ -53,6 +53,52 @@ Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00,s und variiert stark zwi
 \medskip
 
 \noindent Da die \textbf{Standardabweichungen} überwiegend gering ausfallen, weisen sie auf stabile Messungen hin. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
+\medskip
+
+\noindent Zur besseren Vergleichbarkeit sind die Latenzmetriken in \autoref{fig:eval-latenz} zusätzlich grafisch dargestellt.
+\begin{figure}[H]
+    \centering
+    % --- gemeinsame Legende oben ---
+    \raisebox{1pt}{\tikz{\draw[fill=mGemma1,draw=mGemma1!60!black] (0,0) rectangle (0.28,0.28);}}~Gemma 3 1B\quad
+    \raisebox{1pt}{\tikz{\draw[fill=mQwen,draw=mQwen!60!black] (0,0) rectangle (0.28,0.28);}}~Qwen 2.5 1.5B\quad
+    \raisebox{1pt}{\tikz{\draw[fill=mGemma2,draw=black] (0,0) rectangle (0.28,0.28);}}~Gemma 2 2B\\[6pt]
+    \begin{tikzpicture}
+    \begin{groupplot}[
+        group style={group size=2 by 2, horizontal sep=2cm, vertical sep=2.6cm},
+        ybar, /pgf/bar width=6pt,
+        width=6.3cm, height=4.6cm,
+        enlarge x limits=0.28,
+        symbolic x coords={Report, Artefakt, Vergleich},
+        xtick=data, ymin=0, ymajorgrids=true,
+        x tick label style={font=\footnotesize, rotate=30, anchor=east},
+        tick label style={font=\small}, label style={font=\small},
+        title style={at={(0.5,-0.55)}, anchor=north, font=\small},
+    ]
+    % --- (a) TTFT ---
+    \nextgroupplot[ylabel={TTFT (s)}, title={(a) TTFT (s)}]
+    \addplot[eb, fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,1.94)+-(0,0.07) (Artefakt,1.95)+-(0,0.04) (Vergleich,5.86)+-(0,0.49)};
+    \addplot[eb, fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,5.36)+-(0,0.10) (Artefakt,5.31)+-(0,0.13) (Vergleich,13.99)+-(0,0.55)};
+    \addplot[eb, fill=mGemma2, draw=black]            coordinates {(Report,6.09)+-(0,0.49) (Artefakt,6.75)+-(0,0.38) (Vergleich,16.60)+-(0,0.23)};
+    % --- (b) Gesamtdauer ---
+    \nextgroupplot[ylabel={Gesamtdauer (s)}, title={(b) Gesamtdauer (s)}]
+    \addplot[eb, fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,6.70)+-(0,0.14) (Artefakt,11.44)+-(0,0.04) (Vergleich,9.89)+-(0,0.46)};
+    \addplot[eb, fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,34.43)+-(0,0.24) (Artefakt,26.70)+-(0,0.12) (Vergleich,42.00)+-(0,1.94)};
+    \addplot[eb, fill=mGemma2, draw=black]            coordinates {(Report,14.25)+-(0,0.49) (Artefakt,18.57)+-(0,0.58) (Vergleich,27.19)+-(0,0.13)};
+    % --- (c) Tok/s ---
+    \nextgroupplot[ylabel={Tok/s}, title={(c) Durchsatz (Tok/s)}]
+    \addplot[eb, fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,21.65)+-(0,0.44) (Artefakt,25.34)+-(0,0.09) (Vergleich,11.85)+-(0,0.54)};
+    \addplot[eb, fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,14.06)+-(0,0.10) (Artefakt,13.37)+-(0,0.06) (Vergleich,11.31)+-(0,0.53)};
+    \addplot[eb, fill=mGemma2, draw=black]            coordinates {(Report,5.06)+-(0,0.17) (Artefakt,4.74)+-(0,0.15) (Vergleich,2.87)+-(0,0.01)};
+    % --- (d) Ladezeit (ohne Fehlerbalken) ---
+    \nextgroupplot[ylabel={Ladezeit (s)}, title={(d) Ladezeit (s)}]
+    \addplot[fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,0.45) (Artefakt,0.34) (Vergleich,0.29)};
+    \addplot[fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,0.73) (Artefakt,0.27) (Vergleich,0.27)};
+    \addplot[fill=mGemma2, draw=black]            coordinates {(Report,0.87) (Artefakt,0.47) (Vergleich,0.52)};
+    \end{groupplot}
+    \end{tikzpicture}
+    \caption{Latenzmetriken je Modell und Szenario (Fehlerbalken: Standardabweichung aus vier Wiederholungen; Ladezeit ohne Fehlerbalken, da je Konfiguration einmalig gemessen).}
+    \label{fig:eval-latenz}
+\end{figure}
 \section{Ressourcenverbrauch}
 \label{sec:eval-ressourcen}
 Daraufolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorgestellt.
@@ -89,6 +135,46 @@ Daraufolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorgest
 \noindent \autoref{tab:eval-ressourcen} zeigt, dass der \textbf{RAM (PSS)} eine klare Rangfolge zwischen den Modellen besitzt. Während Gemma 3 1B mit (1482 MB) den geringsten Wert aufweist, liegt Qwen in der Mitte (ca.\ 2000 MB) und Gemma 2 2B am höchsten (3798 MB).
 Während das 1B-Modell von Gemma mit (ca.\ 70 mAh) den geringsten \textbf{Akkuverbrauch} aufweist, liegt der Verbrauch von Qwen 2.5 1.5B (ca.\ 200 mAh) und Gemma 2 2B (ca.\ 100 mAh) deutlich höher.
 Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht.
+\medskip
+
+\noindent Der Ressourcenverbrauch ist in \autoref{fig:eval-ressourcen} zusätzlich grafisch dargestellt.
+\begin{figure}[H]
+    \centering
+    % --- gemeinsame Legende oben ---
+    \raisebox{1pt}{\tikz{\draw[fill=mGemma1,draw=mGemma1!60!black] (0,0) rectangle (0.28,0.28);}}~Gemma 3 1B\quad
+    \raisebox{1pt}{\tikz{\draw[fill=mQwen,draw=mQwen!60!black] (0,0) rectangle (0.28,0.28);}}~Qwen 2.5 1.5B\quad
+    \raisebox{1pt}{\tikz{\draw[fill=mGemma2,draw=black] (0,0) rectangle (0.28,0.28);}}~Gemma 2 2B\\[6pt]
+    \begin{tikzpicture}
+    \begin{groupplot}[
+        group style={group size=2 by 1, horizontal sep=2.4cm},
+        ybar, /pgf/bar width=6pt,
+        width=6.3cm, height=4.8cm,
+        ymin=0, ymajorgrids=true,
+        tick label style={font=\small}, label style={font=\small},
+        title style={at={(0.5,-0.5)}, anchor=north, font=\small},
+    ]
+    % --- (a) RAM / PSS (je Szenario) ---
+    \nextgroupplot[
+        ylabel={RAM / PSS (MB)}, title={(a) RAM / PSS (MB)},
+        symbolic x coords={Report, Artefakt, Vergleich},
+        xtick=data, enlarge x limits=0.28,
+        x tick label style={font=\footnotesize, rotate=30, anchor=east}]
+    \addplot[eb, fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,1482)+-(0,43) (Artefakt,1508)+-(0,10) (Vergleich,1615)+-(0,35)};
+    \addplot[eb, fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,1994)+-(0,2)  (Artefakt,1994)+-(0,1)  (Vergleich,2114)+-(0,34)};
+    \addplot[eb, fill=mGemma2, draw=black]            coordinates {(Report,3691)+-(0,129) (Artefakt,3638)+-(0,168) (Vergleich,3798)+-(0,128)};
+    % --- (b) Akku (ein Wert je Modell) ---
+    \nextgroupplot[
+        ylabel={Akku (mAh)}, title={(b) Akku (mAh)},
+        symbolic x coords={Gemma 3 1B, Qwen 2.5 1.5B, Gemma 2 2B},
+        xtick=\empty, enlarge x limits=0.3, /pgf/bar width=16pt]
+    \addplot[fill=mGemma1, draw=mGemma1!60!black, bar shift=0pt] coordinates {(Gemma 3 1B,70)};
+    \addplot[fill=mQwen,   draw=mQwen!60!black,   bar shift=0pt] coordinates {(Qwen 2.5 1.5B,200)};
+    \addplot[fill=mGemma2, draw=black,            bar shift=0pt] coordinates {(Gemma 2 2B,100)};
+    \end{groupplot}
+    \end{tikzpicture}
+    \caption{Ressourcenverbrauch je Modell (RAM/PSS mit Fehlerbalken als Standardabweichung; Akku als Näherungswert über den gesamten Messblock von 15 Läufen, daher ein Wert je Modell).}
+    \label{fig:eval-ressourcen}
+\end{figure}
 \section{Stabilität}
 \label{sec:eval-stabilitaet}
 Alle 45 Messungen wurden mit dem Status \enquote{ok} protokolliert. Das bedeutet, dass alle Läufe erfolgreich liefen. Es gab keine Abstürze, keine Fehler und keinen Speicherüberlauf ().
