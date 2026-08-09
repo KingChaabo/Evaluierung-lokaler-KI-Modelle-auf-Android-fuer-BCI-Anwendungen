@@ -177,7 +177,7 @@ Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht.
 \end{figure}
 \section{Stabilität}
 \label{sec:eval-stabilitaet}
-Alle 45 Messungen wurden mit dem Status \enquote{ok} protokolliert. Das bedeutet, dass alle Läufe erfolgreich liefen. Es gab keine Abstürze, keine Fehler und keinen Speicherüberlauf ().
+Alle 45 Messungen wurden mit dem Status \enquote{ok} protokolliert. Das bedeutet, dass alle Läufe erfolgreich liefen. Es gab keine Abstürze, keine Fehler und keinen Speicherüberlauf.
 Das größere Modell Gemma 2 2B lief ebenso stabil, obwohl es mit ca.\ 3742,MB den meisten RAM verbrauchte.
 Auffällig war lediglich eine leichte Schwankung, die bei Gemma 2 2B/Artefakt auftrat. Dort fiel eine größere Streuung auf (± 2,24,s), die vermutlich unter Dauerlast entstand.
 % Status-Verteilung (erfolgreich/Fehler/OOM), Throttling-Beobachtungen,
@@ -185,24 +185,74 @@ Auffällig war lediglich eine leichte Schwankung, die bei Gemma 2 2B/Artefakt au
 
 \section{Ausgabequalität}
 \label{sec:eval-qualitaet}
+Bei der Ausgabequalität handelt es sich um eine qualitative Bewertung der generierten Inhalte. Sie ist neben der Latenz und dem Ressourcenverbrauch ein weiterer entscheidender Faktor, um die Eignung der Modelle für die Verarbeitung von EEG-Daten zu bewerten. Die Ausgaben werden anhand der in \autoref{subsec:eval-kriterien} definierten Kriterien bewertet. Dies geschieht anhand mehrerer Beispiele. Da alle drei Modelle denselben Prompt (\autoref{sec:impl-prompt}) verwenden, ist es möglich, die Qualität der Ausgaben direkt miteinander zu vergleichen.
 % Qualitative Bewertung. Erst Kriterien definieren, dann Beispielausgaben einordnen.
 
 \subsection{Bewertungskriterien}
 \label{subsec:eval-kriterien}
+Die Ausgaben werden anhand der folgenden vier Kriterien beurteilt:
 \begin{itemize}
-    \item \textbf{Korrektheit:} Stimmt die Aussage mit den Merkmalen überein?
-    \item \textbf{Verständlichkeit:} Ist die Ausgabe für Laien lesbar?
-    \item \textbf{Relevanz:} Geht sie auf das Wesentliche ein?
-    \item \textbf{Halluzination:} Werden Dinge erfunden, die nicht in den Daten stehen?
+    \item \textbf{Korrektheit:} Stimmt die Aussage mit den extrahierten Merkmalen überein?
+    \item \textbf{Halluzinationsfreiheit:} Werden keine Werte oder Begriffe erfunden, die nicht in den Daten stehen?
+    \item \textbf{Verständlichkeit:} Ist die Ausgabe sprachlich klar und für Laien lesbar?
+    \item \textbf{Formattreue:} Hält die Ausgabe die Vorgaben ein (Fließtext, kein Markdown, knappe Länge)?
 \end{itemize}
 
 \subsection{Beispielausgaben je Szenario}
 \label{subsec:eval-beispiele}
-% Pro Szenario 1-2 Beispielausgaben (z.B. als \begin{quote} oder lstlisting)
-% + kurze Einordnung anhand der Kriterien oben.
-% Szenario 1: Session-Report
-% Szenario 2: Artefakt-Erklarung
-% Szenario 3: Session-Vergleich
+Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta-Dominanz aufweist. Der Fokus liegt auf dem Report-Szenario für alle drei Modelle, bei dem sie im Detail betrachtet werden. Anschließend werden die anspruchsvolleren Szenarien Artefakt-Erklärung und Vergleich zusammengefasst. Dadurch ist erkennbar, wie die Modelle mit steigenden Anforderungen umgehen.
+\medskip
+
+\noindent Die an die Modelle übergebenen Feature-Texte beider Sessions sind in \autoref{fig:ft-session-a} und \autoref{fig:ft-session-b} im Anhang abgedruckt und ermöglichen den Abgleich der Ausgaben mit der tatsächlichen Eingabe.
+\medskip
+
+\noindent\textbf{Report -- Gemma 2 2B}
+\smallskip
+
+\noindent{\setlength{\fboxsep}{10pt}\fcolorbox{black!20}{black!3}{%
+\begin{minipage}{0.93\linewidth}\small
+Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwischen 56\,\% und 86\,\% lag. Die Signalqualität der Messungen war in allen Abschnitten gut. Auffällig waren Ausschlagsignale in den Abschnitten 1 und 4, wobei Kanal 4 und Kanal 2 jeweils die höchsten Werte erreichte.
+\end{minipage}}}
+\smallskip
+
+\noindent Die Ausgabe erkennt die Delta-Dominanz korrekt, bewertet die Signalqualität zutreffend und nennt die auffälligen Kanäle. Sie ist knapp und hält das Format ein. Alle vier Kriterien sind erfüllt.
+\medskip
+
+\noindent\textbf{Report -- Gemma 3 1B}
+\smallskip
+
+\noindent{\setlength{\fboxsep}{10pt}\fcolorbox{black!20}{black!3}{%
+\begin{minipage}{0.93\linewidth}\small
+Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), Theta-Zuständen (16\,\%), Alpha-Zuständen (13\,\%), Beta-Zuständen (6\,\%) und Gamma-Zuständen (5\,\%). Der größte Ausschlag wurde am Kanal 2 (3309 µV) festgestellt. Der Schwerpunkt lag hauptsächlich in den Sekundenbereichen 0--30, 30--60 und 60--91 Sekunden, wobei Delta- und Theta-Zustände am stärksten ausgeprägt waren. Es gab einige ungültige Messwerte, darunter ein signifikanter Ausschlag am Kanal 2.
+\end{minipage}}}
+\smallskip
+
+\noindent Auch wenn die Aussage mit der Delta-Dominanz übereinstimmt, gibt es einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Abschnitte vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
+\medskip
+
+\noindent\textbf{Report -- Qwen 2.5 1.5B} (gekürzt)
+\smallskip
+
+\noindent{\setlength{\fboxsep}{10pt}\fcolorbox{black!20}{black!3}{%
+\begin{minipage}{0.93\linewidth}\small
+\#\#\# Bericht\par
+Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8 KanÃ¤len gezählt. Die Signalqualität ist gut mit einer overall Signalqualität von 86\,\%. [\dots] Die dominante Frequenzbänder sind Delta (16\,\%), Theta (33\,\%), Alpha (60\,\%), Beta (15\,\%) und Gamma (13\,\%), wobei Delta und Theta die hauptsächlichste Frequenz bilden. [\dots]
+\end{minipage}}}
+\smallskip
+
+\noindent Hier treten mehrere Fehler auf. Vor allem die Formatvorgabe wird deutlich verletzt. Zunächst beginnt die Ausgabe mit einer Markdown-Überschrift (\#\#\#), darüber hinaus enthält die Ausgabe fehlerhaft kodierte Umlaute wie „KanÃ¤len" und ist zu lang. Zudem sind die Bandanteile falsch (Alpha mit 60\,\% als stärkstes Band, Summe über 100\,\%) und die Signalqualität ist frei erfunden. Keines der vier Kriterien wird in diesem Fall zuverlässig erfüllt.
+\medskip
+
+\noindent Diese Erkenntnisse lassen sich auch in den anspruchsvolleren Szenarien beobachten.
+\medskip
+
+\noindent\textbf{Artefakt-Erklärung.} Obwohl Gemma 2 2B korrekte technische Ursachen wie Bewegung, Elektroden oder Verbindung benennt, wird am Ende eine falsche Schlussfolgerung gezogen („das hohe Delta-Niveau stellt sicher, dass die Daten präzise sind"). Bei Gemma 3 1B werden neue Fachbegriffe wie „Delta-/Theta-/Gamma-Zell-Schwellenwert" erfunden und weiterhin ungültige Messwerte behauptet. Qwen 2.5 1.5B liefert eine sehr schwache Ausgabe, bei der die Bandzuordnungen widersprüchlich sind und Begriffe wie „Ungültiger Messergegenstand" erfunden werden. Zudem treten hier wieder Formatierungsfehler auf.
+\medskip
+
+\noindent\textbf{Vergleich.} Gemma 2 2B vergleicht die zwei Sessions sauber, bezeichnet die Ausschläge jedoch fälschlicherweise als zu gering, obwohl Werte über 4000 µV auftreten. Gemma 3 1B widerspricht sich selbst, indem beiden Sessions zugleich der größere Ausschlag an Kanal 2 zugeschrieben wird. Qwen 2.5 1.5B schneidet erneut schlecht ab. Es halluziniert mit Begriffen wie „Abgassen" statt Frequenzbänder und gibt Steuerzeichen wörtlich aus („\texttt{\textbackslash n\textbackslash n}"). Auch hier werden erneut Formatierungsfehler gemacht.
+\medskip
+
+\noindent Über alle Szenarien hinweg nehmen die Fehler mit steigender Komplexität zu, und die Modelle trennen sich klar nach Fähigkeit. \autoref{tab:eval-qualitaet} fasst die Bewertung zusammen.
 
 \section{Zusammenfassende Gegenüberstellung}
 \label{sec:eval-vergleich}

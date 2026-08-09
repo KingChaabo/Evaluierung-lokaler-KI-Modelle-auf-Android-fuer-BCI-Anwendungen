@@ -1,10 +1,52 @@
 %********************************************************************
 % Appendix
 %*******************************************************
-\chapter{Erster Abschnitt des Anhangs}
-In den Anhang gehören "`Hintergrundinformationen"', also weiterführende Information, ausführliche Listings, Graphen, Diagramme oder Tabellen, die den Haupttext mit detaillierten Informationen ergänzen.
+\chapter{Aufbereitete Feature-Texte der Evaluation}
+\label{app:featuretexte}
+Die folgenden Feature-Texte wurden vom \texttt{FeatureFormatter} aus den beiden Sessions erzeugt und den Modellen als Eingabe übergeben (vgl.\ \autoref{subsec:eval-beispiele}). Sie ermöglichen es, die Modellausgaben gegen die tatsächliche Eingabe zu prüfen.
 
-\blindtext
-\blindtext
-\blindtext
+\begin{figure}[H]
+\centering
+{\setlength{\fboxsep}{12pt}\fcolorbox{blue!30}{blue!5}{%
+\begin{minipage}{0.9\linewidth}
+\sffamily\small
+EEG-Session, Dauer 121.432s, 8 Kanäle.\\[5pt]
+Abschnitt 1 (0.0--30.352s):\\
+\hspace*{1.5em}Delta 86\%, Theta 4\%, Alpha 5\%, Beta 3\%, Gamma 2\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 4 (4419 µV)\\[5pt]
+Abschnitt 2 (30.356--60.708s):\\
+\hspace*{1.5em}Delta 59\%, Theta 16\%, Alpha 13\%, Beta 7\%, Gamma 5\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (3309 µV)\\[5pt]
+Abschnitt 3 (60.712--91.064s):\\
+\hspace*{1.5em}Delta 56\%, Theta 18\%, Alpha 13\%, Beta 7\%, Gamma 6\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (2874 µV)\\[5pt]
+Abschnitt 4 (91.068--121.432s):\\
+\hspace*{1.5em}Delta 63\%, Theta 11\%, Alpha 11\%, Beta 8\%, Gamma 8\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (2948 µV)
+\end{minipage}}}
+\caption{Feature-Text der Session A (Grundlage für Report und Artefakt-Erklärung).}
+\label{fig:ft-session-a}
+\end{figure}
 
+\begin{figure}[H]
+\centering
+{\setlength{\fboxsep}{12pt}\fcolorbox{blue!30}{blue!5}{%
+\begin{minipage}{0.9\linewidth}
+\sffamily\small
+EEG-Session, Dauer 122.128s, 8 Kanäle.\\[5pt]
+Abschnitt 1 (0.0--30.528s):\\
+\hspace*{1.5em}Delta 86\%, Theta 5\%, Alpha 3\%, Beta 4\%, Gamma 2\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (5230 µV)\\[5pt]
+Abschnitt 2 (30.532--61.06s):\\
+\hspace*{1.5em}Delta 77\%, Theta 9\%, Alpha 6\%, Beta 5\%, Gamma 3\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (4772 µV)\\[5pt]
+Abschnitt 3 (61.064--91.592s):\\
+\hspace*{1.5em}Delta 73\%, Theta 10\%, Alpha 6\%, Beta 7\%, Gamma 4\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (3878 µV)\\[5pt]
+Abschnitt 4 (91.596--122.128s):\\
+\hspace*{1.5em}Delta 66\%, Theta 15\%, Alpha 8\%, Beta 6\%, Gamma 5\%\\
+\hspace*{1.5em}Ungültige Messwerte: 0.0\% ungültig, größter Ausschlag Kanal 2 (3518 µV)
+\end{minipage}}}
+\caption{Feature-Text der Session B (zweite Session im Vergleich).}
+\label{fig:ft-session-b}
+\end{figure}
