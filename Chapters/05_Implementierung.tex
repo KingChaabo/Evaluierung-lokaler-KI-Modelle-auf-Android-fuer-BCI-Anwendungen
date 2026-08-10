@@ -3,7 +3,7 @@
 Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung auf sie aufbaut, wird sie ebenfalls in derselben Programmiersprache realisiert. Android Studio wird dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt.
 \section{Architektur}
 \label{sec:architektur}
-Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in \autoref{fig:architektur} dargestellt sind:
+Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komponenten, die in \autoref{fig:architektur} dargestellt sind:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{Graphics/Architektur.pdf}
@@ -26,7 +26,7 @@ Die Implementierung der Anwendung besteht aus den folgenden Komponenten, die in 
 \medskip
 
 \noindent Ein zentrales Merkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
-In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
+In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenfalls ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
 Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
 \medskip
 
