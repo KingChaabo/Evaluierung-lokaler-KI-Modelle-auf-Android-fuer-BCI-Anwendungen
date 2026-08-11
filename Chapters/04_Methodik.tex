@@ -24,7 +24,7 @@ deutlich token-sparsamer und können vom Sprachmodell verarbeitet werden.
 \subsection{Segmentierung}
 \label{subsec:segmentierung}
 Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der zeitliche Verlauf der Session fehlen. Aus diesem Grund wird jede Session in mehrere gleich große Segmente aufgeteilt (siehe \autoref{fig:segmentierung}). Da das Signal mit einer konstanten Abtastrate von 250 Hz aufgenommen wird, entspricht eine gleiche Anzahl an Samples automatisch einer gleichen Zeitdauer. Die Segmentierung wird daher Sample-basiert durchgeführt. Dadurch ist es leichter nachvollziehbar, wie sich die Signalcharakteristik zwischen Beginn und Ende der Aufnahme verändert. Durch dieses Verfahren wird die Analyse robuster gegenüber Artefakten, da diese nur einen Teil der Session betreffen und nicht die gesamte Aufnahme verfälschen.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Damit die Aufteilung der Session möglich ist, muss die Aufnahme eine Mindestlänge haben. Damit pro Segment mindestens ein vollständiges Analysefenster für die spektrale Berechnung zur Verfügung steht, sind bei vier Abschnitten und einer Fenstergröße von 256 Werten mindestens
 \begin{equation}
@@ -32,7 +32,7 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 \end{equation}
 
 \noindent erforderlich. Wenn die Aufnahme zu kurz ist, um die Mindestlänge zu erfüllen, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Die Fenstergröße ist kein fester, unveränderlicher Wert, sondern variabel einstellbar. Eine größere Fenstergröße erhöht die Frequenzauflösung \autocite{windowing_welch2021}, erfordert jedoch eine längere Mindestdauer der Session. Für alle folgenden Untersuchungen wird mit der Standardfenstergröße von 256 Samples gearbeitet, da sie in etwa eine Sekunde abbildet.
 \begin{figure}[H]
@@ -47,16 +47,16 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 Die spektralen Merkmale werden für jeden Abschnitt bestimmt, indem die Signalenergie auf die einzelnen Frequenzbänder verteilt wird. 
 Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Abschnitts in überlappende Fenster unterteilt; im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples (siehe \autoref{fig:welch-fenster}). 
 Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließend über alle Fenster gemittelt wird. Durch diese Mittelung wird das resultierende Spektrum deutlich stabiler und weniger rauschanfällig als bei einer einzelnen FFT. Allerdings ist dann mit einer geringeren Frequenzauflösung zu rechnen \autocite{windowing_welch2021}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Um den Gleichanteil (0 Hz) des Signals zu eliminieren, wird vor der Fourier-Transformation zunächst der Mittelwert von jedem Segment subtrahiert. Anschließend wird die Hann-Fensterfunktion (auch Hanning genannt) verwendet, um jedes Fenster zu gewichten \autocite{windowing_welch2021}. Die Gewichtung wird verwendet, da es ansonsten zu einem direkten, abrupten Abschneiden des Signals kommt, was zu harten Übergängen an den Fenstergrenzen führt \autocite{windowing_welch2021}. Durch diesen Vorgang entsteht eine spektrale Leckage. Die Hann-Funktion hilft gegen diese Leckage, indem sie die Amplitudenwerte an den Rändern des Fensters sanft abschwächt \autocite{windowing_welch2021}. 
-\medskip
+\vspace{\baselineskip}
 
 \noindent Die Fensterfunktion wird mathematisch wie folgt beschrieben:
 \begin{equation} w(n) = 0.5 - 0.5 \cos\left(\frac{2\pi n}{N-1}\right) \end{equation}
 
 \noindent wobei $N$ die Fenstergröße (Standard: 256) bezeichnet \autocite{windowing_welch2021}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Jedes Fenster wird per FFT in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert \autocite{10353995}.
 \begin{figure}[H]
@@ -70,10 +70,10 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jeden Abschnitt berechnet \autocite{10353995}. Hierfür ist keine FFT notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.
 Ein zentrales Merkmal ist die Spannweite (Peak-to-Peak-Amplitude), welche die Differenz zwischen dem größten und dem kleinsten Amplitudenwert beschreibt \autocite{jas2017}.
 Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung eines absoluten Maximalwertes die Unabhängigkeit von einem potenziellen Gleichanteil des Signals gewährleistet. Aus diesem Grund stellt die Peak-to-Peak-Amplitude ein robustes Kriterium dar, um extreme Signalausschläge und Drifts zu identifizieren, wie sie bei Artefakten auftreten können \autocite{jas2017}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Des Weiteren wird zur Beurteilung der Signalqualität der Anteil der ungültigen Messwerte betrachtet. Dies ist der Anteil der Datenpunkte, die vom Erfassungsgerät selbst als fehlerhaft markiert wurden. Man kann durch diesen wichtigen Indikator erkennen, ob Messfehler vorliegen, wie beispielsweise ein unzureichender Kontakt an der Kopfhaut \autocite{10353995}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Im Allgemeinen bilden statistische Merkmale ergänzend zu den spektralen Merkmalen eine gute Grundlage, um die Datenqualität zu beurteilen und Artefakte zu erkennen.
 
@@ -95,10 +95,10 @@ Dadurch wird gewährleistet, dass die eigentliche Analysearbeit vom Modell erled
 \section{Modellauswahl}
 \label{sec:modellauswahl}
 Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen systemintegrierte Modelle auf dem verwendeten Testgerät nicht zur Verfügung. Daher konzentriert sich diese Arbeit auf frei deploybare Modelle, wie sie in \autoref{sec:gemma} und \autoref{sec:qwen} beschrieben sind.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden drei Modelle vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}, sowie das Modell Qwen 2.5 1.5B des Herstellers Alibaba \autocite{qwen2025,mediapipe_llm}, dessen Größe zwischen den beiden Gemma-Modellen liegt. Da alle drei Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich bei gleicher Laufzeitumgebung sowohl der Effekt der Modellgröße als auch der Einfluss des Herstellers auf die Systemperformanz untersuchen.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich einzig auf die Modellgröße und den Hersteller bezieht. Zudem wird die Token-Auswahl über einen festen Top-K-Wert von 64 begrenzt, was bedeutet, dass immer nur die 64 wahrscheinlichsten Token als Kandidaten betrachtet werden.
 
@@ -151,17 +151,17 @@ Zur Bewertung der Modelle werden mehrere Metriken erfasst, die sich in Latenz, R
     \text{Tokens/s} = \frac{N_{\text{Token}}}{t_{\text{Inferenz}}}
 \end{equation}
 wobei $N_{\text{Token}}$ die Anzahl der erzeugten Token und $t_{\text{Inferenz}}$ die Inferenzdauer in Sekunden bezeichnet.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Der Speicherverbrauch wird über die Proportional Set Size (PSS) erfasst, da diese exklusiv von der Applikation genutzte Speicherseiten sowie den proportionalen Anteil an gemeinsam verwendeten Seiten (Shared Pages) berücksichtigt.
 Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbedarfs, da durch sie gemeinsam genutzte Ressourcen (wie beispielsweise Bibliotheken oder Systemdienste) nicht mehrfach gezählt werden \autocite{android_memory}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Im Gegensatz zum Benchmark, bei dem es gleich fünf Messungen gibt, werden für die reine Analyse einer Session nur Latenzmetriken erfasst. Der Grund liegt hierbei an der Menge der Messungen. Der Energieverbrauch lässt sich nur über eine ganze Messreihe sinnvoll bestimmen, da er sich erst aus der Differenz des Akkustands über mehrere aufeinanderfolgende Durchläufe ergibt. Zudem schwankt der Arbeitsspeicherbedarf stark \autocite{android_memory}, sodass eine Messung keine verlässliche Aussage über den Speicherbedarf zulässt. Die Metriken Status und Ausgabequalität sind nur für die Evaluation relevant und werden daher nicht in der Analyse erfasst.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Bei der Ausgabequalität geht es um die Qualität der vom Modell gegebenen Antwort. Hierfür wird keine automatisierte Messung benötigt, da es keine feste Musterlösung gibt, mit der man sie vergleichen könnte. Ein eindeutiges Richtig oder Falsch existiert nicht. Stattdessen wird der Inhalt der Ausgabe anhand von vier Kriterien bewertet (siehe \autoref{subsec:eval-kriterien}).
 \subsection{Messbedingungen}
@@ -186,6 +186,6 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
     s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}\left(x_i - \bar{x}\right)^2}
 \end{equation}
 Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
-\medskip
+\vspace{\baselineskip}
 
  Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt, jedoch nicht in der CSV gespeichert. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen nicht in der Anwendung selbst. Sie werden stattdessen manuell auf Grundlage der in der CSV-Datei gespeicherten Rohwerte durchgeführt.

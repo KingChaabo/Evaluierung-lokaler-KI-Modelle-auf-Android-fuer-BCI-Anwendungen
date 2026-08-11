@@ -9,28 +9,28 @@ Diese lassen sich, wie in \autoref{subsec:systemintegrierte-und-frei-deploybare-
 \subsection{Systemintegrierte Lösung}
 \label{subsec:systemintegrierte-loesung}
 Das systemintegrierte Modell Gemini Nano ist stark an die Hardware gebunden, da AICore spezifische On-Device-Hardwarekomponenten nutzt, um die Inferenz zu beschleunigen \autocite{gemininano}. Aus diesem Grund setzt Gemini Nano bestimmte von Google freigegebene Hardware voraus. Das für diese Arbeit verwendete Testgerät Samsung Galaxy S23 erfüllt diese Anforderungen nicht, sodass Gemini Nano nicht genutzt werden kann \autocite{mlkit_genai_devices}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Die Möglichkeit einer virtuellen Testumgebung wie eines Android-Emulators ist ausgeschlossen, da die physische Präsenz der Gerätehardware benötigt wird \autocite{gemininano,edgellm_review}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Aufgrund dieser Einschränkungen steht die systemintegrierte Lösung Gemini Nano für diese diese Arbeit nicht zur Verfügung. Deshalb wird im Folgenden die frei deploybare Lösung betrachtet, die auf dem Testgerät Samsung Galaxy S23 genutzt werden kann.
 
 \subsection{Frei deploybare Lösung}
 \label{subsec:frei-deploybare-loesung}
 Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploybare Lösung. Die Modelle werden direkt im \texttt{.task}-Format unterstützt und lassen sich einfach über eine Android-Schnittstelle einbinden \autocite{mediapipe_llm}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem Hauptprozessor (CPU) oder dem Grafikprozessor (GPU) des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, etwa Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Darüber hinaus lassen sich über die LiteRT-Community vorkonvertierte Modelle im MediaPipe-Format einbinden \autocite{mediapipe_llm}, darunter Qwen 2.5 1.5B \autocite{qwen_litert}. Für die folgenden Abschnitte sind vor allem diese drei sehr kompakten Modelle wichtig.
-\medskip
+\vspace{\baselineskip}
 
 \section{Die Gemma-Modellfamilie}
 \label{sec:gemma}
 Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden Modellen, die vom Gemma-Team bei Google DeepMind entwickelt wurden \autocite{gemma3_2025}.
-\medskip
+\vspace{\baselineskip}
 
 \noindent Besondere Merkmale der Gemma-Modelle sind:
 \begin{itemize}
