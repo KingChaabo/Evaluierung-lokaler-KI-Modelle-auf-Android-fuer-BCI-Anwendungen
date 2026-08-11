@@ -256,5 +256,45 @@ Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8
 
 \section{Zusammenfassende Gegenüberstellung}
 \label{sec:eval-vergleich}
-% Ein Gesamtbild: welches Modell fuer welchen Zweck? Tabelle oder Ampel-Uebersicht.
-% Ueberleitung zur Diskussion (\autoref{ch:diskussion}).
+In \autoref{fig:eval-gesamt} sind jeweils die Stärken und Schwächen jedes Modells im direkten Vergleich zusammengefasst:
+\begin{figure}[H]
+\centering
+% gemeinsame Legende oben
+\raisebox{1pt}{\tikz{\draw[fill=mGemma1,draw=mGemma1!60!black] (0,0) rectangle (0.28,0.28);}}~Gemma 3 1B\quad
+\raisebox{1pt}{\tikz{\draw[fill=mQwen,draw=mQwen!60!black] (0,0) rectangle (0.28,0.28);}}~Qwen 2.5 1.5B\quad
+\raisebox{1pt}{\tikz{\draw[fill=mGemma2,draw=black] (0,0) rectangle (0.28,0.28);}}~Gemma 2 2B\\[12pt]
+\begin{tikzpicture}[scale=1.25, font=\small]
+  % Gitter (drei Ebenen)
+  \foreach \r in {1,2,3}{
+    \draw[gray!40] (90:\r) -- (18:\r) -- (-54:\r) -- (-126:\r) -- (162:\r) -- cycle;
+  }
+  % Achsen-Speichen
+  \foreach \a in {90,18,-54,-126,162}{ \draw[gray!40] (0,0) -- (\a:3); }
+  % Ebenen-Beschriftung (untere/mittlere/obere) entlang der oberen Achse
+  \foreach \r/\lab in {1/{$-$},2/{$\circ$},3/{$+$}}{
+    \node[gray!70, fill=white, inner sep=1pt, font=\footnotesize] at (90:\r) {\lab};
+  }
+  % Achsenbeschriftungen
+  \node[above]      at (90:3.5)   {Geschwindigkeit};
+  \node[right]      at (18:3.25)  {Speicher};
+  \node[below right] at (-54:3.15) {Akku};
+  \node[below left]  at (-126:3.15){Stabilität};
+  \node[left]       at (162:3.25) {Qualität};
+  % Gemma 3 1B
+  \draw[mGemma1, line width=1.2pt, fill=mGemma1, fill opacity=0.12]
+    (90:3) -- (18:3) -- (-54:3) -- (-126:3) -- (162:2) -- cycle;
+  % Qwen 2.5 1.5B
+  \draw[mQwen, line width=1.2pt, fill=mQwen, fill opacity=0.12]
+    (90:2) -- (18:2) -- (-54:1) -- (-126:3) -- (162:1) -- cycle;
+  % Gemma 2 2B
+  \draw[black!55, line width=1.2pt, fill=black!40, fill opacity=0.12]
+    (90:1) -- (18:1) -- (-54:2) -- (-126:3) -- (162:3) -- cycle;
+\end{tikzpicture}
+\caption{Netzdiagramm der zusammenfassenden Gegenüberstellung (weiter außen bedeutet besser).}
+\label{fig:eval-gesamt}
+\end{figure}
+
+\noindent Der Vergleich zeigt, dass kein Modell in allen Bereichen überlegen ist. Während Qwen 2.5 1.5B am schwächsten ausfällt, besitzen die Gemma-Modelle jeweils unterschiedliche Stärken. Gemma 3 1B bietet eine hohe Effizienz sowie wenig Speicher- und Akkuverbrauch, ist jedoch in den Punkten Qualität und Stabilität hinter Gemma 2 2B zurück. Letzteres glänzt mit einer hohen Ausgabequalität und Stabilität, ist jedoch langsamer und verbraucht mehr Ressourcen.
+\medskip
+
+\noindent Interessant wird es bei der Frage, welches Modell sich für den praktischen Einsatz eignet und inwiefern, was nachfolgend in \autoref{ch:diskussion} besprochen wird.
