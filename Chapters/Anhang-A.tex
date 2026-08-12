@@ -50,3 +50,84 @@ Abschnitt 4 (91.596--122.128s):\\
 \caption{Feature-Text der Session B (zweite Session im Vergleich).}
 \label{fig:ft-session-b}
 \end{figure}
+
+\chapter{Rohdaten der Benchmark-Messungen}
+\label{app:rohdaten}
+Die folgende Tabelle enthält die vollständigen, ungemittelten Messwerte aller 45 Durchläufe (drei Modelle $\times$ drei Szenarien $\times$ fünf Wiederholungen), wie sie vom \texttt{BenchmarkLogger} protokolliert wurden. Sie bilden die Grundlage für die in \autoref{ch:evaluation} dargestellten, aggregierten Kennzahlen. Die Modellkürzel stehen für \texttt{1b}~= Gemma 3 1B, \texttt{2b}~= Gemma 2 2B und \texttt{qwen}~= Qwen 2.5 1.5B. Alle Messungen wurden am 21.07.2026 auf dem Samsung Galaxy S23 durchgeführt.
+
+{\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{lllrrrrrrrrrc}
+\caption{Rohdaten aller Benchmark-Durchläufe. \texttt{Infer} bezeichnet die reine Inferenzdauer, \texttt{Gesamt} ergibt sich aus \texttt{Load}~+~\texttt{Infer}.}
+\label{tab:app-rohdaten}\\
+\toprule
+\textbf{Zeit} & \textbf{Modell} & \textbf{Szenario} & \textbf{Prompt} & \textbf{Ausgabe} & \textbf{Load} & \textbf{Infer} & \textbf{TTFT} & \textbf{Tok/s} & \textbf{PSS} & \textbf{Akku} & \textbf{Akku} & \textbf{Status} \\
+              &                &                   & \scriptsize(Tok.) & \scriptsize(Tok.) & \scriptsize(ms) & \scriptsize(ms) & \scriptsize(ms) & & \scriptsize(MB) & \scriptsize(µAh) & \scriptsize(\%) & \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Zeit} & \textbf{Modell} & \textbf{Szenario} & \textbf{Prompt} & \textbf{Ausgabe} & \textbf{Load} & \textbf{Infer} & \textbf{TTFT} & \textbf{Tok/s} & \textbf{PSS} & \textbf{Akku} & \textbf{Akku} & \textbf{Status} \\
+              &                &                   & \scriptsize(Tok.) & \scriptsize(Tok.) & \scriptsize(ms) & \scriptsize(ms) & \scriptsize(ms) & & \scriptsize(MB) & \scriptsize(µAh) & \scriptsize(\%) & \\
+\midrule
+\endhead
+\midrule
+\multicolumn{13}{r}{\scriptsize Fortsetzung auf der nächsten Seite}\\
+\endfoot
+\bottomrule
+\endlastfoot
+19:32:07 & 1b   & report    & 417 & 145 & 447 & 13116 & 4120  & 11.06 & 1854 & 2234115 & 59 & ok \\
+19:32:14 & 1b   & report    & 417 & 145 & 447 &  6906 & 2047  & 21.00 & 1489 & 2234115 & 59 & ok \\
+19:32:21 & 1b   & report    & 417 & 145 & 447 &  6639 & 1919  & 21.84 & 1527 & 2234115 & 59 & ok \\
+19:32:27 & 1b   & report    & 417 & 145 & 447 &  6597 & 1883  & 21.98 & 1424 & 2234115 & 59 & ok \\
+19:32:34 & 1b   & report    & 417 & 145 & 447 &  6658 & 1908  & 21.78 & 1488 & 2234115 & 59 & ok \\
+\addlinespace
+19:32:47 & 1b   & artefakt  & 446 & 290 & 339 & 11596 & 2013  & 25.01 & 1502 & 2211885 & 59 & ok \\
+19:32:58 & 1b   & artefakt  & 446 & 290 & 339 & 11476 & 1974  & 25.27 & 1503 & 2211885 & 59 & ok \\
+19:33:10 & 1b   & artefakt  & 446 & 290 & 339 & 11401 & 1910  & 25.44 & 1503 & 2197065 & 58 & ok \\
+19:33:21 & 1b   & artefakt  & 446 & 290 & 339 & 11424 & 1985  & 25.39 & 1504 & 2197065 & 58 & ok \\
+19:33:33 & 1b   & artefakt  & 446 & 290 & 339 & 11477 & 1912  & 25.27 & 1523 & 2197065 & 58 & ok \\
+\addlinespace
+19:33:45 & 1b   & vergleich & 740 & 117 & 289 & 10107 & 5890  & 11.58 & 1568 & 2178540 & 58 & ok \\
+19:33:54 & 1b   & vergleich & 740 & 117 & 289 &  9494 & 5444  & 12.32 & 1633 & 2178540 & 58 & ok \\
+19:34:05 & 1b   & vergleich & 740 & 117 & 289 & 10529 & 6554  & 11.11 & 1635 & 2178540 & 58 & ok \\
+19:34:15 & 1b   & vergleich & 740 & 117 & 289 &  9918 & 5852  & 11.80 & 1628 & 2163720 & 58 & ok \\
+19:34:24 & 1b   & vergleich & 740 & 117 & 289 &  9606 & 5582  & 12.18 & 1562 & 2163720 & 58 & ok \\
+\addlinespace
+19:34:42 & 2b   & report    & 415 &  72 & 871 & 15173 & 6877  &  4.75 & 3500 & 2148900 & 57 & ok \\
+19:34:56 & 2b   & report    & 415 &  72 & 871 & 14264 & 6133  &  5.05 & 3497 & 2148900 & 57 & ok \\
+19:35:10 & 2b   & report    & 415 &  72 & 871 & 14095 & 5896  &  5.11 & 3757 & 2137785 & 57 & ok \\
+19:35:26 & 2b   & report    & 415 &  72 & 871 & 14907 & 6747  &  4.83 & 3757 & 2137785 & 57 & ok \\
+19:35:40 & 2b   & report    & 415 &  72 & 871 & 13735 & 5577  &  5.24 & 3753 & 2126670 & 57 & ok \\
+\addlinespace
+19:35:58 & 2b   & artefakt  & 444 &  88 & 467 & 16864 & 6440  &  5.22 & 3494 & 2126670 & 57 & ok \\
+19:36:17 & 2b   & artefakt  & 444 &  88 & 467 & 18489 & 6723  &  4.76 & 3494 & 2111850 & 56 & ok \\
+19:36:35 & 2b   & artefakt  & 444 &  88 & 467 & 17780 & 6225  &  4.95 & 3494 & 2111850 & 56 & ok \\
+19:36:55 & 2b   & artefakt  & 444 &  88 & 467 & 18987 & 7037  &  4.63 & 3755 & 2100735 & 56 & ok \\
+19:37:14 & 2b   & artefakt  & 444 &  88 & 467 & 19005 & 7034  &  4.63 & 3810 & 2089620 & 56 & ok \\
+\addlinespace
+19:37:43 & 2b   & vergleich & 736 &  78 & 516 & 26207 & 16549 &  2.98 & 3606 & 2078505 & 55 & ok \\
+19:38:10 & 2b   & vergleich & 736 &  78 & 516 & 27347 & 16459 &  2.85 & 3605 & 2067390 & 55 & ok \\
+19:38:38 & 2b   & vergleich & 736 &  78 & 516 & 27050 & 16408 &  2.88 & 3864 & 2059980 & 55 & ok \\
+19:39:05 & 2b   & vergleich & 736 &  78 & 516 & 27143 & 16916 &  2.87 & 3861 & 2059980 & 55 & ok \\
+19:39:33 & 2b   & vergleich & 736 &  78 & 516 & 27229 & 16618 &  2.86 & 3861 & 2048865 & 55 & ok \\
+\addlinespace
+19:40:11 & qwen & report    & 439 & 484 & 729 & 36294 & 6744  & 13.34 & 1992 & 2030340 & 54 & ok \\
+19:40:46 & qwen & report    & 439 & 484 & 729 & 34373 & 5242  & 14.08 & 1992 & 2015520 & 54 & ok \\
+19:41:20 & qwen & report    & 439 & 484 & 729 & 34215 & 5335  & 14.15 & 1994 & 2004405 & 53 & ok \\
+19:41:55 & qwen & report    & 439 & 484 & 729 & 34371 & 5389  & 14.08 & 1995 & 1993290 & 53 & ok \\
+19:42:29 & qwen & report    & 439 & 484 & 729 & 34775 & 5487  & 13.92 & 1996 & 1978470 & 53 & ok \\
+\addlinespace
+19:42:58 & qwen & artefakt  & 482 & 357 & 266 & 27101 & 5489  & 13.17 & 1993 & 1967355 & 52 & ok \\
+19:43:25 & qwen & artefakt  & 482 & 357 & 266 & 26562 & 5265  & 13.44 & 1993 & 1952535 & 52 & ok \\
+19:43:52 & qwen & artefakt  & 482 & 357 & 266 & 26847 & 5493  & 13.30 & 1995 & 1941420 & 52 & ok \\
+19:44:18 & qwen & artefakt  & 482 & 357 & 266 & 26712 & 5253  & 13.36 & 1995 & 1926600 & 51 & ok \\
+19:44:45 & qwen & artefakt  & 482 & 357 & 266 & 26670 & 5212  & 13.39 & 1994 & 1915485 & 51 & ok \\
+\addlinespace
+19:45:27 & qwen & vergleich & 770 & 474 & 272 & 39502 & 13959 & 12.00 & 2095 & 1904370 & 51 & ok \\
+19:46:06 & qwen & vergleich & 770 & 474 & 272 & 39482 & 13806 & 12.01 & 2096 & 1893255 & 50 & ok \\
+19:46:48 & qwen & vergleich & 770 & 474 & 272 & 41471 & 13328 & 11.43 & 2096 & 1863615 & 50 & ok \\
+19:47:32 & qwen & vergleich & 770 & 474 & 272 & 43520 & 14214 & 10.89 & 2098 & 1852500 & 49 & ok \\
+19:48:15 & qwen & vergleich & 770 & 474 & 272 & 43523 & 14613 & 10.89 & 2165 & 1830270 & 49 & ok \\
+\end{longtable}
+}
