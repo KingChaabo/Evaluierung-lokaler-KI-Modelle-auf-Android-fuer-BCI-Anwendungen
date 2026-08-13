@@ -348,7 +348,7 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailseite, die es schon in der ursprünglichen Anwendung gab (\autoref{fig:session-detail}). Hinzugekommen sind zwei neue Knöpfe. Die Benutzeroberfläche, die für die KI-Analyse zuständig ist, befindet sich im Paket analyse. Die Oberfläche startet mit dem Auslösen des Analyseknopfes. Daraufhin erfolgt ein Dialog zum Einstellen der Parameter und anschließend die Anzeige der Ergebnisse. Zudem gibt es einen Benchmark-Knopf, der über einen weiteren Dialog die automatisierte Messreihe startet.
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/session_detail.png}
+    \screenshot[0.40\textwidth]{Graphics/session_detail.jpeg}
     \caption{Session-Detailansicht mit dem Einstieg in die Analyse und Benchmark.}
     \label{fig:session-detail}
 \end{figure}
@@ -357,7 +357,7 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/analyse_dialog.png}
+    \screenshot[0.40\textwidth]{Graphics/Dialog.jpeg}
     \caption{Analyse-Dialog.}
     \label{fig:analyse-dialog}
 \end{figure}
@@ -377,7 +377,7 @@ public void onChunk(String partial) {
 
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/analyse_ergebnis.png}
+    \screenshot[0.40\textwidth]{Graphics/Ergebnis.jpeg}
     \caption{Ergebnis-Ansicht der KI-Analyse.}
     \label{fig:analyse-ergebnis}
 \end{figure}
@@ -388,7 +388,7 @@ public void onChunk(String partial) {
 Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf, über den man die automatisierte Messreihe starten kann. Auch dort startet zuvor ein Dialog (\autoref{fig:benchmark-dialog}), mit dem man für das Vergleichsszenario eine Session auswählen muss.
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/benchmark_dialog.png}
+    \screenshot[0.40\textwidth]{Graphics/Benchmark.jpeg}
     \caption{Benchmark-Dialog.}
     \label{fig:benchmark-dialog}
 \end{figure}

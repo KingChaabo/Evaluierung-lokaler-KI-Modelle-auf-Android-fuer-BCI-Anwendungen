@@ -213,7 +213,7 @@ Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta
 \begin{minipage}{0.93\linewidth}\small
 Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwischen 56\,\% und 86\,\% lag. Die Signalqualität der Messungen war in allen Abschnitten gut. Auffällig waren Ausschlagsignale in den Abschnitten 1 und 4, wobei Kanal 4 und Kanal 2 jeweils die höchsten Werte erreichte.
 \end{minipage}}}
-\medskip
+\vspace{\baselineskip}
 
 \noindent Die Ausgabe erkennt die Delta-Dominanz korrekt, bewertet die Signalqualität zutreffend und nennt die auffälligen Kanäle. Sie ist knapp und hält das Format ein. Alle vier Kriterien sind erfüllt.
 \vspace{\baselineskip}
@@ -225,7 +225,7 @@ Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwische
 \begin{minipage}{0.93\linewidth}\small
 Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), Theta-Zuständen (16\,\%), Alpha-Zuständen (13\,\%), Beta-Zuständen (6\,\%) und Gamma-Zuständen (5\,\%). Der größte Ausschlag wurde am Kanal 2 (3309 µV) festgestellt. Der Schwerpunkt lag hauptsächlich in den Sekundenbereichen 0--30, 30--60 und 60--91 Sekunden, wobei Delta- und Theta-Zustände am stärksten ausgeprägt waren. Es gab einige ungültige Messwerte, darunter ein signifikanter Ausschlag am Kanal 2.
 \end{minipage}}}
-\medskip
+\vspace{\baselineskip}
 
 \noindent Auch wenn die Aussage mit der Delta-Dominanz übereinstimmt, gibt es einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Abschnitte vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
 \vspace{\baselineskip}
@@ -238,7 +238,7 @@ Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), T
 \#\#\# Bericht\par
 Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8 KanÃ¤len gezählt. Die Signalqualität ist gut mit einer overall Signalqualität von 86\,\%. [\dots] Die dominante Frequenzbänder sind Delta (16\,\%), Theta (33\,\%), Alpha (60\,\%), Beta (15\,\%) und Gamma (13\,\%), wobei Delta und Theta die hauptsächlichste Frequenz bilden. [\dots]
 \end{minipage}}}
-\medskip
+\vspace{\baselineskip}
 
 \noindent Hier treten mehrere Fehler auf. Vor allem die Formatvorgabe wird deutlich verletzt. Zunächst beginnt die Ausgabe mit einer Markdown-Überschrift (\#\#\#), darüber hinaus enthält die Ausgabe fehlerhaft kodierte Umlaute wie „KanÃ¤len" und ist zu lang. Zudem sind die Bandanteile falsch (Alpha mit 60\,\% als stärkstes Band, Summe über 100\,\%) und die Signalqualität ist frei erfunden. Keines der vier Kriterien wird in diesem Fall zuverlässig erfüllt.
 \vspace{\baselineskip}
