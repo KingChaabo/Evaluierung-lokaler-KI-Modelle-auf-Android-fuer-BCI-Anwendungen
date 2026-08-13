@@ -3,7 +3,7 @@
 Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung auf sie aufbaut, wird sie ebenfalls in derselben Programmiersprache realisiert. Android Studio wird dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt.
 \section{Architektur}
 \label{sec:architektur}
-Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komponenten, die in \autoref{fig:architektur} dargestellt sind:
+Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komponenten (Blau und Grün), die in \autoref{fig:architektur} dargestellt sind:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{Graphics/Architektur.pdf}
@@ -27,23 +27,14 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 
 \noindent Ein zentrales Merkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
 In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenfalls ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
-Die in \autoref{fig:architektur} grün und blau markierten Komponenten stellen den eigenen Beitrag dar.
 \vspace{\baselineskip}
 
-\noindent Darüber hinaus zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
+\noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
     \caption{Sequenzdiagramm des Analyse-Ablaufs \autocite{drawio}.}
     \label{fig:seq-analyse}
-\end{figure}
-
-\noindent Bisher wurde die vom Nutzer ausgelöste Einzelanalyse betrachtet. Für die Evaluation wird eine systematische und automatisierte Folge von Messungen benötigt. Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt und wird nur für die Evaluation verwendet.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
-    \caption{Sequenzdiagramm des Benchmark-Ablaufs \autocite{drawio}.}
-    \label{fig:seq-benchmark}
 \end{figure}
 
 \noindent Nun werden die einzelnen Komponenten der Architektur im Detail erläutert, beginnend mit der Merkmalsextraktion.
@@ -184,7 +175,6 @@ private double[] sumBands(double[] power) {
 \noindent Die Einteilung in die Frequenzbänder ist zentral im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen.
 
 \subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
-\vspace{\baselineskip}
 
 \subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung.
 
@@ -221,7 +211,7 @@ Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featurete
 \begin{figure}[H]
 \centering
 {\setlength{\fboxsep}{12pt}%
-\fcolorbox{black!30}{white}{%
+\fcolorbox{black!30}{black!8}{%
 \begin{minipage}{0.88\linewidth}
 \sffamily\small
 EEG-Session, Dauer 60.0s, 8 Kanäle.\\[5pt]
@@ -421,7 +411,7 @@ public void onChunk(String partial) {
         \draw[rounded corners=8pt, black!30, line width=0.5pt]
               (im.south west) rectangle (im.north east);
         \begin{scope}[x={(im.south east)},y={(im.north west)}]
-            \node[anchor=east, align=right] (lms) at (-0.15,0.96) {Modell und\\Szenario};
+            \node[anchor=east, align=right] (lms) at (-0.15,0.96) {Szenario und\\Modell};
             \draw[callout] (lms.east) to[out=0,in=180] (0.02,0.93);
             \node[anchor=east, align=right] (lat) at (-0.15,0.86) {Latenz-Werte};
             \draw[callout] (lat.east) to[out=0,in=180] (0.02,0.86);
@@ -459,8 +449,15 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
 \noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben.
 \section{Benchmark}
 \label{sec:impl-benchmark}
-Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die CSV-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht.
+Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die CSV-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht. Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
 \vspace{\baselineskip}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
+    \caption{Sequenzdiagramm des Benchmark-Ablaufs \autocite{drawio}.}
+    \label{fig:seq-benchmark}
+\end{figure}
 
 \subsection{Ablauf} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
 \begin{lstlisting}[style=code, caption={Ablauf des Benchmarks mit Aufwaermphase}, label={lst:runall}]
