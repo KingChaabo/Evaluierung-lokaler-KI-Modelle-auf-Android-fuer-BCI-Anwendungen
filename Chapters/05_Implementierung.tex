@@ -348,7 +348,18 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailseite, die es schon in der ursprünglichen Anwendung gab (\autoref{fig:session-detail}). Hinzugekommen sind zwei neue Knöpfe. Die Benutzeroberfläche, die für die KI-Analyse zuständig ist, befindet sich im Paket analyse. Die Oberfläche startet mit dem Auslösen des Analyseknopfes. Daraufhin erfolgt ein Dialog zum Einstellen der Parameter und anschließend die Anzeige der Ergebnisse. Zudem gibt es einen Benchmark-Knopf, der über einen weiteren Dialog die automatisierte Messreihe startet.
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/session_detail.jpeg}
+    \begin{tikzpicture}
+        \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
+              {\includegraphics[width=0.40\textwidth]{Graphics/session_detail.jpeg}};
+        \draw[rounded corners=8pt, black!30, line width=0.5pt]
+              (im.south west) rectangle (im.north east);
+        % normiertes Koordinatensystem (0..1) ueber dem Bild
+        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+            \node[anchor=west, font=\fontfamily{phv}\selectfont\footnotesize\bfseries] (neu) at (1.08,0.36) {neu};
+            \draw[->, thick] (neu.west) to[out=180,in=0] (0.88,0.40);
+            \draw[->, thick] (neu.west) to[out=180,in=0] (0.88,0.315);
+        \end{scope}
+    \end{tikzpicture}
     \caption{Session-Detailansicht mit dem Einstieg in die Analyse und Benchmark.}
     \label{fig:session-detail}
 \end{figure}
@@ -357,7 +368,31 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/Dialog.jpeg}
+    \begin{tikzpicture}[
+        every node/.style={font=\fontfamily{phv}\selectfont\scriptsize},
+        callout/.style={->, thick},
+    ]
+        \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
+              {\includegraphics[width=0.40\textwidth]{Graphics/Dialog.jpeg}};
+        \draw[rounded corners=8pt, black!30, line width=0.5pt]
+              (im.south west) rectangle (im.north east);
+        % normiertes Koordinatensystem (0..1) ueber dem Bild
+        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+            % --- linke Beschriftungen ---
+            \node[anchor=east, align=right] (lsz) at (-0.04,0.68) {Analyse-Art\\wählen};
+            \draw[callout] (lsz.east) to[out=0,in=180] (0.08,0.68);
+            \node[anchor=east, align=right] (lmo) at (-0.04,0.585) {Sprachmodell\\wählen};
+            \draw[callout] (lmo.east) to[out=0,in=180] (0.08,0.585);
+            \node[anchor=east, align=right] (lfe) at (-0.04,0.335) {FFT-Auflösung\\(Entwickler)};
+            \draw[callout] (lfe.east) to[out=0,in=180] (0.08,0.35);
+            % --- rechte Beschriftungen ---
+            \node[anchor=west, align=left] (rin) at (1.04,0.635) {Kurz-\\erklärung};
+            \draw[callout] (rin.west) to[out=180,in=0] (0.925,0.68);
+            \draw[callout] (rin.west) to[out=180,in=0] (0.925,0.585);
+            \node[anchor=west, align=left] (rme) at (1.04,0.50) {Latenz-Werte\\einblenden};
+            \draw[callout] (rme.west) to[out=180,in=0] (0.925,0.50);
+        \end{scope}
+    \end{tikzpicture}
     \caption{Analyse-Dialog.}
     \label{fig:analyse-dialog}
 \end{figure}
@@ -377,7 +412,23 @@ public void onChunk(String partial) {
 
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/Ergebnis.jpeg}
+    \begin{tikzpicture}[
+        every node/.style={font=\fontfamily{phv}\selectfont\scriptsize},
+        callout/.style={->, thick},
+    ]
+        \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
+              {\includegraphics[width=0.40\textwidth]{Graphics/Ergebnis.jpeg}};
+        \draw[rounded corners=8pt, black!30, line width=0.5pt]
+              (im.south west) rectangle (im.north east);
+        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+            \node[anchor=east, align=right] (lms) at (-0.15,0.96) {Modell und\\Szenario};
+            \draw[callout] (lms.east) to[out=0,in=180] (0.02,0.93);
+            \node[anchor=east, align=right] (lat) at (-0.15,0.86) {Latenz-Werte};
+            \draw[callout] (lat.east) to[out=0,in=180] (0.02,0.86);
+            \node[anchor=east, align=right] (lau) at (-0.15,0.55) {Ausgabe des\\Modells};
+            \draw[callout] (lau.east) to[out=0,in=180] (0.02,0.60);
+        \end{scope}
+    \end{tikzpicture}
     \caption{Ergebnis-Ansicht der KI-Analyse.}
     \label{fig:analyse-ergebnis}
 \end{figure}
@@ -388,7 +439,19 @@ public void onChunk(String partial) {
 Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf, über den man die automatisierte Messreihe starten kann. Auch dort startet zuvor ein Dialog (\autoref{fig:benchmark-dialog}), mit dem man für das Vergleichsszenario eine Session auswählen muss.
 \begin{figure}[H]
     \centering
-    \screenshot[0.40\textwidth]{Graphics/Benchmark.jpeg}
+    \begin{tikzpicture}[
+        every node/.style={font=\fontfamily{phv}\selectfont\scriptsize},
+        callout/.style={->, thick},
+    ]
+        \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
+              {\includegraphics[width=0.40\textwidth]{Graphics/Benchmark.jpeg}};
+        \draw[rounded corners=8pt, black!30, line width=0.5pt]
+              (im.south west) rectangle (im.north east);
+        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+            \node[anchor=east, align=right] (lse) at (-0.15,0.52) {zweite Session\\auswählen};
+            \draw[callout] (lse.east) to[out=0,in=180] (0.05,0.500);
+        \end{scope}
+    \end{tikzpicture}
     \caption{Benchmark-Dialog.}
     \label{fig:benchmark-dialog}
 \end{figure}

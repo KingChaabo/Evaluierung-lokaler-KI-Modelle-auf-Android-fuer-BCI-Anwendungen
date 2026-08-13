@@ -844,6 +844,38 @@
       \verb https://arxiv.org/abs/2505.09388
       \endverb
     \endentry
+    \entry{samsung_galaxyai}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=bcccbb489bb35cf04eaa9d1a8d0a9630}{%
+           family={{Samsung Electronics}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{fullhash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{fullhashraw}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{bibnamehash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{authorbibnamehash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{authornamehash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{authorfullhash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \strng{authorfullhashraw}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \field{extraname}{1}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Galaxy {AI} -- Funktionen}
+      \field{urlday}{12}
+      \field{urlmonth}{8}
+      \field{urlyear}{2026}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.samsung.com/de/support/mobile-devices/galaxy-ai-funktionen/
+      \endverb
+      \verb{url}
+      \verb https://www.samsung.com/de/support/mobile-devices/galaxy-ai-funktionen/
+      \endverb
+    \endentry
     \entry{samsung_s23_specs}{online}{}{}
       \name{author}{1}{}{%
         {{hash=bcccbb489bb35cf04eaa9d1a8d0a9630}{%
@@ -858,6 +890,7 @@
       \strng{authornamehash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
       \strng{authorfullhash}{bcccbb489bb35cf04eaa9d1a8d0a9630}
       \strng{authorfullhashraw}{bcccbb489bb35cf04eaa9d1a8d0a9630}
+      \field{extraname}{2}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{labelnamesource}{author}
