@@ -190,7 +190,7 @@ private double[] sumBands(double[] power) {
 
 \subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung.
 
-\subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in einen lesbaren format für das Sprachmdoell umgewandelt werden.
+\subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in ein lesbares Format für das Sprachmodell umgewandelt werden.
 \vspace{\baselineskip}
 
 \noindent Die Aufbereitung läuft wie folgt: Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
@@ -302,7 +302,7 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 \noindent Bei der Optimierung des Prompts ergaben sich folgende Design-Vorgaben, die jeweils auf ein beobachtetes Problem der frühen Ausgaben zurückgehen:
 \begin{itemize}
 \item \textbf{Datentreue:} Es wird darauf hingewiesen, nur die Werte zu verwenden, die genannt werden. Dies soll verhindern, dass das Modell eigene Annahmen trifft. Dieses Problem trat in früheren Ausgaben auf, so wurden Begriffe wie \enquote{Dominanzindex} genannt.
-\item \textbf{Reines Textformat:} Es wird sichergestellt, dass die Ausgaben des Modells nur textuelle Informationen enthalten. Es werden Sonderzeichen (Markdown) verboten, da sonst Formatierungszeichen (z.,B. \texttt{**}) auftraten.
+\item \textbf{Reines Textformat:} Es wird sichergestellt, dass die Ausgaben des Modells nur textuelle Informationen enthalten. Es werden Sonderzeichen (Markdown) verboten, da sonst Formatierungszeichen (z.\,B. \texttt{**}) auftraten.
 \item \textbf{Eindeutige Merkmalsbenennung:} Im \texttt{FeatureFormatter} wird der Anteil ungültiger Werte als \enquote{Ungültige Messwerte: X\,\%} statt als \enquote{Qualität: X\,\%} ausgegeben. Zuvor interpretierte das Modell \enquote{Qualität: X\,\%} fälschlich als schlechte Qualität.
 \item \textbf{Begrenzung der Interpretation:} Ausgaben mit falscher Interpretation, etwa durch die Einbeziehung medizinischer Diagnosen, werden verhindert, da sie zuvor ein Problem darstellten.
 \item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.

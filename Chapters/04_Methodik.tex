@@ -107,7 +107,7 @@ Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen syst
 Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden drei Anwendungsszenarien betrachtet. Dabei wird untersucht, wie ein Sprachmodell die extrahierten Merkmale einer oder mehrerer Sessions verarbeitet. Jedes Szenario besteht aus einem einmaligen Aufruf des Modells, der die Merkmale der Session(s) als Eingabe erhält. Es wird keine vorab bekannte Musterlösung benötigt.
 \begin{itemize}
 \item \textbf{Session-Report:} Aus den Merkmalen einer Session wird ein zusammenhängender, lesbarer Bericht generiert.
-\item \textbf{Artefakt-Erklärung:} Das Modell erhält die Kennzahlen einer Session und erklärt auffällige Muster (z.B. hohe Peak-to-Peak-Amplituden oder einen hohen Anteil ungültiger Werte) in natürlicher Sprache.
+\item \textbf{Artefakt-Erklärung:} Das Modell erhält die Kennzahlen einer Session und erklärt auffällige Muster (z.\,B. hohe Peak-to-Peak-Amplituden oder einen hohen Anteil ungültiger Werte) in natürlicher Sprache.
 \item \textbf{Session-Vergleich:} Es werden die Merkmale zweier Sessions übergeben und darauffolgend verglichen.
 \end{itemize}
 
@@ -118,7 +118,7 @@ Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden
 \section{Messprotokoll (Benchmark)}
 \label{sec:messprotokoll}
 Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen ausgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
-Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt (Eine Wegwerf-Messung), um Kaltstart-Effekte zu vermeiden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebniss dieser Messung wird nicht Protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich.
+Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt (eine Wegwerf-Messung), um Kaltstart-Effekte zu vermeiden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebnis dieser Messung wird nicht protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich.
 
 \subsection{Metriken}
 \label{subsec:metriken}
@@ -172,7 +172,7 @@ Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbeda
 Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können, werden sie unter den folgenden Rahmenbedingungen durchgeführt:
 \begin{itemize}
 \item Der Flugmodus im Testgerät ist aktiviert, um Netzwerkaktivitäten auszuschließen.
-\item Die Bildschirmhelligkeit wird auf einen festen Wert (Ungefähr 50\,\%) eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
+\item Die Bildschirmhelligkeit wird auf einen festen Wert (ungefähr 50\,\%) eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
 \item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde. Bei Start der Messung befindet sich der Akkustand bei ungefähr 60\,\%.
 \item Alle unnötigen Hintergrundprozesse werden beendet, um die Systemlast zu minimieren.
 \item Alle Messungen finden möglichst innerhalb von 20 Minuten statt, um die Temperatur des Geräts konstant zu halten.

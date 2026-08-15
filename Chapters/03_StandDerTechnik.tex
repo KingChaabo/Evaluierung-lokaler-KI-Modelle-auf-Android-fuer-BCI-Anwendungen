@@ -14,7 +14,7 @@ Das systemintegrierte Modell Gemini Nano ist stark an die Hardware gebunden, da 
 \noindent Die Möglichkeit einer virtuellen Testumgebung wie eines Android-Emulators ist ausgeschlossen, da die physische Präsenz der Gerätehardware benötigt wird \autocite{gemininano,edgellm_review}.
 \vspace{\baselineskip}
 
-\noindent Aufgrund dieser Einschränkungen steht die systemintegrierte Lösung Gemini Nano für diese diese Arbeit nicht zur Verfügung. Deshalb wird im Folgenden die frei deploybare Lösung betrachtet, die auf dem Testgerät Samsung Galaxy S23 genutzt werden kann.
+\noindent Aufgrund dieser Einschränkungen steht die systemintegrierte Lösung Gemini Nano für diese Arbeit nicht zur Verfügung. Deshalb wird im Folgenden die frei deploybare Lösung betrachtet, die auf dem Testgerät Samsung Galaxy S23 genutzt werden kann.
 
 \subsection{Frei deploybare Lösung}
 \label{subsec:frei-deploybare-loesung}
@@ -58,7 +58,7 @@ Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für d
 \subsection{Unicorn Hybrid Black}
 Das Unicorn Hybrid Black ist die BCI-Plattform, die in dieser Arbeit verwendet wird. Es ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
     Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
-    Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet er sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
+    Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet es sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
     \begin{figure}[H]
     \centering
     \includegraphics[width=1.00\textwidth]{Graphics/UnicornHybrid.pdf}
@@ -93,7 +93,7 @@ Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth
 Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, EEG-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-FFT visualisiert.
     Die Daten werden dauerhaft gespeichert und können zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
 \subsection{Beitrag dieser Arbeit}
-Die bestehende Anwendung wird um neue Funktionalitäten erweitert. Diese besteht aus der Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
+Die bestehende Anwendung wird um neue Funktionalitäten erweitert. Diese bestehen aus der Verarbeitung der EEG-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
     \begin{itemize}
         \item Schicht zur Merkmalsextraktion (\texttt{features}).
         \item Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}).

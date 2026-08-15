@@ -4,7 +4,7 @@ Dieses Kapitel präsentiert die Durchführung (\autoref{subsec:messbedingungen})
 
 \section{Durchführung der Messungen}
 \label{sec:eval-durchfuehrung}
-Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten CSV-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird. Die Rohens Messwerte liegen vollständig und ungemittelt in \autoref{tab:app-rohdaten}.
+Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten CSV-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird. Die rohen Messwerte liegen vollständig und ungemittelt in \autoref{tab:app-rohdaten}.
 Vor der ersten Messung wird ein Aufwärmlauf durchgeführt.
 \vspace{\baselineskip}
 
@@ -17,7 +17,7 @@ Vor der ersten Messung wird ein Aufwärmlauf durchgeführt.
 
 \section{Latenz}
 \label{sec:eval-latenz}
-Im folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
+Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
 % Deutung: welches Modell schneller? TTFT vs Gesamtdauer? Tokens/s als fairer Vergleich.
 \setlength{\tabcolsep}{4pt}
 \begin{table}[H]
@@ -47,12 +47,12 @@ Im folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
 \end{table}
 
 \noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 25,34 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 2,87 Tok/s).
-Die \textbf{Ladezeit} ist bei Gemma 2 2B am höchsten; die beiden kleineren Modelle Gemma 3 1B und Qwen 2.5 1.5B laden schneller. Sie liegt durchweg unter einer Sekunde (zwischen 0,27 und 0,87,s).
-Die \textbf{Zeit bis zum ersten Token (TTFT)} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die TTFT mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,60,s.
-Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00,s und variiert stark zwischen den Modellen und Szenarien.
+Die \textbf{Ladezeit} ist bei Gemma 2 2B am höchsten; die beiden kleineren Modelle Gemma 3 1B und Qwen 2.5 1.5B laden schneller. Sie liegt durchweg unter einer Sekunde (zwischen 0,27 und 0,87\,s).
+Die \textbf{Zeit bis zum ersten Token (TTFT)} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die TTFT mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,60\,s.
+Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
 \vspace{\baselineskip}
 
-\noindent Da die \textbf{Standardabweichungen} überwiegend gering ausfallen, weisen sie auf stabile Messungen hin. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
+\noindent Da die \textbf{Standardabweichungen} überwiegend gering ausfallen, weisen sie auf stabile Messungen hin. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
 \vspace{\baselineskip}
 
 \noindent Zur besseren Vergleichbarkeit sind die Latenzmetriken in \autoref{fig:eval-latenz} zusätzlich grafisch dargestellt.
@@ -101,7 +101,7 @@ Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00,s und variiert stark zwi
 \end{figure}
 \section{Ressourcenverbrauch}
 \label{sec:eval-ressourcen}
-Daraufolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorgestellt.
+Darauffolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorgestellt.
 % Deutung: RAM waechst mit Modellgroesse? Akku-Tradeoff (2B ~1,5x 1B, aus deinem 1. Lauf).
 
 \begin{table}[H]
@@ -178,8 +178,8 @@ Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht.
 \section{Stabilität}
 \label{sec:eval-stabilitaet}
 Alle 45 Messungen wurden mit dem Status \enquote{ok} protokolliert. Das bedeutet, dass alle Läufe erfolgreich liefen. Es gab keine Abstürze, keine Fehler und keinen Speicherüberlauf.
-Das größere Modell Gemma 2 2B lief ebenso stabil, obwohl es mit ca.\ 3742,MB den meisten RAM verbrauchte.
-Auffällig war lediglich eine leichte Schwankung, die bei Gemma 2 2B/Artefakt auftrat. Dort fiel eine größere Streuung auf (± 2,24,s), die vermutlich unter Dauerlast entstand.
+Das größere Modell Gemma 2 2B lief ebenso stabil, obwohl es mit ca.\ 3742\,MB den meisten RAM verbrauchte.
+Auffällig war lediglich eine leichte Schwankung, die bei Gemma 2 2B/Artefakt auftrat. Dort fiel eine größere Streuung auf (± 2,24\,s), die vermutlich unter Dauerlast entstand.
 % Status-Verteilung (erfolgreich/Fehler/OOM), Throttling-Beobachtungen,
 % ob ein Modell an die RAM-Grenze des S23 kam. Meist Fliesstext + evtl. kleine Tabelle.
 
@@ -297,4 +297,4 @@ In \autoref{fig:eval-gesamt} sind jeweils die Stärken und Schwächen jedes Mode
 \noindent Der Vergleich zeigt, dass kein Modell in allen Bereichen überlegen ist. Während Qwen 2.5 1.5B am schwächsten ausfällt, besitzen die Gemma-Modelle jeweils unterschiedliche Stärken. Gemma 3 1B bietet eine hohe Effizienz sowie wenig Speicher- und Akkuverbrauch, ist jedoch in den Punkten Qualität und Stabilität hinter Gemma 2 2B zurück. Letzteres glänzt mit einer hohen Ausgabequalität und Stabilität, ist jedoch langsamer und verbraucht mehr Ressourcen.
 \vspace{\baselineskip}
 
-\noindent Interessant wird es bei der Frage, ob oder welche Modell sich für den praktischen Einsatz eignen und inwiefern, was nachfolgend in \autoref{ch:diskussion} besprochen wird.
+\noindent Interessant wird es bei der Frage, ob oder welches Modell sich für den praktischen Einsatz eignet und inwiefern, was nachfolgend in \autoref{ch:diskussion} besprochen wird.

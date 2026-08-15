@@ -1,6 +1,6 @@
 \chapter{Grundlagen}
 \label{ch:grundlagen}
-In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit benötigt werden, vermittelt. Dabei werden Folgenden zentrale Konzepte vorgestellt, auf denen die weiteren Kapitel aufbauen.
+In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit benötigt werden, vermittelt. Dabei werden folgende zentrale Konzepte vorgestellt, auf denen die weiteren Kapitel aufbauen.
 
 \section{Elektroenzephalographie (EEG)}
 \label{sec:eeg}
@@ -8,7 +8,7 @@ In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit be
 Die Elektroenzephalographie (EEG) ist ein Verfahren zur Aufzeichnung der elektrischen Aktivität des menschlichen Gehirns. Die aufgezeichneten Signale bestehen aus Spannungsschwankungen im Mikrovoltbereich, welche aus der synchronen elektrischen Aktivität von Neuronen resultieren \autocite{blum2017}. Die Messung erfolgt über Elektroden, die auf der Kopfhaut platziert werden und die Potenzialdifferenzen zwischen verschiedenen Punkten erfassen \autocite{10353995}.
 \vspace{\baselineskip}
 
-\noindent EEG-Signale haben die Eigenschaft, extrem gerige Amplitude im Mikrovoltbereich zu besitzen, weshalb es bei der Erfassung systematisch verstärkt werden muss \autocite{blum2017,10353995}.
+\noindent EEG-Signale haben die Eigenschaft, extrem geringe Amplitude im Mikrovoltbereich zu besitzen, weshalb sie bei der Erfassung systematisch verstärkt werden müssen \autocite{blum2017,10353995}.
 Das Frequenzspektrum erstreckt sich dabei meist von 0,1~Hz bis 100~Hz \autocite{10353995}.
 \vspace{\baselineskip}
 
@@ -49,7 +49,7 @@ Wichtig ist es zu bestimmen, welche Frequenzbänder in EEG-Signalen wie stark ve
 \subsection{Fourier-Transformation}
 \label{subsec:fft}
 Die Fast Fourier Transform (FFT) ist ein mathematisches Verfahren, das komplexe Signale in ihre sinusförmigen Bestandteile zerlegt und sie vom Zeitbereich in den Frequenzbereich überführt \autocite{10353995}.
-Dies wird verwendet um bei der Analyse der Gehirnströme, die spektralen eigenschaften von signalen zu untersuchen und Frequenspitzen (Peaks) zu berechnen. \autocite{10353995}.
+Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigenschaften von Signalen zu untersuchen und Frequenzspitzen (Peaks) zu berechnen \autocite{10353995}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.00\textwidth]{Graphics/ZeitFreq.pdf}
@@ -120,14 +120,14 @@ Edge-Geräten) zum Laufen bringen möchte. So benötigen LLMs enorm viel
 Speicherplatz und sehr viel Rechenleistung \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
-\noindent In der maschinellen Sprachverarbeitung werden Texte in Token zerlegt, die als kleinste Informationseinheiten dienen. So wird im Fachartikel \autocite{ibm_contextwindow} gesagt: \enquote{Ein Token kann für ein einzelnes Zeichen, einen Teil eines Wortes (z.,B. ein Suffix oder Präfix), ein ganzes Wort oder sogar eine kurze, aus mehreren Wörtern bestehende Phrase stehen.} Damit die benötigte Rechenleistung reduziert wird, enthält jedes Token eine eindeutige numerische Identifikationsnummer (ID), anhand derer das Modell die Sprache lernt und verarbeitet \autocite{ibm_contextwindow}.
+\noindent In der maschinellen Sprachverarbeitung werden Texte in Token zerlegt, die als kleinste Informationseinheiten dienen. So wird im Fachartikel \autocite{ibm_contextwindow} gesagt: \enquote{Ein Token kann für ein einzelnes Zeichen, einen Teil eines Wortes (z.\,B. ein Suffix oder Präfix), ein ganzes Wort oder sogar eine kurze, aus mehreren Wörtern bestehende Phrase stehen.} Damit die benötigte Rechenleistung reduziert wird, enthält jedes Token eine eindeutige numerische Identifikationsnummer (ID), anhand derer das Modell die Sprache lernt und verarbeitet \autocite{ibm_contextwindow}.
 \vspace{\baselineskip}
 
 \noindent Das Kontextfenster ist die maximale Anzahl an Token, die das Modell gleichzeitig verarbeiten kann \autocite{ibm_contextwindow}. Es ist sozusagen das Arbeitsgedächtnis des Modells. Sollte das Kontextfenster überschritten werden, werden die älteren Informationen gekürzt oder zusammengefasst, damit das Modell weiterhin im selben Kontext arbeiten kann \autocite{ibm_contextwindow}.
 
 \subsection{On-Device-Inferenz und Quantisierung}
 \label{subsec:ondevice}
-On-Device-Inferenz beschreibt die lokale ausführung von KI-Modellen direkt auf den lokalen Endgeräten 
+On-Device-Inferenz beschreibt die lokale Ausführung von KI-Modellen direkt auf den lokalen Endgeräten
 (beispielsweise einem Smartphone), anstatt die Daten zur Verarbeitung an einen externen 
 Cloud-Server zu senden \autocite{edgellm_review}.
 
@@ -162,7 +162,7 @@ Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) läss
 
 \subsection{Systemintegrierte und frei deploybare Modelle}
 \label{subsec:systemintegrierte-und-frei-deploybare-modelle}
-Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle die unterschieden werken können:
+Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle, die unterschieden werden können:
 \begin{itemize}
 \item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte Programmierschnittstellen (APIs) auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation erheblich reduziert.
 \item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Dadurch kann eine maximale Flexibilität gewährleistet werden, da sie unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten funktionieren. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um eine reibungslose Ende-zu-Ende-Verarbeitung zu gewährleisten \autocite{mediapipe_llm}.
