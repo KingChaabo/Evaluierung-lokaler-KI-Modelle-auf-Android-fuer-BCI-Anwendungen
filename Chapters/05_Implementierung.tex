@@ -25,8 +25,20 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 \noindent Die Architektur ist in drei Kernbereiche unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Ergänzend übernimmt das Paket \texttt{benchmark} die systematische Messung der Modelle. Durch die Trennung dieser Pakete bleibt der Code übersichtlich, wartbar und erweiterbar.
 \vspace{\baselineskip}
 
-\noindent Ein zentrales Merkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
+\noindent Ein Hauptmerkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
 In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenfalls ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
+\vspace{\baselineskip}
+
+\noindent Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich auch einfach und unproblematisch neue Szenarien einfügen, ohne die restliche Anwendung anpassen zu müssen.
+\vspace{\baselineskip}
+
+\noindent Auch mit dem \texttt{FeatureFormatter} ist eine einfache Änderung des Textes umsetzbar, da die Textdarstellung von der Berechnungslogik aller Merkmale entkoppelt ist.
+\vspace{\baselineskip}
+
+\noindent Besonders sind die Robustheit und Sauberkeit der Anwendung. Sie verändert nicht die Infrastruktur der bestehenden Anwendung, sondern erweitert sie. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
+\vspace{\baselineskip}
+
+\noindent Aussagekräftig ist zudem, dass der Benchmark denselben Analyseablauf verwendet wie eine vom Nutzer ausgelöste Einzelanalyse.
 \vspace{\baselineskip}
 
 \noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
@@ -355,7 +367,7 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt. Das visuelle Layout des Dialogs ist in der Datei \texttt{dialog\_analyse.xml} definiert.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -423,7 +435,7 @@ public void onChunk(String partial) {
     \label{fig:analyse-ergebnis}
 \end{figure}
 
-\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (siehe \autoref{sec:impl-features}).
+\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (siehe \autoref{sec:impl-features}). Das zugehörige Layout ist in der Datei \texttt{activity\_analyse\_ergebnis.xml} festgelegt.
 
 \subsection{Benchmark-Dialog}
 Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf, über den man die automatisierte Messreihe starten kann. Auch dort startet zuvor ein Dialog (\autoref{fig:benchmark-dialog}), mit dem man für das Vergleichsszenario eine Session auswählen muss.
@@ -446,7 +458,7 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
     \label{fig:benchmark-dialog}
 \end{figure}
 
-\noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben.
+\noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben. Das Layout des Dialogs ist in der Datei \texttt{dialog\_benchmark.xml} definiert.
 \section{Benchmark}
 \label{sec:impl-benchmark}
 Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die CSV-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht. Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
