@@ -1,10 +1,29 @@
 \chapter{Fazit und Ausblick}
 \label{ch:fazit}
+Abschließend werden die Ergebnisse dieser Arbeit zusammengefasst. Darüber hinaus wird die Forschungsfrage zur Eignung lokaler Sprachmodelle für mobile BCI-Anwendungen beantwortet und daraufhin ein Ausblick auf mögliche Weiterentwicklungen oder bessere Ansätze in zukünftigen Arbeiten gegeben.
 
 \section{Fazit}
 \label{sec:fazit}
-% TODO: ganz am Ende
+Die bestehende EEG-Anwendung wurde um neue Funktionalitäten erweitert, darunter die Merkmalsextraktion, die Anbindung lokaler Sprachmodelle, ein Benchmark und neue Benutzeroberflächen.
+\vspace{\baselineskip}
 
+\noindent Die Forschungsfrage, inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von EEG-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen, kann abschließend mit einem klaren Ja beantwortet werden. Die Evaluation hat eine stabile Verarbeitung der EEG-Daten durch alle drei getesteten Modelle gezeigt.
+Auch wenn Qwen 2.5 1.5B nicht überzeugen konnte, haben sich vor allem Gemma 2 2B und Gemma 3 1B als gut geeignet für die Verarbeitung von EEG-Daten erwiesen.
+\vspace{\baselineskip}
+
+\noindent Die Modellgröße bestimmt zwar TTFT, Geschwindigkeit und Speicher, aber nicht automatisch Qualität oder Gesamtverbrauch. Da diese Arbeit gezeigt hat, dass kein Modell in allen Bereichen überlegen ist, ist es entscheidend, den richtigen Einsatzzweck zu definieren und das Modell danach auszuwählen.
+\vspace{\baselineskip}
+
+\noindent Am Ende hängt es vom jeweiligen Anwendungsfall ab, welches Modell am besten geeignet ist. Das 2B-Modell von Gemma ist die beste Wahl, wenn Zeit und Ressourcen keine Rolle spielen und die Qualität im Vordergrund stehen soll. Es kann unter anderem als Hintergrundprozess verwendet werden. Das 1B-Modell von Gemma ist für schnelle Antworten auf ressourcenärmeren Geräten die beste Wahl. Es empfiehlt sich für alle Fälle, bei denen der Nutzer eine sofortige Rückmeldung benötigt.
 \section{Ausblick}
 \label{sec:ausblick}
-% TODO: zukünftige Arbeit
+Die Grundlage dieser Arbeit öffnet die Tür für weitere Entwicklungen oder verbesserte Ansätze:
+\begin{itemize}
+    \item \textbf{Mehr Testgeräte: } Da die Geräteauswahl auf ein Samsung Galaxy S23 beschränkt war, ist es nicht sicher, wie andere Chipsätze oder Hersteller die Ergebnisse beeinflussen würden. Man könnte die Evaluation auf weitere Geräte ausweiten und neue Vergleiche anstellen, wie sich unter anderem schwächere gegen stärkere Hardware verhält.
+    \item \textbf{Systemintegrierte Modelle: } Zudem ist es interessant zu wissen, wie systemintegrierte Modelle abschneiden würden. Zwar konnten sie in dieser Arbeit nicht verwendet werden, jedoch bieten sie, falls sie verfügbar sind, eine interessante Alternative zu frei deploybaren Modellen.
+    \item \textbf{Detailreichere Sessions: } Zwar wurde darauf geachtet, dass die verwendeten Sessions fehlerfrei aufgenommen wurden, jedoch nicht darauf, in welcher Situation bzw.\ welchem mentalen Zustand sie getragen wurden. Man könnte sie beispielsweise beim Schlafen oder Konzentrieren tragen, um zu sehen, wie die KI mit diesen Daten umgeht.
+    \item \textbf{Neuere Modelle \& Runtimes: } Die Modellauswahl war auf das Testgerät beschränkt. Zudem wurde darauf geachtet, dass alle auf derselben Laufzeitumgebung mit jeweils gleichen Parametern laufen. Interessant wäre es zu evaluieren, wie sich andere aktuelle oder kommende Modelle mit anderen Laufzeitumgebungen verhalten.
+    \item \textbf{BCI-Daten für echte Steuerungsbefehle: } Die verarbeiteten Daten wurden nur als Eingabe an die KI-Modelle übergeben und nicht weiterverwendet. Man könnte diese Daten auch für Steuerungsbefehle verwenden, zum Beispiel in Echtzeit ohne Muskelkraft.
+\end{itemize}
+
+\noindent Lokale Sprachmodelle haben ein riesiges Potenzial im mobilen BCI-Bereich. Die Entwicklung neuer Modelle und Geräte schreitet kontinuierlich voran und bietet in Zukunft neue, größere Möglichkeiten, um vollständig offline und datenschutzfreundlich auf mobilen Geräten ohne jegliches Vorwissen zu arbeiten.
