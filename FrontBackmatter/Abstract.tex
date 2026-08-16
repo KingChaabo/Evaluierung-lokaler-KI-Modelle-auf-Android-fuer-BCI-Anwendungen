@@ -3,6 +3,13 @@
 %*******************************************************
 \pdfbookmark[0]{Zusammenfassung}{Zusammenfassung}
 \chapter*{Zusammenfassung}
-Kurze Zusammenfassung des Inhaltes in deutscher Sprache, der Umfang beträgt zwischen einer halben und einer ganzen DIN A4-Seite.
+In der vorliegenden Arbeit wird die Eignung lokaler Sprachmodelle für mobile Brain-Computer-Interface-Anwendungen (BCI) untersucht. In der bestehenden Anwendung wurden EEG-Daten von einem tragbaren mobilen BCI-Gerät (Unicorn Hybrid Black) erfasst und anschließend visualisiert und/oder gespeichert. Solche Signale sind komplex und erfordern Fachwissen, um sie einwandfrei deuten zu können. Lokale Sprachmodelle können beim Deuten und Verstehen dieser Signale helfen. Das grundlegende Problem ist, dass solche Modelle oft auf ressourcenbeschränkten Geräten laufen und man daher die Tauglichkeit nicht garantieren kann. Daher ergibt sich die Forschungsfrage, inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von EEG-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen.
+\vspace{\baselineskip}
 
-Orientieren Sie sich bei der Aufteilung bzw. dem Inhalt Ihrer Zusammenfassung an Kent Becks Artikel: \url{http://plg.uwaterloo.ca/~migod/research/beckOOPSLA.html}.
+\noindent Daher wurde die Anwendung um drei Kernkomponenten erweitert. Darunter fallen die Merkmalsextraktion, bei der die rohen EEG-Daten in eine für das Modell verständliche Form gebracht werden, die Anbindung lokaler Sprachmodelle (Gemma 3 1B, Gemma 2 2B, Qwen 2.5 1.5B) und die Implementierung einer Benutzeroberfläche. Zusätzlich wurde ein Benchmark implementiert, der für das automatisierte Messen der Latenz, des Ressourcenverbrauchs und der Stabilität der Modelle zuständig ist.
+\vspace{\baselineskip}
+
+\noindent Die Ergebnisse zeigen, dass die Verarbeitung der EEG-Daten durch alle drei getesteten Modelle stabil ist. Die Modellgröße bestimmt zwar TTFT, Geschwindigkeit und Speicher, aber nicht automatisch Qualität oder Gesamtverbrauch. Keines der getesteten Modelle ist gleichzeitig in allen Bereichen überlegen. Die passende Modellwahl hängt schließlich davon ab, welcher Einsatzzweck verfolgt wird. Während Qwen 2.5 1.5B nicht überzeugend auftritt, sind die beiden Gemma-Modelle gut geeignet. Für schnelle Antworten auf ressourcenärmeren Geräten ist Gemma 3 1B die eindeutig beste Wahl. Wenn Zeit keine Rolle spielt und die Antwort sowieso im Hintergrund generiert wird, ist Gemma 2 2B die bessere Wahl, da sie die beste Ausgabequalität liefert.
+\vspace{\baselineskip}
+
+\noindent Zusammenfassend lässt sich sagen, dass sich solche Modelle definitiv für die Verarbeitung von EEG-Daten eignen. Sie sind eine gute Ergänzung für die bestehende Anwendung und lassen viel Raum für die Zukunft offen, da das Potenzial noch riesig ist.
