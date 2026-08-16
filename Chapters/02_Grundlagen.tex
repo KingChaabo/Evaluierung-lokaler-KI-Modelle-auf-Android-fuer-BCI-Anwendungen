@@ -104,20 +104,18 @@ große Sprachmodelle, deren Vor- und Nachteile sowie die Quantisierung vorgestel
 \subsection{Large Language Models}
 \label{subsec:llm}
 Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache
-(Natural Language Processing) grundlegend transformiert. LLMs sind hochkomplex
+(Natural Language Processing) maßgeblich verändert. LLMs sind komplex
 und basieren auf der Transformer-Architektur \autocite{edgellm_review}.
 Das Besondere daran ist der Self-Attention-Mechanismus (Selbstaufmerksamkeit).
 Dieser dient dazu, globale Abhängigkeiten zwischen Ein- und Ausgabesequenzen
 effizient zu modellieren \autocite{vaswani2017attention}.
 Die hohe Leistungsfähigkeit der Modelle wird durch die gelernten Werte von
-Milliarden von Parametern erreicht. Ihnen werden herausragende
-Eigenschaften im Sprachverstehen, in der Textsynthese, im logischen
-Schlussfolgern sowie in der generativen Texterstellung verliehen
-\autocite{edgellm_review}.
+Milliarden von Parametern erreicht. Sie zeigen Stärken im Sprachverstehen, in der Textsynthese, im logischen
+Schlussfolgern sowie in der generativen Texterstellung \autocite{edgellm_review}.
 Dadurch entstehen Herausforderungen, die es zu bewältigen gilt, etwa wenn man
 sie auf ressourcenbeschränkten Endgeräten wie Smartphones (sogenannten
 Edge-Geräten) zum Laufen bringen möchte. So benötigen LLMs enorm viel
-Speicherplatz und sehr viel Rechenleistung \autocite{edgellm_review}.
+Speicherplatz und Rechenleistung \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
 \noindent In der maschinellen Sprachverarbeitung werden Texte in Token zerlegt, die als kleinste Informationseinheiten dienen. So wird im Fachartikel \autocite{ibm_contextwindow} gesagt: \enquote{Ein Token kann für ein einzelnes Zeichen, einen Teil eines Wortes (z.\,B. ein Suffix oder Präfix), ein ganzes Wort oder sogar eine kurze, aus mehreren Wörtern bestehende Phrase stehen.} Damit die benötigte Rechenleistung reduziert wird, enthält jedes Token eine eindeutige numerische Identifikationsnummer (ID), anhand derer das Modell die Sprache lernt und verarbeitet \autocite{ibm_contextwindow}.
