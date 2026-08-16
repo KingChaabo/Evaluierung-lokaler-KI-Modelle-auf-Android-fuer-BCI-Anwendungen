@@ -24,7 +24,7 @@ Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploy
 \noindent Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem Hauptprozessor (CPU) oder dem Grafikprozessor (GPU) des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}.
 \vspace{\baselineskip}
 
-\noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, etwa Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Darüber hinaus lassen sich über die LiteRT-Community vorkonvertierte Modelle im MediaPipe-Format einbinden \autocite{mediapipe_llm}, darunter Qwen 2.5 1.5B \autocite{qwen_litert}. Für die folgenden Abschnitte sind vor allem diese drei sehr kompakten Modelle wichtig.
+\noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, etwa Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Darüber hinaus lassen sich über die LiteRT-Community vorkonvertierte Modelle im MediaPipe-Format einbinden \autocite{mediapipe_llm}, darunter Qwen 2.5 1.5B \autocite{qwen_litert}. Diese drei Modelle werden für den weiteren Verlauf der Arbeit verwendet.
 \vspace{\baselineskip}
 
 \section{Die Gemma-Modellfamilie}
@@ -58,7 +58,7 @@ Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für d
 \subsection{Unicorn Hybrid Black}
 Das Unicorn Hybrid Black ist die BCI-Plattform, die in dieser Arbeit verwendet wird. Es ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
     Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
-    Besonders ist vor allem die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet es sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
+    Besonders ist die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet es sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
     \begin{figure}[H]
     \centering
     \includegraphics[width=1.00\textwidth]{Graphics/UnicornHybrid.pdf}

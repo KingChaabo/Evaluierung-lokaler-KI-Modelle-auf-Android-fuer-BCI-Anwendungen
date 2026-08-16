@@ -22,11 +22,11 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 \end{itemize}
 
 
-\noindent Die Architektur ist in drei Kernbereiche unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Ergänzend übernimmt das Paket \texttt{benchmark} die systematische Messung der Modelle. Durch die Trennung dieser Pakete bleibt der Code übersichtlich, wartbar und erweiterbar.
+\noindent Die Architektur ist in drei Kernbereiche unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Ergänzend übernimmt das Paket \texttt{benchmark} die systematische Messung der Modelle. Durch die Trennung dieser Pakete bleibt der Code übersichtlich und erweiterbar.
 \vspace{\baselineskip}
 
 \noindent Ein Hauptmerkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
-In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenfalls ein systemintegriertes Modell anzubinden. Diese Entkopplung ermöglicht es, die Anwendung flexibel und ohne großen Aufwand zu erweitern und zu warten.
+In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenfalls ein systemintegriertes Modell anzubinden.
 \vspace{\baselineskip}
 
 \noindent Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich auch einfach und unproblematisch neue Szenarien einfügen, ohne die restliche Anwendung anpassen zu müssen.

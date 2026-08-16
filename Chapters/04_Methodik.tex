@@ -18,8 +18,7 @@ Bei einer nur einminütigen Aufnahme ergeben sich beispielsweise
 
 \noindent Diese Datenmenge muss zunächst in eine kompakte Form umgewandelt werden, weil sie
 ansonsten den Kontext des Modells überschreitet und keine fachliche Bedeutung
-transportiert. Die daraus resultierenden aggregierten Merkmale sind interpretierbar,
-deutlich token-sparsamer und können vom Sprachmodell verarbeitet werden.
+transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar, token-sparsamer und können vom Sprachmodell verarbeitet werden.
 
 \subsection{Segmentierung}
 \label{subsec:segmentierung}
@@ -74,8 +73,6 @@ Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung e
 
 \noindent Des Weiteren wird zur Beurteilung der Signalqualität der Anteil der ungültigen Messwerte betrachtet. Dies ist der Anteil der Datenpunkte, die vom Erfassungsgerät selbst als fehlerhaft markiert wurden. Man kann durch diesen wichtigen Indikator erkennen, ob Messfehler vorliegen, wie beispielsweise ein unzureichender Kontakt an der Kopfhaut \autocite{10353995}.
 \vspace{\baselineskip}
-
-\noindent Im Allgemeinen bilden statistische Merkmale ergänzend zu den spektralen Merkmalen eine gute Grundlage, um die Datenqualität zu beurteilen und Artefakte zu erkennen.
 
 \subsection{Aufbereitung für das Sprachmodell}
 \label{subsec:aufbereitung}
@@ -149,7 +146,7 @@ Zur Bewertung der Modelle werden mehrere Metriken erfasst, die sich in Latenz, R
     \end{tabularx}
 \end{table}
 
-\noindent Die Tokens pro Sekunde sind vor allem wichtig, da sie einen fairen Vergleich unabhängig von der Länge der Ausgabe erlauben. Eine reine Zeitmessung würde längere Antworten offensichtlich benachteiligen. Die Metrik erhält man, wie in folgender Gleichung dargestellt, indem man die Anzahl der erzeugten Token durch die gesamte Inferenzdauer teilt:
+\noindent Die Tokens pro Sekunde erlauben einen fairen Vergleich unabhängig von der Länge der Ausgabe. Eine reine Zeitmessung würde längere Antworten offensichtlich benachteiligen. Die Metrik erhält man, wie in folgender Gleichung dargestellt, indem man die Anzahl der erzeugten Token durch die gesamte Inferenzdauer teilt:
 \begin{equation}
     \text{Tokens/s} = \frac{N_{\text{Token}}}{t_{\text{Inferenz}}}
 \end{equation}
