@@ -115,13 +115,16 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
         double[] bandAccum = new double[NUM_BANDS];
         int windowCount = 0;
 
-        for (int start = 0; start + windowSize <= signal.length; start += hop) {
-            double[] window = Arrays.copyOfRange(signal, start, start + windowSize);
+        for (int start = 0; start + windowSize <= signal.length; 
+        start += hop) {
+            double[] window = Arrays.copyOfRange(signal, start, start + 
+            windowSize);
             double[] power  = powerSpectrum(window);
             // Fenster -> Spektrum
             double[] bands  = sumBands(power);
             // Spektrum -> Baender
-            for (int b = 0; b < NUM_BANDS; b++) bandAccum[b] += bands[b];
+            for (int b = 0; b < NUM_BANDS; b++) bandAccum[b] += 
+            bands[b];
             windowCount++;
         }
         if (windowCount > 0) {
@@ -202,7 +205,8 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
     double[] bandTotal = new double[bands];
     for (int c = 0; c < channels; c++) {
         for (int b = 0; b < bands; b++) {
-            bandTotal[b] += seg.bandPower[c][b];   // ueber alle Kanaele summieren
+            bandTotal[b] += seg.bandPower[c][b];   
+            // ueber alle Kanaele summieren
         }
     }
     double sumAll = 0;
@@ -211,7 +215,8 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
     double[] rel = new double[bands];
     if (sumAll > 0) {
         for (int b = 0; b < bands; b++) {
-            rel[b] = bandTotal[b] / sumAll * 100;   // Anteil in Prozent
+            rel[b] = bandTotal[b] / sumAll * 100;   
+            // Anteil in Prozent
         }
     }
     return rel;
@@ -223,7 +228,7 @@ Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featurete
 \begin{figure}[H]
 \centering
 {\setlength{\fboxsep}{9pt}%
-\fcolorbox{black!30}{black!8}{%
+\fcolorbox{black!30}{lstbg}{%
 \begin{minipage}{0.75\linewidth}
 \sffamily\footnotesize
 EEG-Session, Dauer 60.0s, 8 Kanäle.\\[5pt]
@@ -473,14 +478,16 @@ Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von 
 
 \subsection{Ablauf} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
 \begin{lstlisting}[style=code, caption={Ablauf des Benchmarks mit Aufwaermphase}, label={lst:runall}]
-public void runAll(long sessionA, long sessionB, int numberConfig, Runnable done) {
+public void runAll(long sessionA, long sessionB, int numberConfig, 
+Runnable done) {
     new Thread(() -> {
         String[] modelle   = {"1b", "2b", "qwen"};
         String[] szenarien = {"report", "artefakt", "vergleich"};
 
         // Aufwaermphase: eine Wegwerf-Inferenz gegen Kaltstart-Effekte
         try {
-            LlmEngine warm = new LlmEngine(LlmEngine.pathFor(modelle[0]));
+            LlmEngine warm = new LlmEngine(LlmEngine.
+            pathFor(modelle[0]));
             warm.load(context);
             warm.question("Test");
             warm.close();
@@ -488,10 +495,12 @@ public void runAll(long sessionA, long sessionB, int numberConfig, Runnable done
 
         for (String modell : modelle) {
             for (String szenario : szenarien) {
-                runConfig(modell, szenario, sessionA, sessionB, numberConfig);
+                runConfig(modell, szenario, sessionA, sessionB, 
+                numberConfig);
             }
         }
-        if (done != null) done.run();   // Benchmark fertig -> UI benachrichtigen
+        if (done != null) done.run();   
+        // Benchmark fertig -> UI benachrichtigen
     }).start();
 }
 \end{lstlisting}
@@ -505,8 +514,10 @@ for (int i = 0; i < nc; i++) {
     CountDownLatch latch = new CountDownLatch(1);
 
     engine.questionStreaming(prompt, new LlmEngine.StreamCallback() {
-        @Override public void onChunk(String partial) { /* im Benchmark egal */ }
-        @Override public void onDone(String fullText, long ttftMs, long totalMs) {
+        @Override public void onChunk(String partial) { 
+            /* im Benchmark egal */ }
+        @Override public void onDone(String fullText, long ttftMs, 
+        long totalMs) {
             ttftHolder[0]  = ttftMs;
             totalHolder[0] = totalMs;
             textHolder[0]  = fullText;
