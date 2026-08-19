@@ -115,7 +115,7 @@ Um die Eignung der Modelle für die Analyse von EEG-Daten zu untersuchen, werden
 \section{Messprotokoll (Benchmark)}
 \label{sec:messprotokoll}
 Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen ausgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer CSV-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
-Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt (eine Wegwerf-Messung), um Kaltstart-Effekte zu vermeiden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebnis dieser Messung wird nicht protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich.
+Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt (eine Wegwerf-Messung), um Kaltstart-Effekte zu vermeiden. Ein solcher Kaltstart äußert sich darin, dass der erste Lauf eines Modells durch das Laden und Initialisieren deutlich länger ausfällt als die nachfolgenden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebnis dieser Messung wird nicht protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich.
 
 \subsection{Metriken}
 \label{subsec:metriken}
@@ -189,4 +189,4 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
 \vspace{\baselineskip}
 
- Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt, jedoch nicht in der CSV gespeichert. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen nicht in der Anwendung selbst. Sie werden stattdessen manuell auf Grundlage der in der CSV-Datei gespeicherten Rohwerte durchgeführt.
+ \noindent Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt, jedoch nicht in der CSV gespeichert. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen nicht in der Anwendung selbst. Sie werden stattdessen manuell auf Grundlage der in der CSV-Datei gespeicherten Rohwerte durchgeführt.
