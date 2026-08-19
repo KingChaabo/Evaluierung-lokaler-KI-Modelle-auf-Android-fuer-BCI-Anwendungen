@@ -205,41 +205,50 @@ Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta
 \noindent Die an die Modelle übergebenen Feature-Texte beider Sessions sind in \autoref{fig:ft-session-a} und \autoref{fig:ft-session-b} im Anhang abgedruckt und ermöglichen den Abgleich der Ausgaben mit der tatsächlichen Eingabe.
 \vspace{\baselineskip}
 
-\noindent\textbf{Report -- Gemma 2 2B}
-\smallskip
-
-\noindent{\setlength{\fboxsep}{10pt}\fcolorbox{black!20}{black!3}{%
-\begin{minipage}{0.93\linewidth}\small
+\begin{figure}[H]
+\centering
+{\setlength{\fboxsep}{8pt}%
+\fcolorbox{black!30}{lstbg}{%
+\begin{minipage}{0.72\linewidth}
+\fontfamily{phv}\selectfont\footnotesize
 Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwischen 56\,\% und 86\,\% lag. Die Signalqualität der Messungen war in allen Abschnitten gut. Auffällig waren Ausschlagsignale in den Abschnitten 1 und 4, wobei Kanal 4 und Kanal 2 jeweils die höchsten Werte erreichte.
 \end{minipage}}}
+\caption{Report-Szenario: unveränderte Ausgabe von Gemma 2 2B.}
+\label{fig:out-report-2b}
+\end{figure}
+
+\noindent Die Ausgabe von Gemma 2 2B (\autoref{fig:out-report-2b}) erkennt die Delta-Dominanz korrekt, bewertet die Signalqualität zutreffend und nennt die auffälligen Kanäle. Sie ist knapp und hält das Format ein. Alle vier Kriterien sind erfüllt.
 \vspace{\baselineskip}
 
-\noindent Die Ausgabe erkennt die Delta-Dominanz korrekt, bewertet die Signalqualität zutreffend und nennt die auffälligen Kanäle. Sie ist knapp und hält das Format ein. Alle vier Kriterien sind erfüllt.
-\vspace{\baselineskip}
-
-\noindent\textbf{Report -- Gemma 3 1B}
-\smallskip
-
-\noindent{\setlength{\fboxsep}{10pt}\fcolorbox{black!20}{black!3}{%
-\begin{minipage}{0.93\linewidth}\small
+\begin{figure}[H]
+\centering
+{\setlength{\fboxsep}{8pt}%
+\fcolorbox{black!30}{lstbg}{%
+\begin{minipage}{0.72\linewidth}
+\fontfamily{phv}\selectfont\footnotesize
 Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), Theta-Zuständen (16\,\%), Alpha-Zuständen (13\,\%), Beta-Zuständen (6\,\%) und Gamma-Zuständen (5\,\%). Der größte Ausschlag wurde am Kanal 2 (3309 µV) festgestellt. Der Schwerpunkt lag hauptsächlich in den Sekundenbereichen 0--30, 30--60 und 60--91 Sekunden, wobei Delta- und Theta-Zustände am stärksten ausgeprägt waren. Es gab einige ungültige Messwerte, darunter ein signifikanter Ausschlag am Kanal 2.
 \end{minipage}}}
+\caption{Report-Szenario: unveränderte Ausgabe von Gemma 3 1B.}
+\label{fig:out-report-1b}
+\end{figure}
+
+\noindent Bei der Ausgabe von Gemma 3 1B (\autoref{fig:out-report-1b}) gibt es trotz übereinstimmender Delta-Dominanz einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Abschnitte vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
 \vspace{\baselineskip}
 
-\noindent Auch wenn die Aussage mit der Delta-Dominanz übereinstimmt, gibt es einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Abschnitte vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
-\vspace{\baselineskip}
-
-\noindent\textbf{Report -- Qwen 2.5 1.5B} (gekürzt)
-\smallskip
-
-\noindent{\setlength{\fboxsep}{10pt}\fcolorbox{black!20}{black!3}{%
-\begin{minipage}{0.93\linewidth}\small
+\begin{figure}[H]
+\centering
+{\setlength{\fboxsep}{8pt}%
+\fcolorbox{black!30}{lstbg}{%
+\begin{minipage}{0.72\linewidth}
+\fontfamily{phv}\selectfont\footnotesize
 \#\#\# Bericht\par
 Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8 KanÃ¤len gezählt. Die Signalqualität ist gut mit einer overall Signalqualität von 86\,\%. [\dots] Die dominante Frequenzbänder sind Delta (16\,\%), Theta (33\,\%), Alpha (60\,\%), Beta (15\,\%) und Gamma (13\,\%), wobei Delta und Theta die hauptsächlichste Frequenz bilden. [\dots]
 \end{minipage}}}
-\vspace{\baselineskip}
+\caption{Report-Szenario: unveränderte (gekürzte) Ausgabe von Qwen 2.5 1.5B.}
+\label{fig:out-report-qwen}
+\end{figure}
 
-\noindent Hier treten mehrere Fehler auf. Vor allem die Formatvorgabe wird deutlich verletzt. Zunächst beginnt die Ausgabe mit einer Markdown-Überschrift (\#\#\#), darüber hinaus enthält die Ausgabe fehlerhaft kodierte Umlaute wie „KanÃ¤len" und ist zu lang. Zudem sind die Bandanteile falsch (Alpha mit 60\,\% als stärkstes Band, Summe über 100\,\%) und die Signalqualität ist frei erfunden. Keines der vier Kriterien wird in diesem Fall zuverlässig erfüllt.
+\noindent Bei der Ausgabe von Qwen 2.5 1.5B (\autoref{fig:out-report-qwen}) treten mehrere Fehler auf. Vor allem die Formatvorgabe wird deutlich verletzt. Zunächst beginnt die Ausgabe mit einer Markdown-Überschrift (\#\#\#), darüber hinaus enthält die Ausgabe fehlerhaft kodierte Umlaute wie „KanÃ¤len" und ist zu lang. Zudem sind die Bandanteile falsch (Alpha mit 60\,\% als stärkstes Band, Summe über 100\,\%) und die Signalqualität ist frei erfunden. Keines der vier Kriterien wird in diesem Fall zuverlässig erfüllt.
 \vspace{\baselineskip}
 
 \noindent Diese Erkenntnisse lassen sich auch in den anspruchsvolleren Szenarien beobachten.
