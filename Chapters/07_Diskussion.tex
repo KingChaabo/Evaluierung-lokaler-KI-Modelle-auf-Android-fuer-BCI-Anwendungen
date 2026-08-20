@@ -4,20 +4,18 @@ In diesem Kapitel werden die Ergebnisse der Evaluation eingeordnet und gedeutet.
 
 \section{Einordnung der Ergebnisse}
 \label{sec:einordnung}
-Qwen 2.5 1.5B hat die höchste Gesamtdauer und verbraucht am meisten Akku, obwohl es kleiner als Gemma 2 2B ist. Der Grund liegt in der Länge der Antworten: Je mehr Text ein Modell erzeugt, desto länger dauert die Berechnung und desto mehr Energie verbraucht sie. Qwen zeigt in den Messungen eine klar erhöhte Ausgabe an Tokens (vgl.\ \autoref{tab:app-rohdaten}).
-
+Die beiden Gemma-Modelle unterscheiden sich in ihren Stärken. Gemma 3 1B ist aufgrund seiner geringen Größe am effizientesten und hat den geringsten Speicher- und Akkubedarf sowie die höchste Geschwindigkeit. Die Parameterzahl beeinflusst dabei den Speicher- und Rechenaufwand je Token (\autoref{subsec:ondevice}). Innerhalb der Gemma-Familie zeigt sich das größere Gemma 2 2B als das Modell mit der höchsten Ausgabequalität.
 \vspace{\baselineskip}
 
-\noindent Diese Ausführlichkeit ist zugleich ein Qualitätsproblem, denn Qwen hält sich schlecht an die Vorgaben: Trotz der klaren Formatvorgaben im Prompt fällt die Antwort zu lang aus. Die Ausgabe ist so nicht nur inhaltlich am schwächsten, sondern kostet auch am meisten Zeit und Energie. Schlechte Qualität und hoher Verbrauch hängen bei Qwen also direkt zusammen.
+\noindent Qwen 2.5 1.5B zeigt jedoch, dass die Größe allein die Qualität nicht bestimmt: Obwohl es sich von der Parameterzahl her in der Mitte der drei Modelle einordnet, liefert es die schlechtesten Ausgaben. Da alle Modelle unter denselben fairen Bedingungen (\autoref{ch:methodik}) getestet wurden, ist dieser Unterschied allein den Fähigkeiten der Modelle zuzuschreiben.
+Qwen 2.5 1.5B hat die höchste Gesamtdauer und verbraucht am meisten Akku, obwohl es kleiner als Gemma 2 2B ist. Das Modell pendelt sich aber bei dem Rest in der Mitte ein. Der Grund für die lange Gesamtdauer liegt in der Länge der Antworten. Ein Zusammenhang ist zu erkennen: Je mehr Text ein Modell erzeugt, desto länger dauert die Berechnung und desto mehr Energie verbraucht sie. Qwen zeigt in den Messungen eine klar erhöhte Ausgabe an Tokens (vgl.\ \autoref{tab:app-rohdaten}).
+Diese Ausführlichkeit ist zugleich ein Qualitätsproblem, denn Qwen hält sich schlecht an die Vorgaben: Trotz der klaren Formatvorgaben im Prompt fällt die Antwort zu lang aus. Die Ausgabe ist so nicht nur inhaltlich am schwächsten, sondern kostet auch am meisten Zeit und Energie. Schlechte Qualität und hoher Verbrauch hängen bei Qwen also direkt zusammen.
 \vspace{\baselineskip}
 
-\noindent Ein weiterer Zusammenhang zeigt sich bei den Szenarien. Auffällig ist, dass die TTFT im Vergleichsszenario über alle Modelle hinweg deutlich länger dauert als bei Report und Artefakt-Erklärung. Dies lässt sich leicht erklären, da im Vergleich zwei Eingaben verarbeitet werden, was zu einem längeren Prompt führt. Je mehr Text gelesen wird, desto länger dauert es, bis die Antwort generiert wird.
+\noindent Ein weiterer Zusammenhang zeigt sich bei den Szenarien. Auffällig ist, dass die TTFT im Vergleichsszenario über alle Modelle hinweg deutlich länger dauert als bei Report und Artefakt-Erklärung. Dies lässt sich leicht erklären, da im Vergleich zwei Eingaben verarbeitet werden, was vermutlich zu einem längeren Prompt führt. Je mehr Text gelesen wird, desto länger dauert es, bis die Antwort generiert wird.
 \vspace{\baselineskip}
 
-\noindent Darüber hinaus hat jedes Modell eigene Stärken. Gemma 3 1B ist aufgrund seiner geringen Größe am effizientesten und hat den geringsten Speicher- und Akkubedarf sowie die höchste Geschwindigkeit; die Parameterzahl beeinflusst dabei den Speicher- und Rechenaufwand je Token (\autoref{subsec:ondevice}). Innerhalb der Gemma-Familie zeigt sich das größere Gemma 2 2B als das Modell mit der höchsten Ausgabequalität. Qwen 2.5 1.5B zeigt jedoch, dass die Größe allein die Qualität nicht bestimmt: Obwohl es sich von der Parameterzahl her in der Mitte der drei Modelle einordnet, liefert es die schlechtesten Ausgaben. Da alle Modelle unter denselben, fairen Bedingungen (\autoref{ch:methodik}) getestet wurden, ist dieser Unterschied allein den Fähigkeiten der Modelle zuzuschreiben. Die Ergebnisse zeigen somit, dass sich nicht alles logisch übertragen lässt, da Modelle verschiedener Marken unterschiedlich funktionieren. Die Stärken ergeben sich also aus dem Zusammenspiel von Größe und Fähigkeit. Bei der Stabilität unterscheiden sich die Modelle hingegen nicht. Alle Kombinationen liefen fehlerfrei durch. Nur Qwen 2.5 1.5B wies einen erhöhten Streuungswert im Vergleichsszenario auf, was sich durch seine lange Laufzeit unter Dauerlast begründen lässt.
-\vspace{\baselineskip}
-
-\noindent Am Ende ist für die eigentliche Fragestellung am entscheidendsten, ob die Modelle einwandfrei ihre Aufgabe erfüllt haben. Daher ist die Ausgabequalität das wichtigste Kriterium, vorausgesetzt es gibt keine Probleme in der Technik selbst.
+\noindent Die Ergebnisse zeigen somit, dass sich nicht alles logisch übertragen lässt, da Modelle verschiedener Marken unterschiedlich funktionieren. Die Stärken ergeben sich also aus dem Zusammenspiel von Größe und Fähigkeit. Bei der Stabilität unterscheiden sich die Modelle hingegen nicht. Alle Kombinationen liefen fehlerfrei durch. Nur Qwen 2.5 1.5B wies einen erhöhten Streuungswert im Vergleichsszenario auf, was sich durch seine lange Laufzeit unter Dauerlast begründen lässt. Am Ende ist für die eigentliche Fragestellung am entscheidendsten, ob die Modelle einwandfrei ihre Aufgabe erfüllt haben. Daher ist die Ausgabequalität das wichtigste Kriterium, vorausgesetzt, es gibt keine Probleme in der Technik selbst.
 
 \section{Einschränkungen}
 \label{sec:einschraenkungen}
@@ -37,13 +35,11 @@ Während der gesamten Arbeit gibt es Einschränkungen, die die Ergebnisse beeinf
 In diesem Abschnitt werden Handlungen auf Basis meiner Erkenntnisse empfohlen. Diese leiten sich aus den Ergebnissen der Evaluation ab.
 
 \subsection{Allgemeine Empfehlungen}
-Die Prompts sollten im besten Fall kurz und klar gehalten werden, da sonst die Geschwindigkeit und der Akkuverbrauch leiden. Das Modell sollte die Merkmale in einer klar verständlichen Form erhalten, ohne selbst überfordert zu sein.
-\vspace{\baselineskip}
-
-\noindent Für die Benutzerfreundlichkeit ist es auch sinnvoll, eine wie hier verwendete Streaming-Mechanik einzubinden, um die gefühlte Wartezeit zu verringern.
-\vspace{\baselineskip}
-
-\noindent Solche Entscheidungen sollten frühzeitig getroffen werden, um die Modelle optimal auf die Anwendung abzustimmen.
+Die Prompts sollten im besten Fall kurz und klar gehalten werden, damit sie in den Kontext passen.
+Das Modell sollte die Merkmale in einer klar verständlichen Form erhalten, ohne selbst überfordert zu sein, also keine Rohdaten, sondern aggregierte Merkmale.
+Darüber hinaus sollte man je nach Szenario das passende Modell auswählen, da die Ausgabequalität je nach Komplexität der Aufgabe variiert.
+Für die Benutzerfreundlichkeit ist es auch sinnvoll, eine wie hier verwendete Streaming-Mechanik einzubinden, um die gefühlte Wartezeit zu verringern. Dabei sollte bei der Ausgabe das Format nach Bedarf angepasst werden.
+Bei Qwen 2.5 1.5B ist es beispielsweise sinnvoll, die Antwort zu kürzen und formatierungstechnisch zu vereinfachen. Es ist dringend empfehlenswert, sich in medizinisch wichtigen Bereichen nicht allein auf solche Modelle zu verlassen. Ihre Ausgaben sollten immer mit Vorsicht und Skepsis betrachtet werden. Selbst das stärkste Modell in dieser Arbeit ist nicht fehlerfrei.
 
 \subsection{Modellempfehlung}
 Wenn der Fokus auf der Qualität liegen soll, geht eine klare Empfehlung an das Modell Gemma 2 2B. Es hält sich am besten an die Vorgaben und bietet die beste Ausgabequalität. Dafür verbraucht es am meisten Speicher und ist am langsamsten, mit einer geringen Token-Rate und der längsten TTFT. Aufgrund des Speicherverbrauchs von etwa 3,7,GB allein für den Anteil des Modells empfiehlt es sich, ein Testgerät mit weitaus mehr RAM zu nutzen. Mit Betriebssystem, einem Puffer und möglicherweise weiteren Anwendungen kann der Speicherbedarf schnell ansteigen.
