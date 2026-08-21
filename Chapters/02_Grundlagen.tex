@@ -5,14 +5,14 @@ In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit be
 \section{Elektroenzephalographie (EEG)}
 \label{sec:eeg}
 
-Die Elektroenzephalographie (EEG) ist ein Verfahren zur Aufzeichnung der elektrischen Aktivität des menschlichen Gehirns. Die aufgezeichneten Signale bestehen aus Spannungsschwankungen im Mikrovoltbereich, welche aus der synchronen elektrischen Aktivität von Neuronen resultieren \autocite{blum2017}. Die Messung erfolgt über Elektroden, die auf der Kopfhaut platziert werden und die Potenzialdifferenzen zwischen verschiedenen Punkten erfassen \autocite{10353995}.
+Das \ac{EEG} ist ein Verfahren zur Aufzeichnung der elektrischen Aktivität des menschlichen Gehirns. Die aufgezeichneten Signale bestehen aus Spannungsschwankungen im Mikrovoltbereich, welche aus der synchronen elektrischen Aktivität von Neuronen resultieren \autocite{blum2017}. Die Messung erfolgt über Elektroden, die auf der Kopfhaut platziert werden und die Potenzialdifferenzen zwischen verschiedenen Punkten erfassen \autocite{10353995}.
 \vspace{\baselineskip}
 
-\noindent EEG-Signale haben die Eigenschaft, extrem geringe Amplitude im Mikrovoltbereich zu besitzen, weshalb sie bei der Erfassung systematisch verstärkt werden müssen \autocite{blum2017,10353995}.
+\noindent \ac{EEG}-Signale haben die Eigenschaft, extrem geringe Amplitude im Mikrovoltbereich zu besitzen, weshalb sie bei der Erfassung systematisch verstärkt werden müssen \autocite{blum2017,10353995}.
 Das Frequenzspektrum erstreckt sich dabei meist von 0,1~Hz bis 100~Hz \autocite{10353995}.
 \vspace{\baselineskip}
 
-\noindent In seiner Rohform ist ein EEG-Signal stark von Rauschen geprägt, weshalb es ein unzureichendes Signal-Rausch-Verhältnis (SNR) aufweist \autocite{blum2017}.
+\noindent In seiner Rohform ist ein \ac{EEG}-Signal stark von Rauschen geprägt, weshalb es ein unzureichendes \ac{SNR} aufweist \autocite{blum2017}.
 Da die erwarteten neuronalen Aktivitäten schwach sind, werden sie schnell von amplitudenstarken physiologischen Artefakten (wie z.\,B. Muskel- oder Augenbewegungen) sowie technischen Störeinflüssen überlagert, was zu Verzerrungen des Originalsignals führt \autocite{10353995}.
 
 \section{Frequenzbänder}
@@ -22,7 +22,7 @@ Die gezielte Auswertung spezifischer Frequenzbänder dient somit der fundierten 
 
 \vspace{\baselineskip}
 
-\noindent Das EEG-Spektrum wird in jeweils 5 Frequenzbänder unterteilt \autocite{10353995}:
+\noindent Das \ac{EEG}-Spektrum wird in jeweils 5 Frequenzbänder unterteilt \autocite{10353995}:
 
 
 \begin{table}[H]
@@ -44,11 +44,11 @@ Gamma & ab 30\,Hz   & Konzentration und Multitasking \\
 
 \section{Frequenzanalyse}
 \label{sec:frequenzanalyse}
-Wichtig ist es zu bestimmen, welche Frequenzbänder in EEG-Signalen wie stark vertreten sind. Im Folgenden wird beschrieben, welche Verfahren dafür nötig sind.
+Wichtig ist es zu bestimmen, welche Frequenzbänder in \ac{EEG}-Signalen wie stark vertreten sind. Im Folgenden wird beschrieben, welche Verfahren dafür nötig sind.
 
 \subsection{Fourier-Transformation}
 \label{subsec:fft}
-Die Fast Fourier Transform (FFT) ist ein mathematisches Verfahren, das komplexe Signale in ihre sinusförmigen Bestandteile zerlegt und sie vom Zeitbereich in den Frequenzbereich überführt \autocite{10353995}.
+Die \ac{FFT} ist ein mathematisches Verfahren, das komplexe Signale in ihre sinusförmigen Bestandteile zerlegt und sie vom Zeitbereich in den Frequenzbereich überführt \autocite{10353995}.
 Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigenschaften von Signalen zu untersuchen und Frequenzspitzen (Peaks) zu berechnen \autocite{10353995}.
 \begin{figure}[H]
     \centering
@@ -57,13 +57,13 @@ Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigensc
     \label{fig:fft-zeitfreq}
 \end{figure}
 
-\noindent Das Ergebnis der FFT ist je Frequenz-Bin eine komplexe Zahl, bestehend aus einem Real- und einem Imaginärteil. Der Realteil beschreibt die Amplitude des Kosinus-Anteils und der Imaginärteil die Amplitude des Sinus-Anteils der jeweiligen Frequenz. Indem man, wie in der folgenden Gleichung, die Summe der quadrierten Real- und Imaginärteile berechnet, erhält man die Leistung eines Bins \autocite{smith1997dsp}.
+\noindent Das Ergebnis der \ac{FFT} ist je Frequenz-Bin eine komplexe Zahl, bestehend aus einem Real- und einem Imaginärteil. Der Realteil beschreibt die Amplitude des Kosinus-Anteils und der Imaginärteil die Amplitude des Sinus-Anteils der jeweiligen Frequenz. Indem man, wie in der folgenden Gleichung, die Summe der quadrierten Real- und Imaginärteile berechnet, erhält man die Leistung eines Bins \autocite{smith1997dsp}.
 \begin{equation}
     P = \mathrm{Re}^2 + \mathrm{Im}^2
     \label{eq:power}
 \end{equation}
 
-\noindent Ein zentrales Merkmal der FFT ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
+\noindent Ein zentrales Merkmal der \ac{FFT} ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
 \begin{equation}
     \Delta f = \frac{f_s}{N}.
     \label{eq:freqaufloesung}
@@ -103,8 +103,8 @@ große Sprachmodelle, deren Vor- und Nachteile sowie die Quantisierung vorgestel
 
 \subsection{Large Language Models}
 \label{subsec:llm}
-Large Language Models (LLMs) haben die Verarbeitung natürlicher Sprache
-(Natural Language Processing) maßgeblich verändert. LLMs sind komplex
+\acp{LLM} haben die Verarbeitung natürlicher Sprache
+(Natural Language Processing) maßgeblich verändert. \acp{LLM} sind komplex
 und basieren auf der Transformer-Architektur \autocite{edgellm_review}.
 Das Besondere daran ist der Self-Attention-Mechanismus (Selbstaufmerksamkeit).
 Dieser dient dazu, globale Abhängigkeiten zwischen Ein- und Ausgabesequenzen
@@ -114,11 +114,11 @@ Milliarden von Parametern erreicht. Sie zeigen Stärken im Sprachverstehen, in d
 Schlussfolgern sowie in der generativen Texterstellung \autocite{edgellm_review}.
 Dadurch entstehen Herausforderungen, die es zu bewältigen gilt, etwa wenn man
 sie auf ressourcenbeschränkten Endgeräten wie Smartphones (sogenannten
-Edge-Geräten) zum Laufen bringen möchte. So benötigen LLMs enorm viel
+Edge-Geräten) zum Laufen bringen möchte. So benötigen \acp{LLM} enorm viel
 Speicherplatz und Rechenleistung \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
-\noindent In der maschinellen Sprachverarbeitung werden Texte in Token zerlegt, die als kleinste Informationseinheiten dienen. So wird im Fachartikel \autocite{ibm_contextwindow} gesagt: \enquote{Ein Token kann für ein einzelnes Zeichen, einen Teil eines Wortes (z.\,B. ein Suffix oder Präfix), ein ganzes Wort oder sogar eine kurze, aus mehreren Wörtern bestehende Phrase stehen.} Damit die benötigte Rechenleistung reduziert wird, enthält jedes Token eine eindeutige numerische Identifikationsnummer (ID), anhand derer das Modell die Sprache lernt und verarbeitet \autocite{ibm_contextwindow}.
+\noindent In der maschinellen Sprachverarbeitung werden Texte in Token zerlegt, die als kleinste Informationseinheiten dienen. So wird im Fachartikel \autocite{ibm_contextwindow} gesagt: \enquote{Ein Token kann für ein einzelnes Zeichen, einen Teil eines Wortes (z.\,B. ein Suffix oder Präfix), ein ganzes Wort oder sogar eine kurze, aus mehreren Wörtern bestehende Phrase stehen.} Damit die benötigte Rechenleistung reduziert wird, enthält jedes Token eine eindeutige numerische \ac{ID}, anhand derer das Modell die Sprache lernt und verarbeitet \autocite{ibm_contextwindow}.
 \vspace{\baselineskip}
 
 \noindent Das Kontextfenster ist die maximale Anzahl an Token, die das Modell gleichzeitig verarbeiten kann \autocite{ibm_contextwindow}. Es ist sozusagen das Arbeitsgedächtnis des Modells. Sollte das Kontextfenster überschritten werden, werden die älteren Informationen gekürzt oder zusammengefasst, damit das Modell weiterhin im selben Kontext arbeiten kann \autocite{ibm_contextwindow}. Die Kontextgröße ist die maximale Summe der Eingabe- und Ausgabe-Token, die ein Modell verarbeiten kann \autocite{mediapipe_llm}.
@@ -140,7 +140,7 @@ Cloud-Server zu senden \autocite{edgellm_review}.
 \noindent Neben den Vorteilen gibt es auch gewisse Herausforderungen, die man zu bewältigen hat:
 
 \begin{itemize}
-    \item \textbf{Speicher und Rechenleistung:} Da LLMs sehr große Sprachmodelle sind, benötigen sie aufgrund ihrer hohen Anzahl an Parametern ausreichend großen Arbeitsspeicher (RAM) und Rechenkapazität. Oft ist dies mehr, als herkömmliche Smartphones bieten, was im Extremfall zu einem Speicherüberlauf (englisch memory overflow, geläufig auch Out of Memory, OOM) führt \autocite{edgellm_review, android_oom}. Ein OOM bezeichnet den Zustand, in dem kein Arbeitsspeicher mehr für neue Objekte verfügbar ist \autocite{android_oom}. 
+    \item \textbf{Speicher und Rechenleistung:} Da \acp{LLM} sehr große Sprachmodelle sind, benötigen sie aufgrund ihrer hohen Anzahl an Parametern ausreichend großen \ac{RAM} und Rechenkapazität. Oft ist dies mehr, als herkömmliche Smartphones bieten, was im Extremfall zu einem Speicherüberlauf führt, im Englischen als memory overflow oder \ac{OOM} bezeichnet \autocite{edgellm_review, android_oom}. Ein \ac{OOM} bezeichnet den Zustand, in dem kein Arbeitsspeicher mehr für neue Objekte verfügbar ist \autocite{android_oom}. 
     \item \textbf{Vielfalt der Endgeräte:} Verschiedene Endgeräte besitzen unterschiedliche Prozessoren und Spezialchips. Eine Lösung zu programmieren, die auf allen Endgeräten funktioniert, ist sehr schwierig \autocite{edgellm_review}.
     \item \textbf{Katastrophales Vergessen:} Ein häufiges und bekanntes Phänomen ist, dass ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
     \item \textbf{Drosselung:} Eine weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöht \autocite{zhou2022throttling}.
@@ -162,28 +162,28 @@ Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) läss
 \label{subsec:systemintegrierte-und-frei-deploybare-modelle}
 Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle, die unterschieden werden können:
 \begin{itemize}
-\item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte Programmierschnittstellen (APIs) auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation erheblich reduziert.
+\item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte \acp{API} auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation erheblich reduziert.
 \item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Dadurch kann eine maximale Flexibilität gewährleistet werden, da sie unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten funktionieren. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um eine reibungslose Ende-zu-Ende-Verarbeitung zu gewährleisten \autocite{mediapipe_llm}.
 Dieser Ansatz erhöht jedoch den Speicherbedarf der Anwendung.
 \end{itemize}
 
 \section{Brain-Computer-Interface (BCI)}
 \label{sec:bci}
-Ein Brain-Computer-Interface (BCI), zu Deutsch Gehirn-Computer-Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
-Häufig gemessen durch EEG, werden mentale Zustände und Absichten in Echtzeit erkannt. Dadurch sind Steuerungsbefehle möglich, die ganz ohne Muskelkraft auskommen \autocite{blum2017}.
+Ein \ac{BCI}, zu Deutsch Gehirn-Computer-Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
+Häufig gemessen durch \ac{EEG}, werden mentale Zustände und Absichten in Echtzeit erkannt. Dadurch sind Steuerungsbefehle möglich, die ganz ohne Muskelkraft auskommen \autocite{blum2017}.
 
-\noindent Ein funktionsfähiges BCI-System erfasst die Gehirndaten, verarbeitet und analysiert diese Signale sofort in einem geschlossenen System. Der Nutzer erhält basierend auf der Klassifizierung dieser Signale eine unmittelbare Rückmeldung \autocite{blum2017}.
+\noindent Ein funktionsfähiges \ac{BCI}-System erfasst die Gehirndaten, verarbeitet und analysiert diese Signale sofort in einem geschlossenen System. Der Nutzer erhält basierend auf der Klassifizierung dieser Signale eine unmittelbare Rückmeldung \autocite{blum2017}.
 \vspace{\baselineskip}
 
 
-\noindent Vor allem körperlich stark beeinträchtigte Menschen profitieren von BCI-Systemen. Zu den bekannten Beispielen zählen \autocite{blum2017, 10353995}:
+\noindent Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-Systemen. Zu den bekannten Beispielen zählen \autocite{blum2017, 10353995}:
 \begin{itemize}
     \item \textbf{Kommunikationssysteme:} Spezielle Systeme ermöglichen gelähmten Personen die Kommunikation mit ihrer Umwelt.
-    \item \textbf{Bewegung und Steuerung:} BCI-Systeme erlauben die gedankliche Steuerung von Prothesen, Rollstühlen sowie das Steuern eines Cursors auf dem Computerbildschirm.
+    \item \textbf{Bewegung und Steuerung:} \ac{BCI}-Systeme erlauben die gedankliche Steuerung von Prothesen, Rollstühlen sowie das Steuern eines Cursors auf dem Computerbildschirm.
     \item \textbf{Assistenzsysteme:} Auch bei der Fehlerüberwachung können anhand der Gehirnaktivität die Absichten einer Notbremsung erkannt und ausgeführt werden, noch bevor das Bremspedal physisch betätigt wird.
 \end{itemize}
 
-\noindent Diese Arbeit setzt auf einem solchen EEG-basierten BCI auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
+\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
 
 %  - Überleitung zu \autoref{ch:standdertechnik} (konkrete Modelle/Frameworks)
 %  (1 Absatz)

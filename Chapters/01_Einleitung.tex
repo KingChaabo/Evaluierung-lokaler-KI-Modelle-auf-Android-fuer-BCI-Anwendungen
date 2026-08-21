@@ -1,37 +1,37 @@
 \chapter{Einleitung}
 \label{ch:einleitung}
-Gehirn-Computer-Schnittstellen und lokal ausführbare künstliche Intelligenz haben sich in den letzten Jahren stark weiterentwickelt. Die Kombination beider Technologien eröffnet neue Möglichkeiten, unter anderem den Einsatz lokaler Sprachmodelle zur Verarbeitung von EEG-Daten auf einem mobilen Android-Gerät. Die vorliegende Arbeit untersucht, wie diese Kombination in der Praxis funktioniert. Dieses Kapitel gibt einen Überblick über die Motivation, Zielsetzung und den Aufbau der Arbeit.
+Gehirn-Computer-Schnittstellen und lokal ausführbare künstliche Intelligenz haben sich in den letzten Jahren stark weiterentwickelt. Die Kombination beider Technologien eröffnet neue Möglichkeiten, unter anderem den Einsatz lokaler Sprachmodelle zur Verarbeitung von \ac{EEG}-Daten auf einem mobilen Android-Gerät. Die vorliegende Arbeit untersucht, wie diese Kombination in der Praxis funktioniert. Dieses Kapitel gibt einen Überblick über die Motivation, Zielsetzung und den Aufbau der Arbeit.
 
 \section{Motivation}
 \label{sec:motivation}
-Die Elektroenzephalographie (EEG) ist ein etabliertes Verfahren zur nicht-invasiven Aufzeichnung der elektrischen Aktivität des Gehirns \autocite{blum2017}.
-Eine Gehirn-Computer-Schnittstelle (Brain-Computer-Interface, BCI) zielt anhand dieser Grundlage darauf ab, kognitive Zustände in Echtzeit zu identifizieren, um eine Steuerung und Kommunikation ohne jeglichen Einsatz von Muskeln zu ermöglichen \autocite{blum2017}.
-Vor allem körperlich stark beeinträchtigte Menschen profitieren von BCI-Systemen. Gelähmten Personen ist es unter anderem so möglich, BCI-basierte Buchstabiersysteme zu nutzen, die einen wichtigen Kommunikationskanal darstellen \autocite{blum2017}.
+Das \ac{EEG} ist ein etabliertes Verfahren zur nicht-invasiven Aufzeichnung der elektrischen Aktivität des Gehirns \autocite{blum2017}.
+Eine Gehirn-Computer-Schnittstelle, ein sogenanntes \ac{BCI}, zielt anhand dieser Grundlage darauf ab, kognitive Zustände in Echtzeit zu identifizieren, um eine Steuerung und Kommunikation ohne jeglichen Einsatz von Muskeln zu ermöglichen \autocite{blum2017}.
+Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-Systemen. Gelähmten Personen ist es unter anderem so möglich, \ac{BCI}-basierte Buchstabiersysteme zu nutzen, die einen wichtigen Kommunikationskanal darstellen \autocite{blum2017}.
 \vspace{\baselineskip}
 
-\noindent Traditionelle EEG-Laborhardware, wie sie oft stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung. Demgegenüber erlauben moderne, kabellose und am Kopf getragene EEG-Geräte (wie das Unicorn Hybrid Black) inzwischen auch Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
+\noindent Traditionelle \ac{EEG}-Laborhardware, wie sie oft stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung. Demgegenüber erlauben moderne, kabellose und am Kopf getragene \ac{EEG}-Geräte (wie das Unicorn Hybrid Black) inzwischen auch Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
 \vspace{\baselineskip}
 
 \noindent Dennoch ist das Deuten der aufgezeichneten Signale komplex und benötigt oft Fachwissen.
-Gleichzeitig haben große Sprachmodelle (Large Language Models, LLMs) die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}.
-Da lokal ausführbare Inferenzen keine Cloud-Anbindung benötigen und zudem datenschutzfreundlich sind, gibt es ein wachsendes Interesse daran, LLMs direkt auf Endgeräten auszuführen \autocite{edgellm_review}.
+Gleichzeitig haben große Sprachmodelle, sogenannte \acp{LLM}, die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}.
+Da lokal ausführbare Inferenzen keine Cloud-Anbindung benötigen und zudem datenschutzfreundlich sind, gibt es ein wachsendes Interesse daran, \acp{LLM} direkt auf Endgeräten auszuführen \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
-\noindent Durch die Kombination lokaler Sprachmodelle und der aufbereiteten EEG-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
-Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingungen tatsächlich für die Verarbeitung von EEG-Daten eignen, ist bislang offen.
+\noindent Durch die Kombination lokaler Sprachmodelle und der aufbereiteten \ac{EEG}-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
+Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingungen tatsächlich für die Verarbeitung von \ac{EEG}-Daten eignen, ist bislang offen.
 
 \section{Zielsetzung}
 \label{sec:zielsetzung}
-Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von EEG-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen. Damit stellt sich folgende Forschungsfrage:
+Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen. Damit stellt sich folgende Forschungsfrage:
 
 \begin{quote}
-\itshape Inwieweit eignen sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von EEG-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen?
+\itshape Inwieweit eignen sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen?
 \end{quote}
 
-\noindent Um diese Frage zu beantworten, wird eine bestehende Android-EEG-Anwendung um lokale Sprachmodelle erweitert, die dann aufbereitete EEG-Merkmale in verständliche, textuelle Beschreibungen übersetzen. Dabei werden drei verschiedene Anwendungsszenarien sowie drei verschiedene Sprachmodelle mit unterschiedlicher Größe und unterschiedlichem Hersteller betrachtet. So ist es möglich, sowohl den Einfluss der Modellgröße als auch des Herstellers auf die jeweiligen Szenarien zu untersuchen.
+\noindent Um diese Frage zu beantworten, wird eine bestehende Android-\ac{EEG}-Anwendung um lokale Sprachmodelle erweitert, die dann aufbereitete \ac{EEG}-Merkmale in verständliche, textuelle Beschreibungen übersetzen. Dabei werden drei verschiedene Anwendungsszenarien sowie drei verschiedene Sprachmodelle mit unterschiedlicher Größe und unterschiedlichem Hersteller betrachtet. So ist es möglich, sowohl den Einfluss der Modellgröße als auch des Herstellers auf die jeweiligen Szenarien zu untersuchen.
 \vspace{\baselineskip}
 
-\noindent Die Eignung wird schlussendlich anhand verschiedener Kriterien bewertet. Dazu zählen Latenz, Ressourcenverbrauch, Stabilität sowie die Qualität der ausgegebenen Texte. Darüber hinaus werden praktische Einschränkungen wie die Geräteabhängigkeit systemintegrierter Modelle dokumentiert. Das Ergebnis dieser Arbeit liefert einen systematischen Vergleich, aus dem sich Handlungsempfehlungen für den Einsatz lokaler Sprachmodelle in mobilen BCI-Anwendungen ableiten lassen.
+\noindent Die Eignung wird schlussendlich anhand verschiedener Kriterien bewertet. Dazu zählen Latenz, Ressourcenverbrauch, Stabilität sowie die Qualität der ausgegebenen Texte. Darüber hinaus werden praktische Einschränkungen wie die Geräteabhängigkeit systemintegrierter Modelle dokumentiert. Das Ergebnis dieser Arbeit liefert einen systematischen Vergleich, aus dem sich Handlungsempfehlungen für den Einsatz lokaler Sprachmodelle in mobilen \ac{BCI}-Anwendungen ableiten lassen.
 \vspace{\baselineskip}
 
 \noindent Der Fokus liegt dabei nicht auf dem Training der Modelle, sondern auf ihrer Integration, Leistungsfähigkeit und ihren Grenzen im mobilen Einsatz.

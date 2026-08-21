@@ -1,6 +1,6 @@
 \chapter{Diskussion}
 \label{ch:diskussion}
-In diesem Kapitel werden die Ergebnisse der Evaluation eingeordnet und gedeutet. Anschließend werden die Einschränkungen der Arbeit diskutiert und Handlungsempfehlungen für den praktischen Einsatz lokaler Sprachmodelle in mobilen BCI-Anwendungen abgeleitet.
+In diesem Kapitel werden die Ergebnisse der Evaluation eingeordnet und gedeutet. Anschließend werden die Einschränkungen der Arbeit diskutiert und Handlungsempfehlungen für den praktischen Einsatz lokaler Sprachmodelle in mobilen \ac{BCI}-Anwendungen abgeleitet.
 
 \section{Einordnung der Ergebnisse}
 \label{sec:einordnung}
@@ -12,7 +12,7 @@ Qwen 2.5 1.5B hat die höchste Gesamtdauer und verbraucht am meisten Akku, obwoh
 Diese Ausführlichkeit ist zugleich ein Qualitätsproblem, denn Qwen hält sich schlecht an die Vorgaben: Trotz der klaren Formatvorgaben im Prompt fällt die Antwort zu lang aus. Die Ausgabe ist so nicht nur inhaltlich am schwächsten, sondern kostet auch am meisten Zeit und Energie. Schlechte Qualität und hoher Verbrauch hängen bei Qwen also direkt zusammen.
 \vspace{\baselineskip}
 
-\noindent Ein weiterer Zusammenhang zeigt sich bei den Szenarien. Auffällig ist, dass die TTFT im Vergleichsszenario über alle Modelle hinweg deutlich länger dauert als bei Report und Artefakt-Erklärung. Dies lässt sich leicht erklären, da im Vergleich zwei Eingaben verarbeitet werden, was vermutlich zu einem längeren Prompt führt. Je mehr Text gelesen wird, desto länger dauert es, bis die Antwort generiert wird.
+\noindent Ein weiterer Zusammenhang zeigt sich bei den Szenarien. Auffällig ist, dass die \ac{TTFT} im Vergleichsszenario über alle Modelle hinweg deutlich länger dauert als bei Report und Artefakt-Erklärung. Dies lässt sich leicht erklären, da im Vergleich zwei Eingaben verarbeitet werden, was vermutlich zu einem längeren Prompt führt. Je mehr Text gelesen wird, desto länger dauert es, bis die Antwort generiert wird.
 \vspace{\baselineskip}
 
 \noindent Die Ergebnisse zeigen somit, dass sich nicht alles logisch übertragen lässt, da Modelle verschiedener Marken unterschiedlich funktionieren. Die Stärken ergeben sich also aus dem Zusammenspiel von Größe und Fähigkeit. Bei der Stabilität unterscheiden sich die Modelle hingegen nicht. Alle Kombinationen liefen fehlerfrei durch. Nur Qwen 2.5 1.5B wies einen erhöhten Streuungswert im Vergleichsszenario auf, was sich durch seine lange Laufzeit unter Dauerlast begründen lässt. Am Ende ist für die eigentliche Fragestellung am entscheidendsten, ob die Modelle einwandfrei ihre Aufgabe erfüllt haben. Daher ist die Ausgabequalität das wichtigste Kriterium, vorausgesetzt, es gibt keine Probleme in der Technik selbst.
@@ -42,7 +42,7 @@ Für die Benutzerfreundlichkeit ist es auch sinnvoll, eine wie hier verwendete S
 Bei Qwen 2.5 1.5B ist es beispielsweise sinnvoll, die Antwort zu kürzen und formatierungstechnisch zu vereinfachen. Es ist dringend empfehlenswert, sich in medizinisch wichtigen Bereichen nicht allein auf solche Modelle zu verlassen. Ihre Ausgaben sollten immer mit Vorsicht und Skepsis betrachtet werden. Selbst das stärkste Modell in dieser Arbeit ist nicht fehlerfrei.
 
 \subsection{Modellempfehlung}
-Wenn der Fokus auf der Qualität liegen soll, geht eine klare Empfehlung an das Modell Gemma 2 2B. Es hält sich am besten an die Vorgaben und bietet die beste Ausgabequalität. Dafür verbraucht es am meisten Speicher und ist am langsamsten, mit einer geringen Token-Rate und der längsten TTFT. Aufgrund des Speicherverbrauchs von etwa 3,7,GB allein für den Anteil des Modells empfiehlt es sich, ein Testgerät mit weitaus mehr RAM zu nutzen. Mit Betriebssystem, einem Puffer und möglicherweise weiteren Anwendungen kann der Speicherbedarf schnell ansteigen.
+Wenn der Fokus auf der Qualität liegen soll, geht eine klare Empfehlung an das Modell Gemma 2 2B. Es hält sich am besten an die Vorgaben und bietet die beste Ausgabequalität. Dafür verbraucht es am meisten Speicher und ist am langsamsten, mit einer geringen Token-Rate und der längsten \ac{TTFT}. Aufgrund des Speicherverbrauchs von etwa 3,7,GB allein für den Anteil des Modells empfiehlt es sich, ein Testgerät mit weitaus mehr \ac{RAM} zu nutzen. Mit Betriebssystem, einem Puffer und möglicherweise weiteren Anwendungen kann der Speicherbedarf schnell ansteigen.
 \vspace{\baselineskip}
 
 \noindent Wer hingegen auf Geschwindigkeit, Speicher- und Akkuverbrauch setzen möchte, ist mit dem kleinsten Modell Gemma 3 1B am besten aufgehoben. Vor allem für schwache Geräte ist es die beste Wahl, da es die geringsten Anforderungen an das Gerät stellt.
@@ -51,7 +51,7 @@ Wenn der Fokus auf der Qualität liegen soll, geht eine klare Empfehlung an das 
 \noindent Qwen 2.5 1.5B ist nicht zu empfehlen. Es schneidet in puncto Qualität und Akkuverbrauch trotz seiner Größe am schlechtesten ab. Die Geschwindigkeit und der Speicherbedarf pendeln sich, mit Ausnahme der Gesamtdauer, wie erwartet in der Mitte ein, können jedoch nicht die mangelnde Ausgabequalität rechtfertigen.
 \vspace{\baselineskip}
 
-\noindent Je nach Einsatzzweck haben die Modelle von Google einen klaren Vorteil. Wenn schnelle Antworten mit sehr geringer TTFT und einer niedrigen Gesamtdauer gefordert sind, führt kein Weg an kleinen Modellen wie Gemma 3 1B vorbei. Wenn hingegen Qualität wichtig und Zeit gegeben ist, beispielsweise als Hintergrundprozess ohne nötige sofortige Rückmeldung, ist Gemma 2 2B die beste Wahl.
+\noindent Je nach Einsatzzweck haben die Modelle von Google einen klaren Vorteil. Wenn schnelle Antworten mit sehr geringer \ac{TTFT} und einer niedrigen Gesamtdauer gefordert sind, führt kein Weg an kleinen Modellen wie Gemma 3 1B vorbei. Wenn hingegen Qualität wichtig und Zeit gegeben ist, beispielsweise als Hintergrundprozess ohne nötige sofortige Rückmeldung, ist Gemma 2 2B die beste Wahl.
 \vspace{\baselineskip}
 
 \noindent Zusammenfassend lässt sich sagen, dass eine größere Parameteranzahl nicht automatisch eine bessere Wahl darstellt.
