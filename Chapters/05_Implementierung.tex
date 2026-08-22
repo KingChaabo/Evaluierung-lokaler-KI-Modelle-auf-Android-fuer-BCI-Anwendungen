@@ -355,16 +355,19 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailseite, die es schon in der ursprünglichen Anwendung gab (\autoref{fig:session-detail}). Hinzugekommen sind zwei neue Knöpfe. Die Benutzeroberfläche, die für die KI-Analyse zuständig ist, befindet sich im Paket analyse. Die Oberfläche startet mit dem Auslösen des Analyseknopfes. Daraufhin erfolgt ein Dialog zum Einstellen der Parameter und anschließend die Anzeige der Ergebnisse. Zudem gibt es einen Benchmark-Knopf, der über einen weiteren Dialog die automatisierte Messreihe startet.
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}
+    \begin{tikzpicture}[
+        every node/.style={font=\fontfamily{phv}\selectfont\scriptsize},
+        callout/.style={->, thick},
+    ]
         \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
               {\includegraphics[width=0.40\textwidth]{Graphics/session_detail.jpeg}};
         \draw[rounded corners=8pt, black!30, line width=0.5pt]
               (im.south west) rectangle (im.north east);
         % normiertes Koordinatensystem (0..1) ueber dem Bild
         \begin{scope}[x={(im.south east)},y={(im.north west)}]
-            \node[anchor=west, font=\fontfamily{phv}\selectfont\footnotesize\bfseries] (neu) at (1.08,0.36) {neu};
-            \draw[->, thick] (neu.west) to[out=180,in=0] (0.88,0.40);
-            \draw[->, thick] (neu.west) to[out=180,in=0] (0.88,0.315);
+            \node[anchor=west] (neu) at (1.08,0.36) {neu};
+            \draw[callout] (neu.west) to[out=180,in=0] (0.88,0.40);
+            \draw[callout] (neu.west) to[out=180,in=0] (0.88,0.315);
         \end{scope}
     \end{tikzpicture}
     \caption{Session-Detailansicht mit dem Einstieg in die Analyse und Benchmark.}
