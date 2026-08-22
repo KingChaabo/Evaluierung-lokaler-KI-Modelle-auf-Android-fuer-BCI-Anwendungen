@@ -46,7 +46,7 @@ Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
     \end{tabular}
 \end{table}
 
-\noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 25,34 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 2,87 Tok/s).
+\noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 25,34 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 2,87 Tok/s). Dabei ist sie im Vergleichsszenario über alle Modelle hinweg am kürzesten.
 Die \textbf{Ladezeit} ist bei Gemma 2 2B am höchsten; die beiden kleineren Modelle Gemma 3 1B und Qwen 2.5 1.5B laden schneller. Sie liegt durchweg unter einer Sekunde (zwischen 0,27 und 0,87\,s).
 Die \textbf{\ac{TTFT}} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die \ac{TTFT} mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,60\,s.
 Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
@@ -99,6 +99,25 @@ Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zw
     \caption{Latenzmetriken je Modell und Szenario (Fehlerbalken: Standardabweichung aus vier Wiederholungen; Ladezeit ohne Fehlerbalken, da je Konfiguration einmalig gemessen).}
     \label{fig:eval-latenz}
 \end{figure}
+
+\noindent Die \ac{TTFT} kann im Allgemeinen von der Länge der Eingabe abhängen. Wie schon in \autoref{subsec:messbedingungen} beschrieben, kann sich die Anzahl der Eingabe-Tokens trotz gleicher Promptlänge je Modell aufgrund der verschiedenen verwendeten Tokenizer unterscheiden. \autoref{tab:eval-eingabetokens} stellt diese Werte dar.
+
+\begin{table}[H]
+    \centering
+    \caption{Anzahl der Eingabe-Tokens je Modell und Szenario.}
+    \label{tab:eval-eingabetokens}
+    \begin{tabular}{l c c c}
+        \toprule
+        \textbf{Modell} & \textbf{Report} & \textbf{Artefakt} & \textbf{Vergleich} \\
+        \midrule
+        Gemma 3 1B    & 417 & 446 & 740 \\
+        Qwen 2.5 1.5B & 439 & 482 & 770 \\
+        Gemma 2 2B    & 415 & 444 & 736 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\noindent Die Eingabe-Tokens fallen im Vergleichsszenario über alle Modelle hinweg am größten aus. Zudem zerlegt Qwen den Prompt über alle Szenarien hinweg in die meisten Tokens.
 \section{Ressourcenverbrauch}
 \label{sec:eval-ressourcen}
 Darauffolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorgestellt.
