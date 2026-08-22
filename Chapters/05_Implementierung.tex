@@ -360,11 +360,11 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
         callout/.style={->, thick},
     ]
         \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
-              {\includegraphics[width=0.40\textwidth]{Graphics/session_detail.jpeg}};
+              {\includegraphics[width=0.38\textwidth]{Graphics/session_detail.jpeg}};
         \draw[rounded corners=8pt, black!30, line width=0.5pt]
               (im.south west) rectangle (im.north east);
         % normiertes Koordinatensystem (0..1) ueber dem Bild
-        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+        \begin{scope}[x={(im.south east)},y={(im.north west)}, overlay]
             \node[anchor=west] (neu) at (1.08,0.36) {neu};
             \draw[callout] (neu.west) to[out=180,in=0] (0.88,0.40);
             \draw[callout] (neu.west) to[out=180,in=0] (0.88,0.315);
@@ -383,11 +383,11 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref
         callout/.style={->, thick},
     ]
         \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
-              {\includegraphics[width=0.40\textwidth]{Graphics/Dialog.jpeg}};
+              {\includegraphics[width=0.38\textwidth]{Graphics/Dialog.jpeg}};
         \draw[rounded corners=8pt, black!30, line width=0.5pt]
               (im.south west) rectangle (im.north east);
         % normiertes Koordinatensystem (0..1) ueber dem Bild
-        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+        \begin{scope}[x={(im.south east)},y={(im.north west)}, overlay]
             % --- linke Beschriftungen ---
             \node[anchor=east, align=right] (lsz) at (-0.04,0.68) {Analyse-Art\\wählen};
             \draw[callout] (lsz.east) to[out=0,in=180] (0.08,0.68);
@@ -427,10 +427,10 @@ public void onChunk(String partial) {
         callout/.style={->, thick},
     ]
         \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
-              {\includegraphics[width=0.40\textwidth]{Graphics/Ergebnis.jpeg}};
+              {\includegraphics[width=0.38\textwidth]{Graphics/Ergebnis.jpeg}};
         \draw[rounded corners=8pt, black!30, line width=0.5pt]
               (im.south west) rectangle (im.north east);
-        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+        \begin{scope}[x={(im.south east)},y={(im.north west)}, overlay]
             \node[anchor=east, align=right] (lms) at (-0.15,0.96) {Szenario und\\Modell};
             \draw[callout] (lms.east) to[out=0,in=180] (0.02,0.93);
             \node[anchor=east, align=right] (lat) at (-0.15,0.86) {Latenz-Werte};
@@ -454,10 +454,10 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
         callout/.style={->, thick},
     ]
         \node[anchor=south west, inner sep=0pt, rounded corners=8pt, clip] (im)
-              {\includegraphics[width=0.40\textwidth]{Graphics/Benchmark.jpeg}};
+              {\includegraphics[width=0.38\textwidth]{Graphics/Benchmark.jpeg}};
         \draw[rounded corners=8pt, black!30, line width=0.5pt]
               (im.south west) rectangle (im.north east);
-        \begin{scope}[x={(im.south east)},y={(im.north west)}]
+        \begin{scope}[x={(im.south east)},y={(im.north west)}, overlay]
             \node[anchor=east, align=right] (lse) at (-0.15,0.52) {zweite Session\\auswählen};
             \draw[callout] (lse.east) to[out=0,in=180] (0.05,0.500);
         \end{scope}
