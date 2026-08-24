@@ -287,6 +287,13 @@ belowcaptionskip=1\baselineskip,
 \setkomafont{disposition}{\bfseries}
 % ****************************************************************************************************
 \usepackage{float}
+% --- Harmonischer Seitenumbruch ---
+\usepackage{needspace}      % \needspace{<Hoehe>} haelt einen Block zusammen bzw. bricht sauber um
+\clubpenalty=10000          % keine Schusterjungen (Absatz-Erstzeile allein unten)
+\widowpenalty=10000         % keine Hurenkinder (Absatz-Letztzeile allein oben)
+\displaywidowpenalty=10000
+\brokenpenalty=10000        % kein Seitenumbruch direkt nach einem Trennstrich
+\raggedbottom               % keine gedehnten Luecken; Seiten enden natuerlich statt aufgefuellt
 \usepackage{tikz}
 \usepackage{pdflscape}   % Querformat-Seiten (Rohdaten-Anhang)
 \usepackage{longtable}   % seitenübergreifende Tabellen (Rohdaten-Anhang)

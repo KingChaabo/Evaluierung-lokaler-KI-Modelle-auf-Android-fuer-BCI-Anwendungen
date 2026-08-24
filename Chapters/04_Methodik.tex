@@ -23,7 +23,12 @@ transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar,
 \subsection{Segmentierung}
 \label{subsec:segmentierung}
 Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der zeitliche Verlauf der Session fehlen. Aus diesem Grund wird jede Session in mehrere gleich große Segmente aufgeteilt (\autoref{fig:segmentierung}). Da das Signal mit einer konstanten Abtastrate von 250 Hz aufgenommen wird, entspricht eine gleiche Anzahl an Samples automatisch einer gleichen Zeitdauer. Die Segmentierung wird daher Sample-basiert durchgeführt. Dadurch ist es leichter nachvollziehbar, wie sich die Signalcharakteristik zwischen Beginn und Ende der Aufnahme verändert. Durch dieses Verfahren wird die Analyse robuster gegenüber Artefakten, da diese nur einen Teil der Session betreffen und nicht die gesamte Aufnahme verfälschen.
-\vspace{\baselineskip}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{Graphics/Segmentierung.pdf}
+    \caption{Aufteilung einer Session in vier gleich lange Zeitabschnitte \autocite{drawio}.}
+    \label{fig:segmentierung}
+\end{figure}
 
 \noindent Damit die Aufteilung der Session möglich ist, muss die Aufnahme eine Mindestlänge haben. Damit pro Segment mindestens ein vollständiges Analysefenster für die spektrale Berechnung zur Verfügung steht, sind bei vier Abschnitten und einer Fenstergröße von 256 Werten mindestens
 \begin{equation}
@@ -34,17 +39,11 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 \vspace{\baselineskip}
 
 \noindent Die Fenstergröße ist kein fester, unveränderlicher Wert, sondern variabel einstellbar. Eine größere Fenstergröße erhöht die Frequenzauflösung \autocite{windowing_welch2021}, erfordert jedoch eine längere Mindestdauer der Session. Für alle folgenden Untersuchungen wird mit der Standardfenstergröße von 256 Samples gearbeitet, da sie in etwa eine Sekunde abbildet.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.90\textwidth]{Graphics/Segmentierung.pdf}
-    \caption{Aufteilung einer Session in vier gleich lange Zeitabschnitte \autocite{drawio}.}
-    \label{fig:segmentierung}
-\end{figure}
 
 \subsection{Spektrale Merkmale}
 \label{subsec:spektral}
 Die spektralen Merkmale werden für jeden Abschnitt bestimmt, indem die Signalenergie auf die einzelnen Frequenzbänder verteilt wird. 
-Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Abschnitts in überlappende Fenster unterteilt; im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples (\autoref{fig:welch-fenster}).
+Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Abschnitts in überlappende Fenster unterteilt (\autoref{fig:welch-fenster}); im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples.
 Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließend über alle Fenster gemittelt wird. Durch diese Mittelung wird das resultierende Spektrum deutlich stabiler und weniger rauschanfällig als bei einer einzelnen \ac{FFT}. Allerdings ist dann mit einer geringeren Frequenzauflösung zu rechnen \autocite{windowing_welch2021}.
 \vspace{\baselineskip}
 
@@ -55,15 +54,14 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 \begin{equation} w(n) = 0.5 - 0.5 \cos\left(\frac{2\pi n}{N-1}\right) \end{equation}
 
 \noindent wobei $N$ die Fenstergröße (Standard: 256) bezeichnet \autocite{windowing_welch2021}.
-\vspace{\baselineskip}
-
-\noindent Jedes Fenster wird per \ac{FFT} in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert \autocite{10353995}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{Graphics/Ueberlappung.pdf}
     \caption{Zerlegung eines Segments in überlappende, mit einer Hann-Funktion gewichtete Analysefenster (50\,\% Überlappung) für die Welch-Methode \autocite{drawio}.}
     \label{fig:welch-fenster}
 \end{figure}
+
+\noindent Jedes Fenster wird per \ac{FFT} in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert \autocite{10353995}.
 
 \subsection{Zeitstatistische Merkmale}
 Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jeden Abschnitt berechnet \autocite{10353995}. Hierfür ist keine \ac{FFT} notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.

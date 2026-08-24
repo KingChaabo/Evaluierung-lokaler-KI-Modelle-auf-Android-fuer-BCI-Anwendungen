@@ -6,13 +6,13 @@ Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung au
 Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komponenten (Blau und Grün), die in \autoref{fig:architektur} dargestellt sind:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{Graphics/Architektur.pdf}
+    \includegraphics[width=0.53\textwidth]{Graphics/Architektur.pdf}
     \caption{Architektur und Datenfluss der Anwendung \autocite{drawio}}
     \label{fig:architektur}
 \end{figure}
 
+Der Weg startet über die Datenbank, aus der die Samples abgerufen werden:
 \begin{itemize}
-\item \textbf{Datenbank:} Der Weg startet über die Datenbank, aus der die Samples abgerufen werden.
 \item \textbf{EegFeatureExtractor:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
 \item \textbf{FeatureFormatter:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
 \item \textbf{PromptBuilder:} Baut die Anweisung für den Prompt (je Szenario).
@@ -39,7 +39,7 @@ In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B all
 \vspace{\baselineskip}
 
 \noindent Aussagekräftig ist zudem, dass der Benchmark denselben Analyseablauf verwendet wie eine vom Nutzer ausgelöste Einzelanalyse.
-\vspace{\baselineskip}
+\newpage
 
 \noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
 \begin{figure}[H]
@@ -55,30 +55,11 @@ In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B all
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
 Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie statistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
-\vspace{\baselineskip}
 
 \subsection{Vorbereitung} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das \ac{FFT}-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
+\newpage
 
-\subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit (\autoref{lst:validate}). Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
-\begin{lstlisting}[style=code, caption={Vorabprüfung der Session}, label={lst:validate}]
-public enum Check { OK, TOO_SHORT, TOO_MANY_INVALID; }
-
-public Check validate(List<SampleEntity> samples) {
-    if (samples == null || samples.size() < minSamples) {
-        return Check.TOO_SHORT;
-        // zu wenige Samples
-    }
-    int invalidCount = 0;
-    for (SampleEntity sample : samples) {
-        if (sample.valid == 0) invalidCount++;
-    }
-    if (invalidCount > MAX_INVALID_RATIO * samples.size()) {
-        return Check.TOO_MANY_INVALID;
-        // zu viele ungueltige Werte
-    }
-    return Check.OK;
-}
-\end{lstlisting}
+\subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 
 \subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Abschnitte (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
 \begin{lstlisting}[style=code, caption={Zerlegung der Session in Segmente}, label={lst:extract}]
@@ -102,6 +83,9 @@ public SessionFeatures extract(List<SampleEntity> samples) {
     return features;
 }
 \end{lstlisting}
+
+\noindent Die Anzahl der Samples ist nicht immer genau durch \texttt{SEGMENT\_COUNT} teilbar. Daher werden am Ende alle restlichen Samples in das letzte Segment aufgenommen. Dadurch gehen keine Messwerte verloren. \texttt{buildSegment} übernimmt die eigentliche Merkmalsextraktion je Segment.
+\newpage
 
 \subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
 \begin{lstlisting}[style=code, caption={Band-Power je Kanal nach dem Welch-Verfahren}, label={lst:bandpower}]
@@ -138,6 +122,10 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 }
 \end{lstlisting}
 
+\noindent Wichtig ist, dass die Band-Power vorerst je Kanal berechnet wird, die am Ende für die Aufbereitung für das Sprachmodell über alle acht Kanäle zusammengefasst wird. \texttt{windowCount} fungiert als Zähler, der sicherstellt, dass nur vollständig berechnete Fenster in die Mittelung eingehen.
+
+\newpage
+
 \noindent Die Methode \texttt{powerSpectrum} berechnet das Leistungsspektrum eines Fensters (\autoref{lst:powerspectrum}). Zunächst wird der Mittelwert (Gleichanteil) abgezogen. Danach wird das Hann-Fenster angewendet, um anschließend die Fourier-Transformation durchzuführen. Schließlich wird die Leistung je Frequenz-Bin berechnet, indem die Real- und Imaginärteile quadriert und summiert werden.
 \begin{lstlisting}[style=code, caption={Berechnung des Leistungsspektrums eines Fensters}, label={lst:powerspectrum}]
 private double[] powerSpectrum(double[] window) {
@@ -168,7 +156,7 @@ private double[] powerSpectrum(double[] window) {
 \end{lstlisting}
 
 \noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Sie bietet eine Java-basierte Implementierung der Fourier-Transformation, die den Aufruf \texttt{realForward} für reelle Eingangssignale bereitstellt. Das Ergebnis wird dabei in dasselbe Array geschrieben, sodass die geraden Indizes die Real- und die ungeraden Indizes die Imaginärteile der Frequenz-Bins enthalten.
-\vspace{\baselineskip}
+\newpage
 
 \subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
 \begin{lstlisting}[style=code, caption={Zuordnung der Frequenz-Bins zu den Bändern}, label={lst:sumbands}]
@@ -192,11 +180,9 @@ private double[] sumBands(double[] power) {
 \subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
 
 \subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung.
-
+\newpage
 \subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in ein lesbares Format für das Sprachmodell umgewandelt werden.
-\vspace{\baselineskip}
-
-\noindent Die Aufbereitung läuft wie folgt: Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
+Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
 \begin{lstlisting}[style=code, caption={Umrechnung der absoluten Band-Power in relative Anteile}, label={lst:relbandpower}]
 private double[] relativeBandPower(SessionFeatures.Segment seg) {
     int channels = seg.bandPower.length;
@@ -251,7 +237,8 @@ Abschnitt 4 (45.0--60.0s):\\
 
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
-Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Dateigröße der Modelle würde den Speicher der gesamten Applikation unnötig erhöhen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
+Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-
+\noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Dateigröße der Modelle würde den Speicher der gesamten Applikation unnötig erhöhen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \vspace{\baselineskip}
 
 \subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
@@ -272,7 +259,9 @@ public void load(Context context) {
 }
 \end{lstlisting}
 
-\subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{generateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
+\newpage
+\subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{gene-
+\noindent rateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
 \begin{lstlisting}[style=code, caption={Streamende Ausgabe mit Messung der Latenz}, label={lst:llmstream}]
 public void questionStreaming(String prompt, StreamCallback callback) {
     StringBuilder full = new StringBuilder();
@@ -306,14 +295,14 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 
 \noindent Bei der Optimierung des Prompts ergaben sich folgende Design-Vorgaben, die jeweils auf ein beobachtetes Problem der frühen Ausgaben zurückgehen:
 \begin{itemize}
-\item \textbf{Datentreue:} Es wird darauf hingewiesen, nur die Werte zu verwenden, die genannt werden. Dies soll verhindern, dass das Modell eigene Annahmen trifft. Dieses Problem trat in früheren Ausgaben auf, so wurden Begriffe wie \enquote{Dominanzindex} genannt.
+\item \textbf{Datentreue:} Es wird darauf hingewiesen, nur die Werte zu verwenden, die genannt werden. Dies soll verhindern, dass das Modell eigene Annahmen trifft. Dieses Problem trat in früheren Ausgaben auf. So entstanden Begriffe wie \enquote{Dominanzindex}.
 \item \textbf{Reines Textformat:} Es wird sichergestellt, dass die Ausgaben des Modells nur textuelle Informationen enthalten. Es werden Sonderzeichen (Markdown) verboten, da sonst Formatierungszeichen (z.\,B. \texttt{**}) auftraten.
 \item \textbf{Eindeutige Merkmalsbenennung:} Im \texttt{FeatureFormatter} wird der Anteil ungültiger Werte als \enquote{Ungültige Messwerte: X\,\%} statt als \enquote{Qualität: X\,\%} ausgegeben. Zuvor interpretierte das Modell \enquote{Qualität: X\,\%} fälschlich als schlechte Qualität.
 \item \textbf{Begrenzung der Interpretation:} Ausgaben mit falscher Interpretation, etwa durch die Einbeziehung medizinischer Diagnosen, werden verhindert, da sie zuvor ein Problem darstellten.
 \item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.
 \end{itemize}
 
-\noindent Nach der Optimierung wurde der finale Prompt eingefroren und für alle Messungen verwendet. Er stellt auch die Grundlage für den Benchmark dar. In \autoref{lst:prompts} sind die finalen Prompts je Szenario dargestellt.
+\noindent Nach der Optimierung wurde der finale Prompt eingefroren und bildete die Grundlage für alle Messungen und den Benchmark. Listing 5.8 zeigt die finalen Prompts je Szenario.
 \begin{lstlisting}[style=code, breaklines=true, caption={Aufbau der Prompts je Szenario (finale, eingefrorene Fassung)}, label={lst:prompts}]
 // Szenario 1: Session-Report
 public String buildReport(String featureText) {
@@ -324,7 +313,6 @@ public String buildReport(String featureText) {
          + "Erfinde nichts und nutze nur die folgenden Werte:\n\n"
          + featureText;
 }
-
 // Szenario 2: Artefakt-Erklaerung
 public String buildArtefaktErklaerung(String featureText) {
     return "Analysiere die folgenden EEG-Messwerte und beziehe dich konkret auf die genannten Werte. "
@@ -336,7 +324,6 @@ public String buildArtefaktErklaerung(String featureText) {
          + "die folgenden Werte:\n\n"
          + featureText;
 }
-
 // Szenario 3: Session-Vergleich
 public String buildVergleich(String featureTextA, String featureTextB) {
     return "Vergleiche die folgenden zwei EEG-Sessions und beschreibe die wichtigsten "
@@ -375,7 +362,10 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref{fig:analyse-dialog}), also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt. Das visuelle Layout des Dialogs ist in der Datei \texttt{dialog\_analyse.xml} definiert.
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt. Das visuelle Layout des Dialogs ist in der Datei \texttt{dialog\_analyse.xml} definiert.
+
+\needspace{0.6\textheight}
+\noindent \autoref{fig:analyse-dialog} zeigt den beschriebenen Analyse-Dialog.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -408,8 +398,8 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog (\autoref
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
-Die Logik der gesamten Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnisActivity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die beiden Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
-Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach (\autoref{fig:analyse-ergebnis}). Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar.
+Die Logik der gesamten Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnisAc-
+\noindent tivity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die beiden Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
 \begin{lstlisting}[style=code, caption={Live-Anzeige der streamenden Ausgabe}, label={lst:onchunk}]
 @Override
 public void onChunk(String partial) {
@@ -419,6 +409,10 @@ public void onChunk(String partial) {
     });
 }
 \end{lstlisting}
+
+\newpage
+\noindent Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. \autoref{fig:analyse-ergebnis} zeigt die Ansicht.
+
 
 \begin{figure}[H]
     \centering
@@ -444,7 +438,7 @@ public void onChunk(String partial) {
 \end{figure}
 
 \noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}). Das zugehörige Layout ist in der Datei \texttt{activity\_analyse\_ergebnis.xml} festgelegt.
-
+\newpage
 \subsection{Benchmark-Dialog}
 Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf, über den man die automatisierte Messreihe starten kann. Auch dort startet zuvor ein Dialog (\autoref{fig:benchmark-dialog}), mit dem man für das Vergleichsszenario eine Session auswählen muss.
 \begin{figure}[H]
@@ -467,9 +461,11 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
 \end{figure}
 
 \noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben. Das Layout des Dialogs ist in der Datei \texttt{dialog\_benchmark.xml} definiert.
+\newpage
 \section{Benchmark}
 \label{sec:impl-benchmark}
-Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die \ac{CSV}-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht. Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
+Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die \ac{CSV}-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht. 
+Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
 \vspace{\baselineskip}
 
 \begin{figure}[H]
@@ -479,6 +475,8 @@ Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von 
     \label{fig:seq-benchmark}
 \end{figure}
 
+\noindent Die einzelnen Schritte dieses Ablaufs werden in den folgenden Abschnitten anhand des Codes näher erläutert.
+\newpage
 \subsection{Ablauf} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
 \begin{lstlisting}[style=code, caption={Ablauf des Benchmarks mit Aufwaermphase}, label={lst:runall}]
 public void runAll(long sessionA, long sessionB, int numberConfig, 
@@ -508,7 +506,10 @@ Runnable done) {
 }
 \end{lstlisting}
 
-\subsection{Messung je Konfiguration} Für jede Kombination wird \texttt{runConfig} einmal aufgerufen. Dabei wird das Modell geladen und die Ladezeit gemessen, bevor dieselbe Anfrage n = 5 mal wiederholt wird (\autoref{lst:messloop}). \texttt{questionStreaming} ist für die asynchrone Verarbeitung zuständig. Diese wird mithilfe eines \texttt{CountDownLatch} synchronisiert, der das Warten bei jeder Wiederholung übernimmt. Die Schleife wartet bei \texttt{await}, bis der \texttt{onDone}-Callback per \texttt{countDown} das Ende der Inferenz meldet. Erst danach werden die Speicher- und Akkuwerte ausgelesen und als eine Zeile gespeichert. Bei einem Fehler wird dies in der \ac{CSV}-Datei gekennzeichnet.
+\subsection{Messung je Konfiguration} Für jede Kombination wird \texttt{runConfig} einmal aufgerufen. Dabei wird das Modell geladen und die Ladezeit gemessen, bevor dieselbe Anfrage n = 5 mal wiederholt wird. \texttt{questionStreaming} ist für die asynchrone Verarbeitung zuständig. Diese wird mithilfe eines \texttt{CountDownLatch} synchronisiert, der das Warten bei jeder Wiederholung übernimmt. Die Schleife wartet bei \texttt{await}, bis der \texttt{onDone}-Callback per \texttt{countDown} das Ende der Inferenz meldet. Erst danach werden die Speicher- und Akkuwerte ausgelesen und als eine Zeile gespeichert. Bei einem Fehler wird dies in der \ac{CSV}-Datei gekennzeichnet.
+\newpage
+
+\noindent Die beschriebene Wiederholung mit der Synchronisation über den \texttt{CountDownLatch} ist in \autoref{lst:messloop} dargestellt.
 \begin{lstlisting}[style=code, caption={Wiederholte Messung mit Synchronisation ueber CountDownLatch}, label={lst:messloop}]
 for (int i = 0; i < nc; i++) {
     long[]   ttftHolder  = {0};

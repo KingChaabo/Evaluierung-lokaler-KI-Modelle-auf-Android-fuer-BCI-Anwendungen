@@ -10,9 +10,7 @@ Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-S
 \vspace{\baselineskip}
 
 \noindent Traditionelle \ac{EEG}-Laborhardware, wie sie oft stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung. Demgegenüber erlauben moderne, kabellose und am Kopf getragene \ac{EEG}-Geräte (wie das Unicorn Hybrid Black) inzwischen auch Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
-\vspace{\baselineskip}
-
-\noindent Dennoch ist das Deuten der aufgezeichneten Signale komplex und benötigt oft Fachwissen.
+Dennoch ist das Deuten der aufgezeichneten Signale komplex und benötigt oft Fachwissen.
 Gleichzeitig haben große Sprachmodelle, sogenannte \acp{LLM}, die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}.
 Da lokal ausführbare Inferenzen keine Cloud-Anbindung benötigen und zudem datenschutzfreundlich sind, gibt es ein wachsendes Interesse daran, \acp{LLM} direkt auf Endgeräten auszuführen \autocite{edgellm_review}.
 \vspace{\baselineskip}
@@ -22,7 +20,10 @@ Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingu
 
 \section{Zielsetzung}
 \label{sec:zielsetzung}
-Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen. Damit stellt sich folgende Forschungsfrage:
+Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen eignen. 
+\newpage
+
+Damit stellt sich folgende Forschungsfrage:
 
 \begin{quote}
 \itshape Inwieweit eignen sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain-Computer-Interface-Anwendungen?
@@ -39,12 +40,13 @@ Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lok
 \section{Aufbau der Arbeit}
 \label{sec:aufbau}
 Der Aufbau der Arbeit gliedert sich in acht Kapitel:
-\vspace{\baselineskip}
 
-\noindent \autoref{ch:grundlagen} vermittelt alles an notwendigem Wissen, das für das Verständnis der Arbeit erforderlich ist.
-\autoref{ch:standdertechnik} beschreibt den derzeitigen Stand der Technik.
-\autoref{ch:methodik} erläutert die Methodik, also das Vorgehen, mit dem die Forschungsfrage beantwortet werden soll.
-\autoref{ch:implementierung} stellt dar, wie die konkrete Implementierung der Anwendung erfolgt ist.
-\autoref{ch:evaluation} präsentiert die Ergebnisse der Evaluation.
-\autoref{ch:diskussion} diskutiert diese Ergebnisse sowie die praktischen Einschränkungen.
-\autoref{ch:fazit} schließt die Arbeit mit einem Fazit und einem Ausblick auf mögliche Weiterentwicklungen ab.
+\begin{itemize}
+    \item \textbf{Kapitel 2} vermittelt alles an notwendigem Wissen, das für das Verständnis der Arbeit erforderlich ist.
+    \item \textbf{Kapitel 3} beschreibt den derzeitigen Stand der Technik.
+    \item \textbf{Kapitel 4} erläutert die Methodik, also das Vorgehen, mit dem die Forschungsfrage beantwortet werden soll.
+    \item \textbf{Kapitel 5} stellt dar, wie die konkrete Implementierung der Anwendung erfolgt ist.
+    \item \textbf{Kapitel 6} präsentiert die Ergebnisse der Evaluation.
+    \item \textbf{Kapitel 7} diskutiert diese Ergebnisse sowie die praktischen Einschränkungen.
+    \item \textbf{Kapitel 8} schließt die Arbeit mit einem Fazit und einem Ausblick auf mögliche Weiterentwicklungen ab.
+\end{itemize}
