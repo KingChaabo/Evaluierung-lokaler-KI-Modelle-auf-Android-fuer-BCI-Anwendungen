@@ -16,9 +16,16 @@ Bei einer nur einminütigen Aufnahme ergeben sich beispielsweise
     = 120\,000 \ \text{Werte}.
 \end{equation}
 
-\noindent Diese Datenmenge muss zunächst in eine kompakte Form umgewandelt werden, weil sie
+\noindent Diese Datenmenge muss zunächst in eine kompakte Form umgewandelt werden (\autoref{fig:pipeline}), weil sie
 ansonsten den Kontext des Modells überschreitet und keine fachliche Bedeutung
 transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar, token-sparsamer und können vom Sprachmodell verarbeitet werden.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.70\textwidth]{Graphics/DatenPipeline.pdf}
+    \caption{Datenfluss der Merkmalsextraktion \autocite{drawio}.}
+    \label{fig:pipeline}
+\end{figure}
+\newpage
 
 \subsection{Segmentierung}
 \label{subsec:segmentierung}
@@ -114,6 +121,7 @@ Um die Eignung der Modelle für die Analyse von \ac{EEG}-Daten zu untersuchen, w
 \label{sec:messprotokoll}
 Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen ausgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer \ac{CSV}-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
 Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt (eine Wegwerf-Messung), um Kaltstart-Effekte zu vermeiden. Ein solcher Kaltstart äußert sich darin, dass der erste Lauf eines Modells durch das Laden und Initialisieren deutlich länger ausfällt als die nachfolgenden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebnis dieser Messung wird nicht protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich.
+\newpage
 
 \subsection{Metriken}
 \label{subsec:metriken}
