@@ -302,7 +302,7 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 \item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.
 \end{itemize}
 
-\noindent Nach der Optimierung wurde der finale Prompt eingefroren und bildete die Grundlage für alle Messungen und den Benchmark. Listing 5.8 zeigt die finalen Prompts je Szenario.
+\noindent Nach der Optimierung wurde der finale Prompt eingefroren und bildete die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
 \begin{lstlisting}[style=code, breaklines=true, caption={Aufbau der Prompts je Szenario (finale, eingefrorene Fassung)}, label={lst:prompts}]
 // Szenario 1: Session-Report
 public String buildReport(String featureText) {
