@@ -336,6 +336,7 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 }
 \end{lstlisting}
 
+\noindent Je nachdem, welche Sprache in den App-Einstellungen ausgewählt wurde, werden die Ausgaben in Deutsch oder Englisch erzeugt. Die Übersetzung funktioniert anhand überladener Methoden im \texttt{PromptBuilder}, die die bestehenden Methoden aufrufen und im Falle der englischen Sprache einen entsprechenden Zusatz an den Prompt anhängen.
 
 \section{Benutzeroberfläche}
 \label{sec:impl-ui}
