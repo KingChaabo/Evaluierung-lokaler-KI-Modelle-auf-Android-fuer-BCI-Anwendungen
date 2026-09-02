@@ -412,7 +412,7 @@ public void onChunk(String partial) {
 \end{lstlisting}
 
 \newpage
-\noindent Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. \autoref{fig:analyse-ergebnis} zeigt die Ansicht.
+\noindent Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. Sobald die Ausgabe vollständig ist, erscheint unten rechts ein Knopf zum Teilen der Analyse. \autoref{fig:analyse-ergebnis} zeigt die Ansicht.
 
 
 \begin{figure}[H]
@@ -432,11 +432,16 @@ public void onChunk(String partial) {
             \draw[callout] (lat.east) to[out=0,in=180] (0.02,0.86);
             \node[anchor=east, align=right] (lau) at (-0.15,0.55) {Ausgabe des\\Modells};
             \draw[callout] (lau.east) to[out=0,in=180] (0.02,0.60);
+            \node[anchor=west, align=left] (lsh) at (1.06,0.11) {Analyse\\teilen};
+            \draw[callout] (lsh.west) to[out=180,in=0] (0.96,0.07);
         \end{scope}
     \end{tikzpicture}
     \caption{Ergebnis-Ansicht der KI-Analyse.}
     \label{fig:analyse-ergebnis}
 \end{figure}
+
+\noindent Der Teilen-Knopf erscheint, sobald die erzeugte Analyse abgeschlossen ist. Mit diesem kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist.
+\vspace{\baselineskip}
 
 \noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}). Das zugehörige Layout ist in der Datei \texttt{activity\_analyse\_ergebnis.xml} festgelegt.
 \newpage
