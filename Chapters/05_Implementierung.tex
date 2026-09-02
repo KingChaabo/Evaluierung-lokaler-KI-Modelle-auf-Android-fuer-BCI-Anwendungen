@@ -441,7 +441,8 @@ public void onChunk(String partial) {
     \label{fig:analyse-ergebnis}
 \end{figure}
 
-\noindent Der Teilen-Knopf erscheint, sobald die erzeugte Analyse abgeschlossen ist. Mit diesem kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist.
+\noindent Der Teilen-Knopf erscheint, sobald die erzeugte Analyse abgeschlossen ist. Mit diesem kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist. 
+Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Leser den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
 \vspace{\baselineskip}
 
 \noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}). Das zugehörige Layout ist in der Datei \texttt{activity\_analyse\_ergebnis.xml} festgelegt.
