@@ -18,7 +18,7 @@ Das systemintegrierte Modell Gemini Nano ist stark an die Hardware gebunden, da 
 
 \subsection{Frei deploybare Lösung}
 \label{subsec:frei-deploybare-loesung}
-Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploybare Lösung. Die Modelle werden direkt im \texttt{.task}-Format unterstützt und lassen sich einfach über eine Android-Schnittstelle einbinden \autocite{mediapipe_llm}.
+Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploybare Lösung für die lokale Ausführung von Sprachmodellen auf mobilen Geräten \autocite{mediapipe_llm}.
 \vspace{\baselineskip}
 
 \noindent Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem \ac{CPU} oder dem \ac{GPU} des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}.
@@ -36,6 +36,9 @@ Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploy
 \vspace{\baselineskip}
 
 \noindent Unabhängig von der hier genutzten MediaPipe-Laufzeitumgebung gibt es weitere frei deploybare Modelle anderer Anbieter wie etwa DeepSeek-R1 \autocite{deepseek_r1_2025} oder die Llama-Modelle von Meta \autocite{llama3_2024}.
+\vspace{\baselineskip}
+
+\noindent Zusätzlich zu MediaPipe existieren weitere Laufzeitumgebungen, die auf Android-Geräten laufen. Beispiele sind llama.cpp oder MNN \autocite{guo2025llm}. Nichtsdestotrotz wird in dieser Arbeit MediaPipe verwendet, da in diesem Fall mehrere Aspekte dafür sprechen. Die Bibliothek lässt sich zum einen als offizielle Android-Schnittstelle von Google direkt in die bestehende Java-Anwendung einbinden \autocite{mediapipe_llm}. llama.cpp ist dagegen eine C++-Bibliothek \autocite{guo2025llm}, deren Einbindung in eine Java-Anwendung mit zusätzlichem Aufwand verbunden ist. Zudem liegen die Modelle im passenden \texttt{.task}-Format vor \autocite{mediapipe_llm, qwen_litert}, sodass sich alle drei Modelle unter derselben Laufzeitumgebung mit identischen Parametern ausführen lassen. Die Kombination aus der einfachen Integration und den identischen Parametern der verfügbaren Modelle hat schlussendlich diese Entscheidung treffen lassen.
 \section{Die Gemma-Modellfamilie}
 \label{sec:gemma}
 Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden Modellen, die vom Gemma-Team bei Google DeepMind entwickelt wurden \autocite{gemma3_2025}.
@@ -45,7 +48,7 @@ Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden
 \vspace{\baselineskip}
 
 \noindent Auch der Funktionsumfang wurde erweitert. Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}. Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}.
-\newpage
+
 \section{Die Qwen-Modellfamilie}
 \label{sec:qwen}
 Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Qwen gehört ebenso zu den frei deploybaren Modellfamilien \autocite{qwen2025}. Die Generation Qwen2.5 ist in fein abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar \autocite{qwen2025}. Die kompakten Varianten sind dabei gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert \autocite{qwen2025}. Die neueste Generation der Familie ist Qwen3, die eine hybride Integration eines \enquote{Thinking-Modus} sowie eines \enquote{Non-Thinking-Modus} für schnelle Antworten innerhalb eines einheitlichen Modells bereitstellt \autocite{qwen3_2025}.
@@ -61,7 +64,7 @@ Das Unicorn Hybrid Black ist die \ac{BCI}-Plattform, die in dieser Arbeit verwen
     Besonders ist die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet es sich für den mobilen Einsatz. Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=1.00\textwidth]{Graphics/UnicornHybrid.pdf}
+    \includegraphics[width=0.90\textwidth]{Graphics/UnicornHybrid.pdf}
     \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung, erstellt mit draw.io) \autocite{unicornproduct, drawio}.}
     \label{fig:unicorn}
 \end{figure}
