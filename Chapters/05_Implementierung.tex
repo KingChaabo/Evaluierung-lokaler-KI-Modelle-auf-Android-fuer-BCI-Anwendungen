@@ -227,7 +227,15 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
 \end{lstlisting}
 
 \noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}).
-Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featuretext}. Dieser bildet gemeinsam mit der szenariospezifischen Anweisung den Prompt (\autoref{sec:impl-prompt}).
+\vspace{\baselineskip}
+
+\noindent Der Text wird dabei Abschnitt für Abschnitt aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt.
+\vspace{\baselineskip}
+
+\noindent Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell ohnehin keine Rolle spielt.
+\vspace{\baselineskip}
+
+\noindent Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featuretext}.
 \begin{figure}[H]
 \centering
 {\setlength{\fboxsep}{9pt}%
