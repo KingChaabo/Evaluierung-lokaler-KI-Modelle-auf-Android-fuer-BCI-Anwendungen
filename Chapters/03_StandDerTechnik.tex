@@ -41,23 +41,14 @@ Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploy
 Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden Modellen, die vom Gemma-Team bei Google DeepMind entwickelt wurden \autocite{gemma3_2025}.
 \vspace{\baselineskip}
 
-\noindent Besondere Merkmale der Gemma-Modelle sind:
-\begin{itemize}
-    \item \textbf{Offenheit und Effizienz:} Neben der freien Zugänglichkeit der Modelle zeichnen sie sich durch eine ressourcenschonende Ausführung auf herkömmlicher Standardhardware wie Smartphones aus \autocite{gemma3_2025,gemma2_2024}.
-    \item \textbf{Skalierbarkeit:} Um unterschiedlichen technischen Anforderungen gerecht zu werden, sind die Modelle in mehreren Größen verfügbar. Diese werden in Milliarden von Parametern gemessen. So bietet die zweite Generation (Gemma 2) Varianten mit 2, 9 und 27 Milliarden Parametern \autocite{gemma2_2024}. Die dritte Generation (Gemma 3) erweitert diese Skalierung auf Modelle mit 1, 4, 12 und 27 Milliarden Parametern \autocite{gemma3_2025}. Die aktuellste Generation (Gemma 4) bietet sogar Modelle mit bis zu 31 Milliarden Parametern \autocite{gemma4_2026}.
-    \item \textbf{Erweiterter Funktionsumfang:} Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}.
-    \item \textbf{Einsatzbereitschaft:} Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}.
-\end{itemize}
+\noindent Die Gemma-Modelle besitzen mehrere besondere Merkmale. Neben der freien Zugänglichkeit der Modelle zeichnen sie sich durch eine ressourcenschonende Ausführung auf herkömmlicher Standardhardware wie Smartphones aus \autocite{gemma3_2025,gemma2_2024}. Um unterschiedlichen technischen Anforderungen gerecht zu werden, sind die Modelle zudem in mehreren Größen verfügbar. Diese werden in Milliarden von Parametern gemessen. So bietet die zweite Generation (Gemma 2) Varianten mit 2, 9 und 27 Milliarden Parametern \autocite{gemma2_2024}. Die dritte Generation (Gemma 3) erweitert diese Skalierung auf Modelle mit 1, 4, 12 und 27 Milliarden Parametern \autocite{gemma3_2025}. Die aktuellste Generation (Gemma 4) bietet sogar Modelle mit bis zu 31 Milliarden Parametern \autocite{gemma4_2026}.
+\vspace{\baselineskip}
 
+\noindent Auch der Funktionsumfang wurde erweitert. Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}. Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}.
+\newpage
 \section{Die Qwen-Modellfamilie}
 \label{sec:qwen}
-Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen.
-Besondere Merkmale der Qwen-Modelle sind:
-\begin{itemize}
-    \item \textbf{Offenheit:} Qwen gehört ebenso zu den frei deploybaren Modellfamilien \autocite{qwen2025}.
-    \item \textbf{Skalierbarkeit:} Die Generation Qwen2.5 ist in fein abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar \autocite{qwen2025}. Die kompakten Varianten sind dabei gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert \autocite{qwen2025}.
-    \item \textbf{Erweiterter Funktionsumfang:} Die neueste Generation der Familie ist Qwen3, die eine hybride Integration eines \enquote{Thinking-Modus} sowie eines \enquote{Non-Thinking-Modus} für schnelle Antworten innerhalb eines einheitlichen Modells bereitstellt \autocite{qwen3_2025}.
-\end{itemize}
+Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Qwen gehört ebenso zu den frei deploybaren Modellfamilien \autocite{qwen2025}. Die Generation Qwen2.5 ist in fein abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar \autocite{qwen2025}. Die kompakten Varianten sind dabei gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert \autocite{qwen2025}. Die neueste Generation der Familie ist Qwen3, die eine hybride Integration eines \enquote{Thinking-Modus} sowie eines \enquote{Non-Thinking-Modus} für schnelle Antworten innerhalb eines einheitlichen Modells bereitstellt \autocite{qwen3_2025}.
 
 \section{Bestehende Anwendung}
 \label{sec:ausgangslage}
