@@ -86,6 +86,9 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 \end{lstlisting}
 
 \noindent Die Anzahl der Samples ist nicht immer genau durch \texttt{SEGMENT\_COUNT} teilbar. Daher werden am Ende alle restlichen Samples in das letzte Segment aufgenommen. Dadurch gehen keine Messwerte verloren. \texttt{buildSegment} übernimmt die eigentliche Merkmalsextraktion je Segment.
+\vspace{\baselineskip}
+
+\noindent In \texttt{buildSegment} werden zunächst Start- und Endzeit aus dem jeweils ersten sowie dem letzten Sample entnommen. Diese sind später für die aufbereiteten Zeitangaben je Segment wichtig. Anschließend werden die drei Merkmale berechnet. Dazu zählen die Band-Power je Kanal als spektrales Merkmal sowie die Spannweite je Kanal und der Anteil ungültiger Messwerte als statistische Merkmale. Die gesamten Werte werden, nachdem sie in einem Segment-Objekt gesammelt wurden, an \texttt{extract} zurückgegeben.
 \newpage
 
 \subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
@@ -124,6 +127,9 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 \end{lstlisting}
 
 \noindent Wichtig ist, dass die Band-Power vorerst je Kanal berechnet wird, die am Ende für die Aufbereitung für das Sprachmodell über alle acht Kanäle zusammengefasst wird. \texttt{windowCount} fungiert als Zähler, der sicherstellt, dass nur vollständig berechnete Fenster in die Mittelung eingehen.
+\vspace{\baselineskip}
+
+\noindent Da jedes Sample des Unicorn Hybrid Black alle acht Kanäle gleichzeitig beinhaltet, wird in der Methode \texttt{extractChannelSignal} das Signal eines einzelnen Kanals (z.,B. Kanal 1) über alle Samples eines Abschnittes gesammelt. Dadurch entsteht ein durchgehender Signalverlauf dieses Kanals, auf den dann die Fensterung angewendet wird.
 
 \newpage
 
@@ -179,9 +185,19 @@ private double[] sumBands(double[] power) {
 \noindent Die Einteilung in die Frequenzbänder ist zentral im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen.
 
 \subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
+\vspace{\baselineskip}
+
+\noindent Bei der Berechnung des Peak-to-Peak-Werts wird das Segment einmal durchlaufen. Dabei werden alle acht Kanäle pro Sample verglichen, und das jeweils n-mal bis zum Ende eines Segments. Es merkt sich den niedrigsten sowie den höchsten Wert und kann anhand der Differenz aus beiden Werten die Spannweite berechnen.
+Bei dem Anteil der ungültigen Messwerte wird jedes Sample eines Segments auf sein Gültigkeitskennzeichen geprüft. Steht dieses auf 0, wird der Zähler an ungültigen Samples erhöht. Abschließend wird der Zähler durch die Gesamtzahl aller Samples dividiert. Dadurch erhält man den relativen Anteil an ungültigen Samples.
 
 \subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung.
-\newpage
+\vspace{\baselineskip}
+
+\noindent Das Objekt beinhaltet die Kennung der Session, ihre Dauer, die Anzahl der Samples sowie die Liste der Segmente. Jedes Segment besteht aus seiner Start- und Endzeit, der Band-Power der acht Kanäle in jeweils fünf Bändern, also 40 Werten je Segment, dazu den acht Spannweiten je Kanal und dem Anteil ungültiger Messwerte.
+\vspace{\baselineskip}
+
+\noindent Die Merkmale liegen an dieser Stelle noch kanalweise und als reine Zahlenwerte vor. Erst der \texttt{FeatureFormatter} fasst sie über die Kanäle zusammen und wandelt sie in Text um.
+
 \subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in ein lesbares Format für das Sprachmodell umgewandelt werden.
 Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
 \begin{lstlisting}[style=code, caption={Umrechnung der absoluten Band-Power in relative Anteile}, label={lst:relbandpower}]
