@@ -7,7 +7,7 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.52\textwidth]{Graphics/Architektur.pdf}
-    \caption{Architektur und Datenfluss der Anwendung \autocite{drawio}}
+    \caption{Architektur und Datenfluss der Anwendung (erstellt mit draw.io).}
     \label{fig:architektur}
 \end{figure}
 
@@ -46,7 +46,7 @@ Es wird dabei darauf geachtet, dass sich neue Ansichten in die bestehenden Konze
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
-    \caption{Sequenzdiagramm des Analyse-Ablaufs \autocite{drawio}.}
+    \caption{Sequenzdiagramm des Analyse-Ablaufs (erstellt mit draw.io).}
     \label{fig:seq-analyse}
 \end{figure}
 
@@ -239,7 +239,7 @@ Abschnitt 4 (45.0--60.0s):\\
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-
-\noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Dateigröße der Modelle würde den Speicher der gesamten Applikation unnötig erhöhen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
+\noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Anwendung enthält die Modelle somit nicht selbst, sie müssen vor der ersten Analyse auf das Gerät übertragen werden. Die Dateigröße der Modelle würde den Speicher der gesamten Applikation unnötig erhöhen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \vspace{\baselineskip}
 
 \subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
@@ -479,7 +479,7 @@ Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
-    \caption{Sequenzdiagramm des Benchmark-Ablaufs \autocite{drawio}.}
+    \caption{Sequenzdiagramm des Benchmark-Ablaufs (erstellt mit draw.io).}
     \label{fig:seq-benchmark}
 \end{figure}
 
