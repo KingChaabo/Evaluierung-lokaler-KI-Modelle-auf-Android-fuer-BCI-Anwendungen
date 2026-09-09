@@ -25,7 +25,7 @@ Die gezielte Auswertung spezifischer Frequenzbänder dient somit der fundierten 
 
 \begin{table}[H]
 \centering
-\caption{Die fünf EEG-Frequenzbänder und ihre assoziierten Zustände \autocite{10353995}}
+\caption[EEG-Frequenzbänder]{Die fünf EEG-Frequenzbänder mit ihren Frequenzbereichen und Zuständen. Diese Einteilung ist die Grundlage für die spätere Zuordnung der Leistungswerte \autocite{10353995}}
 \label{tab:eegbaender}
 \begin{tabularx}{\textwidth}{l l X}
 \toprule
@@ -51,7 +51,7 @@ Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigensc
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.00\textwidth]{Graphics/ZeitFreq.pdf}
-    \caption{Überführung eines Signals vom Zeit- in den Frequenzbereich mittels FFT (erstellt mit draw.io).}
+    \caption[Zeit- und Frequenzbereich]{Überführung eines Signals vom Zeit- in den Frequenzbereich mittels FFT. Der Signalverlauf wird dabei in seine Frequenzanteile zerlegt (erstellt mit draw.io).}
     \label{fig:fft-zeitfreq}
 \end{figure}
 
@@ -76,10 +76,10 @@ Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigensc
 \subsection{Fensterung und spektrale Leckage}
 \label{subsec:fensterung}
 Die Fensterung ist ein Verfahren, um Signale zu analysieren, deren Frequenzen sich im Laufe der Zeit verändern \autocite{10353995}.
-Die Auswertung geschieht in zeitlich verschiebbaren Abschnitten (den Fenstern) statt im gesamten Signal auf einmal \autocite{10353995}.
+Die Auswertung geschieht in zeitlich verschiebbaren Fenstern statt im gesamten Signal auf einmal \autocite{10353995}.
 Wenn ein Signal für die Datenverarbeitung abgeschnitten wird, entsteht eine spektrale Leckage. Dies geschieht häufig dann, wenn die Länge des erfassten Signalabschnitts kein exaktes Vielfaches der eigentlichen Signalperiode ist.
 Durch dieses harte Abschneiden wird die Energie des Signals im Frequenzspektrum verfälscht und auf einen breiteren Frequenzbereich verteilt, was zu Störfrequenzen führt.
-Um diese Leckage auszugleichen, nutzt man die Fensterfunktion, bei der man die Stärke des Signals an den Rändern des Abschnitts sanft abschwächt \autocite{windowing_welch2021}.
+Um diese Leckage auszugleichen, nutzt man die Fensterfunktion, bei der man die Stärke des Signals an den Rändern des Fensters sanft abschwächt \autocite{windowing_welch2021}.
 
 \subsection{Welch-Methode}
 \label{subsec:welch}
@@ -87,8 +87,8 @@ Um Frequenzspektren robuster zu schätzen und Rauschen zu reduzieren, wird die W
 Es ist ein Rechenverfahren, das in drei Schritten vorgeht:
 
 \begin{enumerate}
-    \item Das ursprüngliche Signal wird in mehrere kürzere Abschnitte unterteilt, die sich teilweise überlappen dürfen \autocite{windowing_welch2021}.
-    \item Auf jeden Abschnitt wird eine Fensterfunktion angewendet, um dann für jeden Abschnitt einzeln das Spektrum zu berechnen \autocite{windowing_welch2021}.
+    \item Das ursprüngliche Signal wird in mehrere kürzere Fenster unterteilt, die sich teilweise überlappen dürfen \autocite{windowing_welch2021}.
+    \item Auf jedes Fenster wird eine Fensterfunktion angewendet, um dann für jedes Fenster einzeln das Spektrum zu berechnen \autocite{windowing_welch2021}.
     \item Ganz am Ende werden die Einzelspektren zu einem Durchschnittswert gemittelt \autocite{windowing_welch2021}.
 \end{enumerate}
 

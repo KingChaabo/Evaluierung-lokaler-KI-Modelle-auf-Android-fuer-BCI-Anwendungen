@@ -105,7 +105,7 @@ Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zw
 
 \begin{table}[H]
     \centering
-    \caption{Anzahl der Eingabe-Tokens je Modell und Szenario.}
+    \caption[Eingabe-Tokens]{Anzahl der Eingabe-Tokens je Modell und Szenario. Die Werte stammen aus dem Tokenizer des Modells und fallen trotz gleichem Prompt unterschiedlich aus.}
     \label{tab:eval-eingabetokens}
     \begin{tabular}{l c c c}
         \toprule
@@ -233,7 +233,7 @@ Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta
 \fontfamily{phv}\selectfont\footnotesize
 Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwischen 56\,\% und 86\,\% lag. Die Signalqualität der Messungen war in allen Abschnitten gut. Auffällig waren Ausschlagsignale in den Abschnitten 1 und 4, wobei Kanal 4 und Kanal 2 jeweils die höchsten Werte erreichte.
 \end{minipage}}}
-\caption{Report-Szenario: unveränderte Ausgabe von Gemma 2 2B.}
+\caption[Ausgabe von Gemma 2 2B]{Report-Szenario: unveränderte Ausgabe von Gemma 2 2B. Genannt werden das dominante Band, die Signalqualität und die auffälligen Kanäle.}
 \label{fig:out-report-2b}
 \end{figure}
 
@@ -247,11 +247,11 @@ Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwische
 \fontfamily{phv}\selectfont\footnotesize
 Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), Theta-Zuständen (16\,\%), Alpha-Zuständen (13\,\%), Beta-Zuständen (6\,\%) und Gamma-Zuständen (5\,\%). Der größte Ausschlag wurde am Kanal 2 (3309 µV) festgestellt. Der Schwerpunkt lag hauptsächlich in den Sekundenbereichen 0--30, 30--60 und 60--91 Sekunden, wobei Delta- und Theta-Zustände am stärksten ausgeprägt waren. Es gab einige ungültige Messwerte, darunter ein signifikanter Ausschlag am Kanal 2.
 \end{minipage}}}
-\caption{Report-Szenario: unveränderte Ausgabe von Gemma 3 1B.}
+\caption[Ausgabe von Gemma 3 1B]{Report-Szenario: unveränderte Ausgabe von Gemma 3 1B. Die aufgeführten Bandanteile summieren sich auf über 100\,\%.}
 \label{fig:out-report-1b}
 \end{figure}
 
-\noindent Bei der Ausgabe von Gemma 3 1B (\autoref{fig:out-report-1b}) gibt es trotz übereinstimmender Delta-Dominanz einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Abschnitte vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
+\noindent Bei der Ausgabe von Gemma 3 1B (\autoref{fig:out-report-1b}) gibt es trotz übereinstimmender Delta-Dominanz einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Segmente vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
 
 \begin{figure}[H]
 \centering
@@ -262,7 +262,7 @@ Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), T
 \#\#\# Bericht\par
 Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8 KanÃ¤len gezählt. Die Signalqualität ist gut mit einer overall Signalqualität von 86\,\%. [\dots] Die dominante Frequenzbänder sind Delta (16\,\%), Theta (33\,\%), Alpha (60\,\%), Beta (15\,\%) und Gamma (13\,\%), wobei Delta und Theta die hauptsächlichste Frequenz bilden. [\dots]
 \end{minipage}}}
-\caption{Report-Szenario: unveränderte (gekürzte) Ausgabe von Qwen 2.5 1.5B.}
+\caption[Ausgabe von Qwen 2.5 1.5B]{Report-Szenario: unveränderte, gekürzte Ausgabe von Qwen 2.5 1.5B. Die Ausgabe enthält Formatierungszeichen und fehlerhaft kodierte Umlaute.}
 \label{fig:out-report-qwen}
 \end{figure}
 

@@ -7,7 +7,7 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.52\textwidth]{Graphics/Architektur.pdf}
-    \caption{Architektur und Datenfluss der Anwendung (erstellt mit draw.io).}
+    \caption[Architektur der Anwendung]{Architektur und Datenfluss der Anwendung. Blau und Grün kennzeichnen die neuen Komponenten, der Weg führt von der Datenbank bis zur Modellantwort (erstellt mit draw.io).}
     \label{fig:architektur}
 \end{figure}
 
@@ -46,7 +46,7 @@ Es wird dabei darauf geachtet, dass sich neue Ansichten in die bestehenden Konze
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
-    \caption{Sequenzdiagramm des Analyse-Ablaufs (erstellt mit draw.io).}
+    \caption[Sequenzdiagramm der Analyse]{Sequenzdiagramm des Analyse-Ablaufs. Es zeigt das Zusammenspiel der Komponenten von der Auswahl im Dialog bis zur streamenden Ausgabe (erstellt mit draw.io).}
     \label{fig:seq-analyse}
 \end{figure}
 
@@ -62,8 +62,8 @@ Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig 
 
 \subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 
-\subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Abschnitte (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
-\begin{lstlisting}[style=code, caption={Zerlegung der Session in Segmente}, label={lst:extract}]
+\subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\begin{lstlisting}[style=code, caption={[Zerlegung in Segmente]Zerlegung der Session in Segmente. Das letzte Segment nimmt die verbleibenden Samples auf, damit keine Messwerte verloren gehen.}, label={lst:extract}]
 public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
     features.sessionId       = samples.get(0).sessionId;
@@ -79,7 +79,7 @@ public SessionFeatures extract(List<SampleEntity> samples) {
             + segLength;
         List<SampleEntity> slice = samples.subList(start, end);
         features.segments.add(buildSegment(slice));
-        // Merkmale pro Abschnitt berechnen
+        // Merkmale pro Segment berechnen
     }
     return features;
 }
@@ -92,7 +92,7 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 \newpage
 
 \subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
-\begin{lstlisting}[style=code, caption={Band-Power je Kanal nach dem Welch-Verfahren}, label={lst:bandpower}]
+\begin{lstlisting}[style=code, caption={[Band-Power je Kanal]Band-Power je Kanal nach dem Welch-Verfahren. Das Signal wird in überlappende Fenster zerlegt, in Bänder einsortiert und gemittelt.}, label={lst:bandpower}]
 private double[][] computeBandPower(List<SampleEntity> slice) {
     double[][] result = new double[CHANNELS][NUM_BANDS];
     int hop = windowSize / 2;
@@ -129,12 +129,12 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 \noindent Wichtig ist, dass die Band-Power vorerst je Kanal berechnet wird, die am Ende für die Aufbereitung für das Sprachmodell über alle acht Kanäle zusammengefasst wird. \texttt{windowCount} fungiert als Zähler, der sicherstellt, dass nur vollständig berechnete Fenster in die Mittelung eingehen.
 \vspace{\baselineskip}
 
-\noindent Da jedes Sample des Unicorn Hybrid Black alle acht Kanäle gleichzeitig beinhaltet, wird in der Methode \texttt{extractChannelSignal} das Signal eines einzelnen Kanals (z.,B. Kanal 1) über alle Samples eines Abschnittes gesammelt. Dadurch entsteht ein durchgehender Signalverlauf dieses Kanals, auf den dann die Fensterung angewendet wird.
+\noindent Da jedes Sample des Unicorn Hybrid Black alle acht Kanäle gleichzeitig beinhaltet, wird in der Methode \texttt{extractChannelSignal} das Signal eines einzelnen Kanals (z.\,B. Kanal 1) über alle Samples eines Segments gesammelt. Dadurch entsteht ein durchgehender Signalverlauf dieses Kanals, auf den dann die Fensterung angewendet wird.
 
 \newpage
 
 \noindent Die Methode \texttt{powerSpectrum} berechnet das Leistungsspektrum eines Fensters (\autoref{lst:powerspectrum}). Zunächst wird der Mittelwert (Gleichanteil) abgezogen. Danach wird das Hann-Fenster angewendet, um anschließend die Fourier-Transformation durchzuführen. Schließlich wird die Leistung je Frequenz-Bin berechnet, indem die Real- und Imaginärteile quadriert und summiert werden.
-\begin{lstlisting}[style=code, caption={Berechnung des Leistungsspektrums eines Fensters}, label={lst:powerspectrum}]
+\begin{lstlisting}[style=code, caption={[Leistungsspektrum eines Fensters]Berechnung des Leistungsspektrums eines Fensters. Vor der Transformation werden der Gleichanteil entfernt und das Hann-Fenster angewendet.}, label={lst:powerspectrum}]
 private double[] powerSpectrum(double[] window) {
     // 1. Mittelwert (Gleichanteil)
     double mean = 0;
@@ -166,7 +166,7 @@ private double[] powerSpectrum(double[] window) {
 \newpage
 
 \subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
-\begin{lstlisting}[style=code, caption={Zuordnung der Frequenz-Bins zu den Bändern}, label={lst:sumbands}]
+\begin{lstlisting}[style=code, caption={[Zuordnung zu den Bändern]Zuordnung der Frequenz-Bins zu den Bändern. Jeder Bin-Index wird in eine Frequenz umgerechnet und dem passenden Band zugeordnet.}, label={lst:sumbands}]
 private double[] sumBands(double[] power) {
     double[] bandSum = new double[NUM_BANDS];
     for (int i = 1; i < power.length; i++) {
@@ -200,7 +200,7 @@ Bei dem Anteil der ungültigen Messwerte wird jedes Sample eines Segments auf se
 
 \subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in ein lesbares Format für das Sprachmodell umgewandelt werden.
 Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
-\begin{lstlisting}[style=code, caption={Umrechnung der absoluten Band-Power in relative Anteile}, label={lst:relbandpower}]
+\begin{lstlisting}[style=code, caption={[Relative Band-Power]Umrechnung der absoluten Band-Power in relative Anteile. Die Werte werden über alle Kanäle summiert und als Prozentanteil ausgegeben.}, label={lst:relbandpower}]
 private double[] relativeBandPower(SessionFeatures.Segment seg) {
     int channels = seg.bandPower.length;
     int bands    = seg.bandPower[0].length;
@@ -226,11 +226,11 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
 }
 \end{lstlisting}
 
-\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}). Der Text wird Abschnitt für Abschnitt aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt. Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell ohnehin keine Rolle spielt.
+\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}). Der Text wird Segment für Segment aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt. Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell ohnehin keine Rolle spielt.
 \vspace{\baselineskip}
 
 \newpage
-\noindent Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featuretext}.
+\noindent Im erzeugten Text sind die Segmente als Abschnitte bezeichnet. Ein Beispiel dafür zeigt \autoref{fig:featuretext}.
 \begin{figure}[H]
 \centering
 {\setlength{\fboxsep}{9pt}%
@@ -251,7 +251,7 @@ Abschnitt 4 (45.0--60.0s):\\
 \hspace*{2em}Delta 40\%, Theta 19\%, Alpha 22\%, Beta 14\%, Gamma 5\%\\
 \hspace*{2em}Ungültige Messwerte: 1.0\% ungültig, größter Ausschlag Kanal 2 (105 µV)
 \end{minipage}}}
-\caption{Beispiel eines vom \texttt{FeatureFormatter} erzeugten Feature-Texts (Werte illustrativ).}
+\caption[Beispiel eines Feature-Texts]{Vom \texttt{FeatureFormatter} erzeugter Feature-Text. Je Segment stehen dort Bandanteile, ungültige Messwerte und der größte Ausschlag (Werte illustrativ).}
 \label{fig:featuretext}
 \end{figure}
 
@@ -262,7 +262,7 @@ Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} imple
 \subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} anhand einer kurzen Kennung wie \texttt{1b}, \texttt{2b} oder \texttt{qwen} selektiert. Falls die Kennung ungültig ist, wird automatisch das kleinste Modell ausgewählt. Die Auswahl des Modells geschieht zuvor im Analyse-Dialog oder im Benchmark, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
 
 \subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
-\begin{lstlisting}[style=code, caption={Laden und Konfigurieren des Modells}, label={lst:llmload}]
+\begin{lstlisting}[style=code, caption={[Laden des Modells]Laden und Konfigurieren des Modells. Kontextgröße und Sampling-Obergrenze sind für alle Modelle identisch gesetzt.}, label={lst:llmload}]
 public void load(Context context) {
     LlmInferenceOptions options = LlmInferenceOptions.builder()
             .setModelPath(modelPath)
@@ -279,7 +279,7 @@ public void load(Context context) {
 \newpage
 \subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{gene-
 \noindent rateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
-\begin{lstlisting}[style=code, caption={Streamende Ausgabe mit Messung der Latenz}, label={lst:llmstream}]
+\begin{lstlisting}[style=code, caption={[Streamende Ausgabe]Streamende Ausgabe mit Messung der Latenz. Beim ersten Teilstück wird die TTFT festgehalten, am Ende zusätzlich die Gesamtdauer.}, label={lst:llmstream}]
 public void questionStreaming(String prompt, StreamCallback callback) {
     StringBuilder full = new StringBuilder();
     long start = System.nanoTime();
@@ -323,7 +323,7 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 \end{itemize}
 
 \noindent Nach der Optimierung wurde der finale Prompt eingefroren und bildete die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
-\begin{lstlisting}[style=code, breaklines=true, caption={Aufbau der Prompts je Szenario (finale, eingefrorene Fassung)}, label={lst:prompts}]
+\begin{lstlisting}[style=code, breaklines=true, caption={[Prompts je Szenario]Aufbau der Prompts je Szenario in der finalen, eingefrorenen Fassung. Alle drei enden mit dem aufbereiteten Merkmalstext.}, label={lst:prompts}]
 // Szenario 1: Session-Report
 public String buildReport(String featureText) {
     return "Fasse die folgenden EEG-Messwerte in 3 bis 4 Saetzen sachlich zusammen. "
@@ -378,7 +378,7 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
             \draw[callout] (neu.west) to[out=180,in=0] (0.88,0.315);
         \end{scope}
     \end{tikzpicture}
-    \caption{Session-Detailansicht mit dem Einstieg in die Analyse und Benchmark.}
+    \caption[Session-Detailansicht]{Session-Detailansicht als Einstieg in die neuen Funktionen. Die markierten Knöpfe starten die KI-Analyse und die automatisierte Messreihe.}
     \label{fig:session-detail}
 \end{figure}
 
@@ -414,14 +414,14 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein
             \draw[callout] (rme.west) to[out=180,in=0] (0.925,0.50);
         \end{scope}
     \end{tikzpicture}
-    \caption{Analyse-Dialog.}
+    \caption[Analyse-Dialog]{Analyse-Dialog zur Auswahl der Parameter. Neben Szenario und Sprachmodell stehen unten die Entwickleroptionen für Fenstergröße und Metriken.}
     \label{fig:analyse-dialog}
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
 Die Logik der gesamten Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnisAc-
 \noindent tivity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die beiden Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
-\begin{lstlisting}[style=code, caption={Live-Anzeige der streamenden Ausgabe}, label={lst:onchunk}]
+\begin{lstlisting}[style=code, caption={[Live-Anzeige der Ausgabe]Live-Anzeige der streamenden Ausgabe. Jedes Teilstück wird angehängt statt gesetzt, damit der Text während der Erzeugung wächst.}, label={lst:onchunk}]
 @Override
 public void onChunk(String partial) {
     runOnUiThread(() -> {
@@ -459,7 +459,7 @@ public void onChunk(String partial) {
             \draw[callout] (lsh.west) to[out=180,in=0] (0.96,0.07);
         \end{scope}
     \end{tikzpicture}
-    \caption{Ergebnis-Ansicht der KI-Analyse.}
+    \caption[Ergebnis-Ansicht]{Ergebnis-Ansicht der KI-Analyse. Oben stehen Szenario, Modell und die optionalen Latenzwerte, darunter wächst die Ausgabe während der Erzeugung.}
     \label{fig:analyse-ergebnis}
 \end{figure}
 
@@ -486,7 +486,7 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
             \draw[callout] (lse.east) to[out=0,in=180] (0.05,0.500);
         \end{scope}
     \end{tikzpicture}
-    \caption{Benchmark-Dialog.}
+    \caption[Benchmark-Dialog]{Benchmark-Dialog vor dem Start der Messreihe. Hier wird die zweite Session festgelegt, die im Vergleichsszenario genutzt wird.}
     \label{fig:benchmark-dialog}
 \end{figure}
 
@@ -501,14 +501,14 @@ Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzbenchmark.pdf}
-    \caption{Sequenzdiagramm des Benchmark-Ablaufs (erstellt mit draw.io).}
+    \caption[Sequenzdiagramm des Benchmarks]{Sequenzdiagramm des Benchmark-Ablaufs. Es zeigt das Zusammenspiel von Steuerung, Messwerterfassung und Protokollierung (erstellt mit draw.io).}
     \label{fig:seq-benchmark}
 \end{figure}
 
 \noindent Die einzelnen Schritte dieses Ablaufs werden in den folgenden Abschnitten anhand des Codes näher erläutert.
 \newpage
 \subsection{Ablauf} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
-\begin{lstlisting}[style=code, caption={Ablauf des Benchmarks mit Aufwaermphase}, label={lst:runall}]
+\begin{lstlisting}[style=code, caption={[Ablauf des Benchmarks]Ablauf des Benchmarks mit Aufwaermphase. Vor der eigentlichen Messreihe wird eine Wegwerf-Inferenz ausgefuehrt.}, label={lst:runall}]
 public void runAll(long sessionA, long sessionB, int numberConfig, 
 Runnable done) {
     new Thread(() -> {
@@ -542,7 +542,7 @@ Runnable done) {
 \vspace{\baselineskip}
 
 \noindent Die beschriebene Wiederholung mit der Synchronisation über den \texttt{CountDownLatch} ist in \autoref{lst:messloop} dargestellt.
-\begin{lstlisting}[style=code, caption={Wiederholte Messung mit Synchronisation ueber CountDownLatch}, label={lst:messloop}]
+\begin{lstlisting}[style=code, caption={[Wiederholte Messung]Wiederholte Messung mit Synchronisation ueber CountDownLatch. Die Schleife wartet, bis die asynchrone Ausgabe abgeschlossen ist.}, label={lst:messloop}]
 for (int i = 0; i < nc; i++) {
     long[]   ttftHolder  = {0};
     long[]   totalHolder = {0};

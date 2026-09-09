@@ -22,7 +22,7 @@ transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar,
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.70\textwidth]{Graphics/DatenPipeline.pdf}
-    \caption{Datenfluss der Merkmalsextraktion (erstellt mit draw.io).}
+    \caption[Datenfluss der Merkmalsextraktion]{Datenfluss der Merkmalsextraktion von den Rohdaten bis zum Text. Jede Stufe verdichtet die Daten weiter, bis eine für das Modell nutzbare Beschreibung entsteht (erstellt mit draw.io).}
     \label{fig:pipeline}
 \end{figure}
 \newpage
@@ -33,13 +33,13 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.90\textwidth]{Graphics/Segmentierung.pdf}
-    \caption{Aufteilung einer Session in vier gleich lange Zeitabschnitte (erstellt mit draw.io).}
+    \caption[Segmentierung einer Session]{Aufteilung einer Session in vier gleich lange Segmente. So bleibt der zeitliche Verlauf erkennbar, statt nur einen Mittelwert zu bilden (erstellt mit draw.io).}
     \label{fig:segmentierung}
 \end{figure}
 
-\noindent Damit die Aufteilung der Session möglich ist, muss die Aufnahme eine Mindestlänge haben. Damit pro Segment mindestens ein vollständiges Analysefenster für die spektrale Berechnung zur Verfügung steht, sind bei vier Abschnitten und einer Fenstergröße von 256 Werten mindestens
+\noindent Damit die Aufteilung der Session möglich ist, muss die Aufnahme eine Mindestlänge haben. Damit pro Segment mindestens ein vollständiges Analysefenster für die spektrale Berechnung zur Verfügung steht, sind bei vier Segmenten und einer Fenstergröße von 256 Werten mindestens
 \begin{equation}
-4 \ \text{Abschnitte} \times 256 \ \text{Werte (Fenster)} = 1024 \ \text{Samples} \approx 4 \ \text{s}
+4 \ \text{Segmente} \times 256 \ \text{Werte (Fenster)} = 1024 \ \text{Samples} \approx 4 \ \text{s}
 \end{equation}
 
 \noindent erforderlich. Wenn die Aufnahme zu kurz ist, um die Mindestlänge zu erfüllen, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt.
@@ -49,8 +49,8 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 
 \subsection{Spektrale Merkmale}
 \label{subsec:spektral}
-Die spektralen Merkmale werden für jeden Abschnitt bestimmt, indem die Signalenergie auf die einzelnen Frequenzbänder verteilt wird. 
-Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Abschnitts in überlappende Fenster unterteilt (\autoref{fig:welch-fenster}); im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples.
+Die spektralen Merkmale werden für jedes Segment bestimmt, indem die Signalenergie auf die einzelnen Frequenzbänder verteilt wird.
+Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Segments in überlappende Fenster unterteilt (\autoref{fig:welch-fenster}); im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples.
 Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließend über alle Fenster gemittelt wird. Durch diese Mittelung wird das resultierende Spektrum deutlich stabiler und weniger rauschanfällig als bei einer einzelnen \ac{FFT}. Allerdings ist dann mit einer geringeren Frequenzauflösung zu rechnen \autocite{windowing_welch2021}.
 \vspace{\baselineskip}
 
@@ -68,10 +68,10 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
     \label{fig:welch-fenster}
 \end{figure}
 
-\noindent Jedes Fenster wird per \ac{FFT} in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Abschnitt dominiert \autocite{10353995}.
+\noindent Jedes Fenster wird per \ac{FFT} in den Frequenzbereich überführt, um das jeweilige lokale Leistungsspektrum (Periodogramm) zu berechnen \autocite{windowing_welch2021,10353995}. Die Leistung der einzelnen Frequenz-Bins wird den fünf Frequenzbändern Delta, Theta, Alpha, Beta und Gamma zugeordnet \autocite{10353995}. Dies erfolgt durch das Aufsummieren der Leistung aller Frequenz-Bins innerhalb der jeweiligen Bandgrenzen. In der Regel schwanken die absoluten Leistungswerte stark und sind schwer interpretierbar. Daher wird die relative Bandleistung verwendet, die sich aus dem Verhältnis der Leistung eines Frequenzbandes zur Gesamtleistung ergibt. Dadurch lässt sich unmittelbar und robust ablesen, welches Frequenzband im untersuchten Segment dominiert \autocite{10353995}.
 
 \subsection{Zeitstatistische Merkmale}
-Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jeden Abschnitt berechnet \autocite{10353995}. Hierfür ist keine \ac{FFT} notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.
+Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jedes Segment berechnet \autocite{10353995}. Hierfür ist keine \ac{FFT} notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.
 Ein zentrales Merkmal ist die Spannweite (Peak-to-Peak-Amplitude), welche die Differenz zwischen dem größten und dem kleinsten Amplitudenwert beschreibt \autocite{jas2017}.
 Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung eines absoluten Maximalwertes die Unabhängigkeit von einem potenziellen Gleichanteil des Signals gewährleistet. Aus diesem Grund stellt die Peak-to-Peak-Amplitude ein robustes Kriterium dar, um extreme Signalausschläge und Drifts zu identifizieren, wie sie bei Artefakten auftreten können \autocite{jas2017}.
 \vspace{\baselineskip}
@@ -85,7 +85,7 @@ Im letzten Schritt der Merkmalsextraktion werden die berechneten Merkmale in ein
 Dabei enthält der Text folgende Informationen:
 \begin{itemize}
 \item aggregierte Kennzahlen
-\item relative Bandleistung der fünf Frequenzbänder (pro Abschnitt)
+\item relative Bandleistung der fünf Frequenzbänder (pro Segment)
 \item Spannweite (Peak-to-Peak-Amplitude)
 \item Anteil der ungültigen Messwerte
 \end{itemize}
@@ -129,7 +129,7 @@ Zur Bewertung der Modelle werden mehrere Metriken erfasst, die sich in Latenz, R
 
 \begin{table}[H]
     \centering
-    \caption{Übersicht der erfassten Metriken.}
+    \caption[Übersicht der Metriken]{Übersicht der erfassten Metriken nach Latenz, Ressourcenverbrauch, Stabilität und Qualität. Bis auf die Ausgabequalität werden alle Werte automatisiert erhoben.}
     \label{tab:metriken}
     \begin{tabularx}{\textwidth}{l l X}
         \toprule
