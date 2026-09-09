@@ -106,11 +106,11 @@ Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen syst
 
 \section{Anwendungsszenarien}
 \label{sec:szenarien}
-Um die Eignung der Modelle für die Analyse von \ac{EEG}-Daten zu untersuchen, werden drei Anwendungsszenarien betrachtet. Dabei wird untersucht, wie ein Sprachmodell die extrahierten Merkmale einer oder mehrerer Sessions verarbeitet. Jedes Szenario besteht aus einem einmaligen Aufruf des Modells, der die Merkmale der Session(s) als Eingabe erhält. Es wird keine vorab bekannte Musterlösung benötigt.
+Um die Eignung der Modelle für die Analyse von \ac{EEG}-Daten zu untersuchen, werden drei Anwendungsszenarien betrachtet. Dabei wird untersucht, wie ein Sprachmodell die extrahierten Merkmale einer oder mehrerer Sessions verarbeitet. Jedes Szenario besteht aus einem einmaligen Aufruf des Modells, der die Merkmale der Session(s) als Eingabe erhält. Es wird keine vorab bekannte Musterlösung benötigt. Die Szenarien orientieren sich an zwei Aufgabenklassen, zum einen an der automatischen Vorstrukturierung von Daten, zum anderen an der Unterstützung einfacher Analyseprozesse.
 \begin{itemize}
-\item \textbf{Session-Report:} Aus den Merkmalen einer Session wird ein zusammenhängender, lesbarer Bericht generiert.
-\item \textbf{Artefakt-Erklärung:} Das Modell erhält die Kennzahlen einer Session und erklärt auffällige Muster (z.\,B. hohe Peak-to-Peak-Amplituden oder einen hohen Anteil ungültiger Werte) in natürlicher Sprache.
-\item \textbf{Session-Vergleich:} Es werden die Merkmale zweier Sessions übergeben und darauffolgend verglichen.
+\item \textbf{Session-Report (Vorstrukturierung):} Aus den Merkmalen einer Session wird ein zusammenhängender, lesbarer Bericht generiert.
+\item \textbf{Artefakt-Erklärung (Analyseunterstützung):} Das Modell erhält die Kennzahlen einer Session und erklärt auffällige Muster (z.\,B. hohe Peak-to-Peak-Amplituden oder einen hohen Anteil ungültiger Werte) in natürlicher Sprache.
+\item \textbf{Session-Vergleich (Analyseunterstützung):} Es werden die Merkmale zweier Sessions übergeben und darauffolgend verglichen.
 \end{itemize}
 
 \noindent Der Prompt-Aufbau ist in allen drei Szenarien und Modellen identisch. Er beginnt mit der szenariospezifischen Anweisung, gefolgt von einem textuell aufbereiteten Merkmalssatz. Das Niveau steigt dabei mit jedem Szenario. Während der Report lediglich ein Zusammenfassen erfordert, ist beim Artefakt-Erklärungsszenario zusätzlich das Deuten notwendig. Das Vergleichsszenario erfordert schließlich ein Schlussfolgern über zwei Datensätze hinweg. Dadurch kann man die Grenzen der Modelle in Bezug auf die Komplexität der Aufgabenstellung untersuchen.
