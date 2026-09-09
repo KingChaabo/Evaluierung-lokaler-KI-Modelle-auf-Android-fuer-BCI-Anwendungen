@@ -4,11 +4,11 @@ Dieses Kapitel präsentiert die Durchführung (\autoref{subsec:messbedingungen})
 
 \section{Durchführung der Messungen}
 \label{sec:eval-durchfuehrung}
-Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten \ac{CSV}-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird. Die rohen Messwerte liegen vollständig und ungemittelt in \autoref{tab:app-rohdaten}.
+Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten \ac{CSV}-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird, da sie durch das Initialisieren des Modells länger ausfallen kann (\autoref{subsec:messbedingungen}). In den Rohdaten ist dieser Effekt bei einzelnen Kombinationen deutlich sichtbar, in anderen tritt er dagegen nicht auf. Ein Beispiel ist Gemma 3 1B, denn dort unterscheidet sich im Report-Szenario die Gesamtdauer bei der ersten Messung mit 13,1\,s gegenüber 6,7\,s in den folgenden vier Läufen (\autoref{tab:app-rohdaten}). In die Mittelwerte fließen je Kombination die verbleibenden vier Messungen ein. Die rohen Messwerte liegen vollständig und ungemittelt in \autoref{tab:app-rohdaten}.
 Vor der ersten Messung wird ein Aufwärmlauf durchgeführt.
 \vspace{\baselineskip}
 
-\noindent Als Eingabe für das Modell werden zwei bestimmte Sessions verwendet. Beide sind beim Tragen des Unicorn-Hybrid-Headsets durch den Verfasser entstanden und haben eine Laufzeit von knapp über 120 Sekunden.
+\noindent Als Eingabe für das Modell werden zwei bestimmte Sessions verwendet. Beide sind beim Tragen des Unicorn-Hybrid-Headsets durch den Verfasser entstanden und haben eine Laufzeit von knapp über 120 Sekunden. Im Report- und Artefakt-Szenario wird allein Session A übergeben (\autoref{fig:ft-session-a}), im Vergleichsszenario zusätzlich Session B (\autoref{fig:ft-session-b}).
 % Kurzer Recap (kein Wiederholen der ganzen Methodik):
 % - 3 Modelle x 3 Szenarien, N=5, erste Messung verworfen
 % - Bedingungen -> \autoref{subsec:messbedingungen}
@@ -52,7 +52,7 @@ Die \textbf{\ac{TTFT}} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 
 Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
 \vspace{\baselineskip}
 
-\noindent Da die \textbf{Standardabweichungen} überwiegend gering ausfallen, weisen sie auf stabile Messungen hin. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
+\noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
 \vspace{\baselineskip}
 
 \noindent Zur besseren Vergleichbarkeit sind die Latenzmetriken in \autoref{fig:eval-latenz} zusätzlich grafisch dargestellt.
@@ -198,7 +198,7 @@ Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht.
 \end{figure}
 \section{Stabilität}
 \label{sec:eval-stabilitaet}
-Alle 45 Messungen wurden mit dem Status \enquote{ok} protokolliert. Das bedeutet, dass alle Läufe erfolgreich liefen. Es gab keine Abstürze, keine Fehler und keinen Speicherüberlauf.
+Alle 45 Messungen wurden mit dem Status \enquote{ok} protokolliert. Das bedeutet, dass in keinem der Läufe eine Ausnahme auftrat, die der Benchmark abgefangen und in der \ac{CSV} als Fehler vermerkt hätte (\autoref{sec:impl-benchmark}). Zusätzlich fehlt keine der 45 Zeilen in der Datei, was bei einem vorzeitigen Abbruch eines Durchlaufs der Fall wäre. Ein Absturz der Anwendung, eine Meldung über fehlenden Arbeitsspeicher oder ein Einfrieren der Oberfläche traten während der Messungen nicht auf.
 Das größere Modell Gemma 2 2B läuft ebenso stabil, obwohl es mit ca.\ 3798\,MB den meisten \ac{RAM} verbraucht.
 % Status-Verteilung (erfolgreich/Fehler/OOM), Throttling-Beobachtungen,
 % ob ein Modell an die RAM-Grenze des S23 kam. Meist Fliesstext + evtl. kleine Tabelle.
