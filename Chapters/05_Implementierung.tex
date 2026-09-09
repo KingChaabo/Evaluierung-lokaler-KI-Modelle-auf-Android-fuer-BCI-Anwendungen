@@ -226,15 +226,10 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
 }
 \end{lstlisting}
 
-\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}).
+\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}). Der Text wird Abschnitt für Abschnitt aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt. Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell ohnehin keine Rolle spielt.
 \vspace{\baselineskip}
 
-\noindent Der Text wird dabei Abschnitt für Abschnitt aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt.
-\vspace{\baselineskip}
-
-\noindent Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell ohnehin keine Rolle spielt.
-\vspace{\baselineskip}
-
+\newpage
 \noindent Ein Beispiel für den daraus erzeugten Feature-Text zeigt \autoref{fig:featuretext}.
 \begin{figure}[H]
 \centering
@@ -264,10 +259,7 @@ Abschnitt 4 (45.0--60.0s):\\
 \label{sec:impl-llm}
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-
 \noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Anwendung enthält die Modelle somit nicht selbst, sie müssen vor der ersten Analyse auf das Gerät übertragen werden. Die Dateigröße der Modelle würde den Speicher der gesamten Applikation unnötig erhöhen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
-\vspace{\baselineskip}
-
-\subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} selektiert. Die Auswahl des Modells geschieht zuvor, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
-\vspace{\baselineskip}
+\subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} anhand einer kurzen Kennung wie \texttt{1b}, \texttt{2b} oder \texttt{qwen} selektiert. Falls die Kennung ungültig ist, wird automatisch das kleinste Modell ausgewählt. Die Auswahl des Modells geschieht zuvor im Analyse-Dialog oder im Benchmark, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
 
 \subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
 \begin{lstlisting}[style=code, caption={Laden und Konfigurieren des Modells}, label={lst:llmload}]
@@ -309,8 +301,11 @@ public void questionStreaming(String prompt, StreamCallback callback) {
 }
 \end{lstlisting}
 
-\subsection{Freigabe} Letztendlich wird das Modell über \texttt{close} wieder freigegeben.
+\noindent Abgesehen von der streamenden Ausgabe gibt es noch eine einfache Anfrage, die auf die vollständige Antwort wartet und sie am Stück zurückgibt. Diese Anfrage wird im Benchmark für die Aufwärmmessung genutzt, da weder eine Live-Anzeige noch die Latenzwerte benötigt werden.
 
+\subsection{Zählen der Token} Die \texttt{LlmEngine} stellt die Methode \texttt{tokenCount} bereit, die die Anzahl der Tokens berechnet. Diese sind für die Metriken der Evaluation wichtig. Dabei ruft \texttt{tokenCount} die Methode \texttt{sizeInTokens} der MediaPipe-Schnittstelle auf. Gezählt wird immer anhand des Tokenizers, den das jeweils verwendete Modell bereitstellt. Diese Logik wird einmal bei dem Prompt selbst verwendet, woraus sich die Anzahl der Eingabe-Tokens ergibt, und bei der anschließenden Ausgabe des Modells, woraus zusammen mit der Inferenzdauer die Tokens pro Sekunde berechnet werden. Der Aufruf erfolgt dabei jeweils außerhalb des Callbacks der MediaPipe-Schnittstelle.
+
+\subsection{Freigabe} Am Ende wird das Modell über \texttt{close} freigegeben. Dabei wird die MediaPipe-Instanz geschlossen und die Referenz zurückgesetzt. Das ist nötig, weil ein geladenes Modell mehrere Gigabyte Arbeitsspeicher belegt, der sonst bis zum Beenden der Anwendung reserviert bliebe. In der Analyse geschieht das nach dem Ende der Ausgabe, im Benchmark nach jeder Konfiguration.
 
 \section{Prompt-Design und iterative Optimierung}
 \label{sec:impl-prompt}
@@ -437,6 +432,9 @@ public void onChunk(String partial) {
 \end{lstlisting}
 
 \newpage
+\noindent Ein Modell kann mehrere Gigabyte groß sein, weshalb die Analyse in einem eigenen Thread läuft. Ansonsten könnte das Laden die Oberfläche blockieren. Änderungen an der Benutzeroberfläche können in Android nur im Haupt-Thread erfolgen, weshalb dafür \texttt{runOnUiThread} verwendet wird. Falls beim Vorbereiten der Daten oder beim Laden des Modells ein Fehler auftreten sollte, wird eine dementsprechende Fehlermeldung im Textbereich angezeigt, sodass kein Absturz erfolgt.
+\vspace{\baselineskip}
+
 \noindent Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. Sobald die Ausgabe vollständig ist, erscheint unten rechts ein Knopf zum Teilen der Analyse. \autoref{fig:analyse-ergebnis} zeigt die Ansicht.
 
 
@@ -540,6 +538,8 @@ Runnable done) {
 
 \subsection{Messung je Konfiguration} Für jede Kombination wird \texttt{runConfig} einmal aufgerufen. Dabei wird das Modell geladen und die Ladezeit gemessen, bevor dieselbe Anfrage n = 5 mal wiederholt wird. \texttt{questionStreaming} ist für die asynchrone Verarbeitung zuständig. Diese wird mithilfe eines \texttt{CountDownLatch} synchronisiert, der das Warten bei jeder Wiederholung übernimmt. Die Schleife wartet bei \texttt{await}, bis der \texttt{onDone}-Callback per \texttt{countDown} das Ende der Inferenz meldet. Erst danach werden die Speicher- und Akkuwerte ausgelesen und als eine Zeile gespeichert. Bei einem Fehler wird dies in der \ac{CSV}-Datei gekennzeichnet.
 \newpage
+\noindent Die Prompts werden immer vor der Wiederholungsschleife erzeugt. Das Modell wird einmal geladen und dabei die Ladezeit sowie die Anzahl der Eingabe-Tokens bestimmt. Daher bleiben beide Werte innerhalb einer Kombination aus Szenario und Modell über alle fünf Messungen identisch. Der Benchmark verwendet dabei immer die Standardfenstergröße von 256 Samples, unabhängig davon, was im Analyse-Dialog eingestellt ist.
+\vspace{\baselineskip}
 
 \noindent Die beschriebene Wiederholung mit der Synchronisation über den \texttt{CountDownLatch} ist in \autoref{lst:messloop} dargestellt.
 \begin{lstlisting}[style=code, caption={Wiederholte Messung mit Synchronisation ueber CountDownLatch}, label={lst:messloop}]
@@ -578,6 +578,10 @@ for (int i = 0; i < nc; i++) {
 \end{lstlisting}
 
 \subsection{Erfassung der Ressourcen} Die Klasse \texttt{Metrics} ist eine Hilfsklasse, die die Speicher- und Akkuwerte liefert. Der Speicherverbrauch wird als \ac{PSS} über \texttt{Debug.MemoryInfo} ausgelesen und von Kilobyte in Megabyte umgerechnet. Über den \texttt{BatteryManager} wird der aktuelle Ladezustand des Akkus in Prozent und Mikroamperestunden (µAh) ermittelt.
-\vspace{\baselineskip} 
+\vspace{\baselineskip}
+
+\noindent Der Speicherwert wird zum Zeitpunkt des Aufrufs für den gesamten Prozess der Anwendung ermittelt. Dazu zählt nicht nur das geladene Modell selbst, sondern auch der übrige Speicherbedarf der App. Der Akkuwert beschreibt zudem den momentanen Akkuzustand und nicht den Verbrauch selbst. Dieser ergibt sich schließlich aus der Differenz zweier Akkuwerte über eine Messreihe hinweg (\autoref{subsec:metriken}).
 
 \subsection{Protokollierung} Die Klasse \texttt{BenchmarkLogger} schreibt die Ergebnisse in die Datei \texttt{benchmark.csv}. Ist die Datei schon vorhanden, wird die bestehende gelöscht und eine neue erstellt. Sie enthält eine Kopfzeile mit allen Metriken und darunter die einzelnen Zeilen, die jeweils eine Messung darstellen. Die so entstehende \ac{CSV} bildet die Datengrundlage für die Evaluation (\autoref{ch:evaluation}).
+\vspace{\baselineskip}
+\noindent \noindent Jede Zeile enthält einen Zeitstempel, das Modell, das Szenario, die Anzahl der Eingabe- und Ausgabe-Tokens, die Ladezeit, die Inferenzdauer, die \ac{TTFT}, die Tokens pro Sekunde, den Speicherwert sowie die Akkuwerte in Mikroamperestunden und Prozent. Abgeschlossen wird sie durch den Status der Messung.
