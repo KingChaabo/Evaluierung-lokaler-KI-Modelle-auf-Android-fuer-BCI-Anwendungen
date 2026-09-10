@@ -29,7 +29,7 @@ transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar,
 
 \subsection{Segmentierung}
 \label{subsec:segmentierung}
-Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der zeitliche Verlauf der Session fehlen. Aus diesem Grund wird jede Session in mehrere gleich große Segmente aufgeteilt (\autoref{fig:segmentierung}). Da das Signal mit einer konstanten Abtastrate von 250 Hz aufgenommen wird, entspricht eine gleiche Anzahl an Samples automatisch einer gleichen Zeitdauer. Die Segmentierung wird daher Sample-basiert durchgeführt. Dadurch ist es leichter nachvollziehbar, wie sich die Signalcharakteristik zwischen Beginn und Ende der Aufnahme verändert. Durch dieses Verfahren wird die Analyse robuster gegenüber Artefakten, da diese nur einen Teil der Session betreffen und nicht die gesamte Aufnahme verfälschen.
+Würden die Merkmale als ein einziger Mittelwert über die gesamte Aufnahme berechnet, ginge der zeitliche Verlauf der Session verloren. Aus diesem Grund wird jede Session in mehrere gleich große Segmente aufgeteilt (\autoref{fig:segmentierung}). Da das Signal mit einer konstanten Abtastrate von 250 Hz aufgenommen wird, entspricht eine gleiche Anzahl an Samples automatisch einer gleichen Zeitdauer. Die Segmentierung wird daher Sample-basiert durchgeführt. Dadurch ist es leichter nachvollziehbar, wie sich die Signalcharakteristik zwischen Beginn und Ende der Aufnahme verändert. Durch dieses Verfahren wird die Analyse robuster gegenüber Artefakten, da diese nur einen Teil der Session betreffen und nicht die gesamte Aufnahme verfälschen. Die Wahl auf genau vier Segmente ist hierbei ein Kompromiss. Sie entstand durch eine vertretbare Überlegung, niedrige Komplexität mit einem feinen zeitlichen Verlauf zu kombinieren. Mehr Segmente würden den aufbereiteten Text für die Modelle vergrößern, da je Segment ein eigener Block entsteht (\autoref{subsec:aufbereitung}), und somit die Anzahl der Eingabe-Tokens erhöhen. Weniger Segmente könnten zu einem zu groben Zeitverlauf führen.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.90\textwidth]{Graphics/Segmentierung.pdf}
@@ -45,7 +45,7 @@ Bei einem Mittelwert über die gesamte Aufnahme würden Informationen wie der ze
 \noindent erforderlich. Wenn die Aufnahme zu kurz ist, um die Mindestlänge zu erfüllen, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt.
 \vspace{\baselineskip}
 
-\noindent Die Fenstergröße ist kein fester, unveränderlicher Wert, sondern variabel einstellbar. Eine größere Fenstergröße erhöht die Frequenzauflösung \autocite{windowing_welch2021}, erfordert jedoch eine längere Mindestdauer der Session. Für alle folgenden Untersuchungen wird mit der Standardfenstergröße von 256 Samples gearbeitet, da sie in etwa eine Sekunde abbildet.
+\noindent Die Fenstergröße ist kein fester, unveränderlicher Wert, sondern variabel einstellbar. Eine größere Fenstergröße erhöht die Frequenzauflösung \autocite{windowing_welch2021}, erfordert jedoch eine längere Mindestdauer der Session. Für alle folgenden Untersuchungen wird mit der Standardfenstergröße von 256 Samples gearbeitet. Dies liegt an der Fourier-Transformation, bei der Zweierpotenzen für den Wert verwendet werden. Dieser Wert liegt nahe der Abtastrate von 250\,Hz des Unicorn Hybrid Black und entspricht damit einer Dauer von etwa einer Sekunde. Nach \autoref{eq:freqaufloesung} ergibt sich daraus eine Frequenzauflösung von rund 1\,Hz, womit sich die fünf Frequenzbänder aus \autoref{tab:eegbaender} noch trennen lassen. Dagegen würde eine Fenstergröße von 128 Samples eine Frequenzauflösung von etwa 2\,Hz ergeben und damit halbieren, was einen Verlust an Genauigkeit zur Folge hat. Bei 512 Samples würde sich die Mindestdauer verdoppeln, was jedoch zu weniger Fenstern je Segment führt.
 
 \subsection{Spektrale Merkmale}
 \label{subsec:spektral}
@@ -89,6 +89,9 @@ Dabei enthält der Text folgende Informationen:
 \item Spannweite (Peak-to-Peak-Amplitude)
 \item Anteil der ungültigen Messwerte
 \end{itemize}
+
+\noindent Die Merkmale werden neben der zeitlichen Aufteilung über die acht Kanäle zusammengefasst. Dabei wird die Bandleistung je Segment über alle acht Kanäle summiert und dann relativ zur Gesamtleistung gesetzt. Bei der Spannweite selbst wird nicht vorher gemittelt. Stattdessen wird der Kanal mit dem größten Ausschlag genannt, da sonst einzelne starke Artefakte verdeckt werden könnten.
+\vspace{\baselineskip}
 
 \noindent Dabei werden bewusst keine Bewertungen oder Interpretationen in den Text aufgenommen.
 Alle Informationen sind objektive Messwerte, deren Bedeutung allein dem Sprachmodell überlassen wird.
@@ -188,12 +191,7 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 \end{itemize}
 
 \noindent Auch wenn alle Modelle denselben szenariospezifischen Prompt erhalten, kann die Anzahl der Eingabe-Tokens je Modell schwanken. Jedes Modell besitzt einen eigenen Tokenizer mit einer anderen Implementierung eines Algorithmus und anderen Vokabulargrößen, um Textsequenzen in numerische Repräsentationen (Tokens) zu zerlegen \autocite{petrov_tokenizer_2023}.
-\vspace{\baselineskip}
-
-\noindent Gemma 2 und Gemma 3 verwenden einen SentencePiece-Tokenizer mit jeweils ca. 256.000 und 262.000 Vokabulareinträgen \autocite{gemma2_2024, gemma3_2025}.
-\vspace{\baselineskip}
-
-\noindent Qwen 2.5 hingegen nutzt \ac{BBPE} mit einem Vokabular von 151.643 regulären Tokens \autocite{qwen2025}.
+Die konkreten Verfahren der verwendeten Modelle sind in \autoref{sec:gemma} und \autoref{sec:qwen} beschrieben.
 \vspace{\baselineskip}
 
 \noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung jeder möglichen Kombination verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die zuvor beschriebene Aufwärm-Messung betrifft dagegen nur den einmaligen Systemstart. Die verbleibenden Werte werden gemittelt. Zusätzlich wird die Standardabweichung berechnet, die die Streuung der Messwerte um den Mittelwert beschreibt. Der Mittelwert $\bar{x}$ und die Standardabweichung $s$ über die $n$ einbezogenen Messwerte ergeben sich dabei wie folgt:

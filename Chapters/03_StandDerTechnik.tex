@@ -1,6 +1,6 @@
 \chapter{Stand der Technik}
 \label{ch:standdertechnik}
-Dieses Kapitel gibt einen Überblick über den aktuellen Stand der Technik. Es werden zunächst die Grundlagen der On-Device-Inferenz-Lösungen erläutert, anschließend die verwendeten Sprachmodelle aus der Gemma-Modellfamilie sowie das Modell Qwen und zum Abschluss die Ausgangslage der bestehenden Anwendung.
+Während \autoref{ch:grundlagen} die allgemeinen Konzepte behandelt, werden in diesem Kapitel aktuell verfügbare Systeme betrachtet und ausgewählt, welche in dieser Arbeit verwendet werden. Zunächst werden die Lösungen für die Ausführung auf dem Endgerät gegenübergestellt, anschließend die verwendeten Sprachmodelle aus der Gemma-Familie sowie Qwen vorgestellt. Schließlich wird die bestehende Anwendung genauer erläutert und der Beitrag dieser Arbeit aufgezeigt.
 
 \section{On-Device-Inferenz-Lösungen}
 \label{sec:ondevice-loesungen}
@@ -47,11 +47,11 @@ Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden
 \noindent Die Gemma-Modelle besitzen mehrere besondere Merkmale. Neben der freien Zugänglichkeit der Modelle zeichnen sie sich durch eine ressourcenschonende Ausführung auf herkömmlicher Standardhardware wie Smartphones aus \autocite{gemma3_2025,gemma2_2024}. Um unterschiedlichen technischen Anforderungen gerecht zu werden, sind die Modelle zudem in mehreren Größen verfügbar. Diese werden in Milliarden von Parametern gemessen. So bietet die zweite Generation (Gemma 2) Varianten mit 2, 9 und 27 Milliarden Parametern \autocite{gemma2_2024}. Die dritte Generation (Gemma 3) erweitert diese Skalierung auf Modelle mit 1, 4, 12 und 27 Milliarden Parametern \autocite{gemma3_2025}. Die aktuellste Generation (Gemma 4) bietet sogar Modelle mit bis zu 31 Milliarden Parametern \autocite{gemma4_2026}.
 \vspace{\baselineskip}
 
-\noindent Auch der Funktionsumfang wurde erweitert. Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}. Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}.
+\noindent Auch der Funktionsumfang wurde erweitert. Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}. Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}. Gemma 2 und Gemma 3 verwenden einen SentencePiece-Tokenizer mit jeweils ca. 256.000 und 262.000 Vokabulareinträgen \autocite{gemma2_2024, gemma3_2025}.
 
 \section{Die Qwen-Modellfamilie}
 \label{sec:qwen}
-Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Qwen gehört ebenso zu den frei deploybaren Modellfamilien \autocite{qwen2025}. Die Generation Qwen2.5 ist in fein abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar \autocite{qwen2025}. Die kompakten Varianten sind dabei gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert \autocite{qwen2025}. Die neueste Generation der Familie ist Qwen3, die eine hybride Integration eines \enquote{Thinking-Modus} sowie eines \enquote{Non-Thinking-Modus} für schnelle Antworten innerhalb eines einheitlichen Modells bereitstellt \autocite{qwen3_2025}.
+Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Genauso wie die Gemma-Modelle ist es frei deploybar. Jedoch stammt es von einem anderen Hersteller und gehört damit nicht zur selben Modellfamilie \autocite{qwen2025}. Die Generation Qwen2.5 ist in fein abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar, wobei die kompakten Varianten gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert sind \autocite{qwen2025}. Mit 1,5 Milliarden Parametern liegt die in dieser Arbeit verwendete Variante von Qwen genau zwischen Gemma 3 1B und Gemma 2 2B. Qwen 2.5 nutzt hingegen \ac{BBPE} mit einem Vokabular von 151.643 regulären Tokens \autocite{qwen2025} und damit ein anderes Verfahren sowie ein deutlich kleineres Vokabular als die Modelle von Google. Die neueste Generation der Familie ist Qwen3, die einen Thinking-Modus und einen Non-Thinking-Modus in einem einheitlichen Modell vereint \autocite{qwen3_2025}.
 
 \section{Bestehende Anwendung}
 \label{sec:ausgangslage}
@@ -96,7 +96,38 @@ Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth
 Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, \ac{EEG}-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-\ac{FFT} visualisiert.
     Die Daten werden dauerhaft gespeichert und können zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
 \subsection{Beitrag dieser Arbeit}
-Die bestehende Anwendung wird um neue Funktionalitäten erweitert. Diese bestehen aus der Verarbeitung der \ac{EEG}-Daten durch lokale Sprachmodelle. Der Beitrag umfasst in diesem Fall drei neue Kernkomponenten:
+Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eingesetzt, unter anderem zur Erzeugung von Befundtexten oder zur Deutung von Signalen \autocite{eeg_llm_survey2025}. Als offene Herausforderung wird dabei die Ausführung auf Endgeräten mit geringer Latenz genannt \autocite{eeg_llm_survey2025}. Zusätzlich müssen für einen praktischen Einsatz der Speicherbedarf, die Stabilität und die Qualität der Ausgabe, also des erzeugten Textes, angemessen ausfallen.
+\vspace{\baselineskip}
+
+\noindent Es gibt hierzu unterschiedliche Ansätze, wie vorgegangen wird. Chen u.\,a. betreiben ein Sprachmodell lokal, passen es dafür aber durch Pruning und Fine-Tuning an \autocite{eeg_emotion_copilot2025}. Murhekar u.\,a. belassen nur ein kleines Vorverarbeitungsmodul auf dem Gerät und lagern das Sprachmodell aus \autocite{sense2026}. \ac{EEG}-Anwendungen, die speziell auf Android ausgeführt werden, laufen jedoch ohne Sprachmodell \autocite{blum2017, eeg_android_ml2026}. Umgekehrt untersuchen Messstudien zu Sprachmodellen auf Mobilgeräten allgemeine Aufgaben und keine \ac{EEG}-Daten \autocite{guo2025llm}.
+\vspace{\baselineskip}
+
+\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe (\autoref{tab:verwandte-arbeiten}). Als Anpassung gilt dabei eine Veränderung der Modellgewichte. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K zählen nicht dazu, da sie die Gewichte unberührt lassen.
+
+\begin{table}[H]
+    \centering
+    \caption[Einordnung gegenüber verwandten Arbeiten]{Gegenüberstellung nach Ausführungsort des Sprachmodells, Anpassung des Modells, Art der Eingabe sowie Vergleich mehrerer Modelle auf dem Endgerät. Als Anpassung gilt eine Veränderung der Gewichte des Sprachmodells durch Fine-Tuning oder Pruning. Ein Strich bedeutet, dass kein Sprachmodell verwendet wird.}
+    \label{tab:verwandte-arbeiten}
+    \small
+    \begin{tabularx}{\textwidth}{X l l l l}
+        \toprule
+        \textbf{Arbeit} & \textbf{Modell lokal} & \textbf{Sprachmodell angepasst} & \textbf{Eingabe} & \textbf{Vergleich} \\
+        \midrule
+        Chen u.\,a. \autocite{eeg_emotion_copilot2025}    & ja   & ja   & Rohsignale & nein \\
+        Murhekar u.\,a. \autocite{sense2026}              & nein & nein & Rohsignale & nein \\
+        Blum u.\,a. \autocite{blum2017}                   & kein Sprachmodell & --- & Rohsignale & nein \\
+        Hazarika u.\,a. \autocite{eeg_android_ml2026}     & kein Sprachmodell & --- & Rohsignale & nein \\
+        Guo u.\,a. \autocite{guo2025llm}                  & ja   & nein & kein \ac{EEG} & ja \\
+        \midrule
+        Diese Arbeit                                      & ja   & nein & Merkmale   & ja \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent Die Frage bleibt damit, ob unveränderte, frei verfügbare Sprachmodelle ausreichen, um aufbereitete \ac{EEG}-Merkmale analysieren zu können. Der Beitrag dieser Arbeit ist daher der systematische Vergleich dreier solcher Modelle unter identischen Bedingungen anhand von Latenz, Ressourcenverbrauch, Stabilität und Ausgabequalität.
+\vspace{\baselineskip}
+
+\noindent Die bestehende Anwendung wird um neue Funktionalitäten erweitert. Diese bestehen aus der Verarbeitung der \ac{EEG}-Daten durch lokale Sprachmodelle. Umgesetzt wird dies in drei neuen Kernkomponenten:
     \begin{itemize}
         \item Schicht zur Merkmalsextraktion (\texttt{features}).
         \item Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}).
