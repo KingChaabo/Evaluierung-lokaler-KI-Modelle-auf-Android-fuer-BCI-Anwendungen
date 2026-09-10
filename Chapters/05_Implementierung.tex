@@ -184,7 +184,7 @@ private double[] sumBands(double[] power) {
 
 \noindent Die Einteilung in die Frequenzbänder ist zentral im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen.
 
-\subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Signalqualität.
+\subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Vollständigkeit der Übertragung.
 \vspace{\baselineskip}
 
 \noindent Bei der Berechnung des Peak-to-Peak-Werts wird das Segment einmal durchlaufen. Dabei werden alle acht Kanäle pro Sample verglichen, und das jeweils n-mal bis zum Ende eines Segments. Es merkt sich den niedrigsten sowie den höchsten Wert und kann anhand der Differenz aus beiden Werten die Spannweite berechnen.
