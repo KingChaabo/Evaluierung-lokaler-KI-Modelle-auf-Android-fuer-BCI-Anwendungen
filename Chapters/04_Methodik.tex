@@ -163,7 +163,7 @@ wobei $N_{\text{Token}}$ die Anzahl der erzeugten Token und $t_{\text{Inferenz}}
 \vspace{\baselineskip}
 
 \noindent Der Speicherverbrauch wird über die \ac{PSS} erfasst, da diese exklusiv von der Applikation genutzte Speicherseiten sowie den proportionalen Anteil an gemeinsam verwendeten Seiten (Shared Pages) berücksichtigt.
-Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbedarfs, da durch sie gemeinsam genutzte Ressourcen (wie beispielsweise Bibliotheken oder Systemdienste) nicht mehrfach gezählt werden \autocite{android_memory}.
+Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbedarfs, da durch sie gemeinsam genutzte Ressourcen (wie beispielsweise Bibliotheken oder Systemdienste) nicht mehrfach gezählt werden \autocite{android_memory}. Der Wert wird direkt nach dem Abschluss einer Inferenz ermittelt, während das Modell selbst noch geladen ist. Es handelt sich um einen aktuellen Wert, bei dem keine Speicherbereinigung ausgelöst wird. Bereiche, die noch nicht freigegeben wurden, werden mit eingeschlossen. Dabei sollten die erfassten Werte als obere Schranke des tatsächlichen Bedarfs behandelt werden.
 \vspace{\baselineskip}
 
 \noindent Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
@@ -179,7 +179,7 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 \begin{itemize}
 \item Der Flugmodus im Testgerät ist aktiviert, um Netzwerkaktivitäten auszuschließen.
 \item Die Bildschirmhelligkeit wird auf einen festen Wert (ungefähr 50\,\%) eingestellt, um den Akkuverbrauch über alle Messungen hinweg vergleichbar zu halten.
-\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde. Bei Start der Messung befindet sich der Akkustand bei ungefähr 60\,\%.
+\item Das Handy befindet sich nicht im Ladezustand, da dies den Akkuverbrauch während der Messung verfälschen würde. Bei Start der Messung befindet sich der Akkustand bei ungefähr 60\,\%. Dieser Wert wird während aller Messungen nicht gehalten, sondern der Verbrauch wird ab der ersten Messung festgehalten. Dieser Verbrauch wird dann als eigentliche Messgröße verwendet.
 \item Alle unnötigen Hintergrundprozesse werden beendet, um die Systemlast zu minimieren.
 \item Alle Messungen finden möglichst innerhalb von 20 Minuten statt, um die Temperatur des Geräts konstant zu halten.
 \item Alle Messungen werden auf demselben Testgerät durchgeführt, um die Hardwarebedingungen konstant zu halten. Dabei handelt es sich um ein Samsung Galaxy S23 mit dem Prozessor Qualcomm Snapdragon~8 Gen~2 und 8\,GB Arbeitsspeicher, betrieben unter Android~16 (One~UI~8.5), mit einer Akkukapazität von 3900\,mAh \autocite{samsung_s23_specs, s23_oneui85_android16}.
@@ -191,7 +191,7 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 \end{itemize}
 
 \noindent Auch wenn alle Modelle denselben szenariospezifischen Prompt erhalten, kann die Anzahl der Eingabe-Tokens je Modell schwanken. Jedes Modell besitzt einen eigenen Tokenizer mit einer anderen Implementierung eines Algorithmus und anderen Vokabulargrößen, um Textsequenzen in numerische Repräsentationen (Tokens) zu zerlegen \autocite{petrov_tokenizer_2023}.
-Die konkreten Verfahren der verwendeten Modelle sind in \autoref{sec:gemma} und \autoref{sec:qwen} beschrieben.
+Die konkreten Verfahren der verwendeten Modelle sind in \autoref{sec:gemma} und \autoref{sec:qwen} beschrieben. Für die Messbedingungen bedeutet das Folgendes: Der Top-K-Wert bleibt unbeeinflusst und ist von der Zerlegung selbst nicht betroffen. Die Kontextgröße von 1280 ist jedoch eine Größe, die je nach Tokenizer schneller (beispielsweise durch ein kleineres Vokabular) oder langsamer erreicht werden kann (\autoref{sec:einschraenkungen}).
 \vspace{\baselineskip}
 
 \noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung jeder möglichen Kombination verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die zuvor beschriebene Aufwärm-Messung betrifft dagegen nur den einmaligen Systemstart. Die verbleibenden Werte werden gemittelt. Zusätzlich wird die Standardabweichung berechnet, die die Streuung der Messwerte um den Mittelwert beschreibt. Der Mittelwert $\bar{x}$ und die Standardabweichung $s$ über die $n$ einbezogenen Messwerte ergeben sich dabei wie folgt:
