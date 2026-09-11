@@ -13,33 +13,33 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 
 Der Weg startet über die Datenbank, aus der die Samples abgerufen werden:
 \begin{itemize}
-\item \textbf{EegFeatureExtractor:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
-\item \textbf{FeatureFormatter:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
-\item \textbf{PromptBuilder:} Baut die Anweisung für den Prompt (je Szenario).
-\item \textbf{LlmEngine:} Führt das Modell (Gemma via MediaPipe) aus und gibt die Antwort zurück.
-\item \textbf{Analyse-Oberfläche:} Zeigt letztlich die Antwort an.
-\item \textbf{Benchmark:} Misst die Verarbeitung (Laufzeit, Speicherverbrauch etc.).
+\item \textbf{EegFeatureExtractor} (\texttt{features})\textbf{:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
+\item \textbf{FeatureFormatter} (\texttt{features})\textbf{:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
+\item \textbf{PromptBuilder} (\texttt{llm})\textbf{:} Baut die Anweisung für den Prompt (je Szenario).
+\item \textbf{LlmEngine} (\texttt{llm})\textbf{:} Führt das Modell (Gemma via MediaPipe) aus und gibt die Antwort zurück.
+\item \textbf{Analyse-Oberfläche} (\texttt{analyse})\textbf{:} Zeigt letztlich die Antwort an.
+\item \textbf{Benchmark} (\texttt{benchmark})\textbf{:} Misst die Verarbeitung (Laufzeit, Speicherverbrauch etc.).
 \end{itemize}
 
 
-\noindent Die Architektur ist in drei Kernbereiche unterteilt: zum einen das Paket \texttt{features}, das die Merkmalsextraktion übernimmt; zum anderen das Paket \texttt{llm}, das je nach Szenario den Aufbau des Prompts übernimmt und das Sprachmodell ausführt; und schließlich das Paket \texttt{analyse}, das die Benutzeroberfläche bereitstellt. Ergänzend übernimmt das Paket \texttt{benchmark} die systematische Messung der Modelle. Durch die Trennung dieser Pakete bleibt der Code übersichtlich und erweiterbar.
+\noindent Durch die Trennung dieser Pakete bleibt der Code übersichtlich und erweiterbar.
 \vspace{\baselineskip}
 
-\noindent Ein Hauptmerkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch wird die konkrete Modell- und Laufzeitumgebung vor dem Rest der Anwendung verborgen. Dies ermöglicht das Austauschen der Modelle, ohne dass die anderen Komponenten angepasst werden müssen.
-In dieser Arbeit werden die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B allein durch den Wechsel des Modellpfads auf dem mobilen Gerät geladen. Aus diesem Grund ließe sich an derselben Schnittstelle auch ein anderes Modell anbinden. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenfalls ein systemintegriertes Modell anzubinden.
+\noindent Ein Hauptmerkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch ist die Modell- und Laufzeitumgebung vom Rest der Anwendung unbeeinflusst. So lassen sich Modelle einfach austauschen, ohne andere Komponenten anzupassen.
+Die drei Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B werden in dieser Arbeit allein durch den Wechsel des Modellpfads geladen. Aus diesem Grund würde sich an derselben Schnittstelle auch ein anderes Modell anbinden lassen. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenenfalls ein systemintegriertes Modell anzubinden.
 \vspace{\baselineskip}
 
-\noindent Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich auch einfach und unproblematisch neue Szenarien einfügen, ohne die restliche Anwendung anpassen zu müssen.
+\noindent Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich neue Szenarien ergänzen, ohne die restliche Anwendung anpassen zu müssen.
 \vspace{\baselineskip}
 
 \noindent Auch mit dem \texttt{FeatureFormatter} ist eine einfache Änderung des Textes umsetzbar, da die Textdarstellung von der Berechnungslogik aller Merkmale entkoppelt ist.
 \vspace{\baselineskip}
 
-\noindent Besonders sind die Robustheit und Sauberkeit der Anwendung. Sie verändert nicht die Infrastruktur der bestehenden Anwendung, sondern erweitert sie. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
-Es wird dabei darauf geachtet, dass sich neue Ansichten in die bestehenden Konzepte der Anwendung einfügen. Neben dem hellen Modus unterstützt die neue Implementierung den Dunkelmodus sowie die Sprachen Deutsch und Englisch.
+\noindent Die Erweiterung verändert die Infrastruktur der bestehenden Anwendung nicht, sondern baut auf ihr auf. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
+Neue Ansichten fügen sich in die bestehenden Konzepte der Anwendung ein. Neben dem hellen Modus unterstützt die neue Implementierung den Dunkelmodus sowie die Sprachen Deutsch und Englisch.
 \vspace{\baselineskip}
 
-\noindent Aussagekräftig ist zudem, dass der Benchmark denselben Analyseablauf verwendet wie eine vom Nutzer ausgelöste Einzelanalyse.
+\noindent Der Benchmark verwendet denselben Analyseablauf wie eine vom Nutzer ausgelöste Einzelanalyse.
 \newpage
 
 \noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
@@ -315,10 +315,10 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 
 \noindent Bei der Optimierung des Prompts ergaben sich folgende Design-Vorgaben, die jeweils auf ein beobachtetes Problem der frühen Ausgaben zurückgehen:
 \begin{itemize}
-\item \textbf{Datentreue:} Es wird darauf hingewiesen, nur die Werte zu verwenden, die genannt werden. Dies soll verhindern, dass das Modell eigene Annahmen trifft. Dieses Problem trat in früheren Ausgaben auf. So entstanden Begriffe wie \enquote{Dominanzindex}.
-\item \textbf{Reines Textformat:} Es wird sichergestellt, dass die Ausgaben des Modells nur textuelle Informationen enthalten. Es werden Sonderzeichen (Markdown) verboten, da sonst Formatierungszeichen (z.\,B. \texttt{**}) auftraten.
+\item \textbf{Datentreue:} Dem Modell wird klargestellt, nur die genannten Werte zu verwenden. Dies soll verhindern, dass das Modell selbst neue Annahmen trifft. In früheren Ausgaben wurden fälschlicherweise Begriffe wie \enquote{Dominanzindex} verwendet.
+\item \textbf{Reines Textformat:} Die Ausgabe des Modells soll textuelle Informationen erzeugen. Es wird vorgegeben, dass Sonderzeichen und Markdown verboten werden. Zuvor entstanden Formatierungszeichen wie \texttt{**} in den Ausgaben.
 \item \textbf{Eindeutige Merkmalsbenennung:} Im \texttt{FeatureFormatter} wird der Anteil ungültiger Werte als \enquote{Ungültige Messwerte: X\,\%} statt als \enquote{Qualität: X\,\%} ausgegeben. Zuvor interpretierte das Modell \enquote{Qualität: X\,\%} fälschlich als schlechte Qualität.
-\item \textbf{Begrenzung der Interpretation:} Ausgaben mit falscher Interpretation, etwa durch die Einbeziehung medizinischer Diagnosen, werden verhindert, da sie zuvor ein Problem darstellten.
+\item \textbf{Begrenzung der Interpretation:} Der Prompt untersagt falsche Interpretationen wie zum Beispiel Deutungen in Richtung medizinischer Diagnosen. Solche Fälle haben davor ein Problem dargestellt.
 \item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.
 \end{itemize}
 
@@ -383,8 +383,7 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt. Das visuelle Layout des Dialogs ist in der Datei \texttt{dialog\_analyse.xml} definiert.
-
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
 \needspace{0.6\textheight}
 \noindent \autoref{fig:analyse-dialog} zeigt den beschriebenen Analyse-Dialog.
 \begin{figure}[H]
@@ -467,8 +466,7 @@ public void onChunk(String partial) {
 Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Leser den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
 \vspace{\baselineskip}
 
-\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}). Das zugehörige Layout ist in der Datei \texttt{activity\_analyse\_ergebnis.xml} festgelegt.
-\newpage
+\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}).\newpage
 \subsection{Benchmark-Dialog}
 Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf, über den man die automatisierte Messreihe starten kann. Auch dort startet zuvor ein Dialog (\autoref{fig:benchmark-dialog}), mit dem man für das Vergleichsszenario eine Session auswählen muss.
 \begin{figure}[H]
@@ -490,8 +488,7 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
     \label{fig:benchmark-dialog}
 \end{figure}
 
-\noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben. Das Layout des Dialogs ist in der Datei \texttt{dialog\_benchmark.xml} definiert.
-\newpage
+\noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben.\newpage
 \section{Benchmark}
 \label{sec:impl-benchmark}
 Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die \ac{CSV}-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht. 
