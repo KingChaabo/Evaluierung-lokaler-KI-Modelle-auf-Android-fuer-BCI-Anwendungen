@@ -141,10 +141,13 @@ Cloud-Server zu senden \autocite{edgellm_review}.
     \item \textbf{Speicher und Rechenleistung:} Da \acp{LLM} sehr große Sprachmodelle sind, benötigen sie aufgrund ihrer hohen Anzahl an Parametern ausreichend großen \ac{RAM} und Rechenkapazität. Oft ist dies mehr, als herkömmliche Smartphones bieten, was im Extremfall zu einem Speicherüberlauf führt, im Englischen als memory overflow oder \ac{OOM} bezeichnet \autocite{edgellm_review, android_oom}. Ein \ac{OOM} bezeichnet den Zustand, in dem kein Arbeitsspeicher mehr für neue Objekte verfügbar ist \autocite{android_oom}. 
     \item \textbf{Vielfalt der Endgeräte:} Verschiedene Endgeräte besitzen unterschiedliche Prozessoren und Spezialchips. Eine Lösung zu programmieren, die auf allen Endgeräten funktioniert, ist sehr schwierig \autocite{edgellm_review}.
     \item \textbf{Katastrophales Vergessen:} Ein häufiges und bekanntes Phänomen ist, dass ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
-    \item \textbf{Drosselung:} Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöht \autocite{zhou2022throttling}.
+    \item \textbf{Drosselung:} Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöhen kann \autocite{zhou2022throttling}.
 \end{itemize}
 
-\noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein essenzielles Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 8-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}.
+\noindent Es spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Die Herausforderung liegt bei den übrigen Punkten: Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
+\vspace{\baselineskip}
+
+\noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein essenzielles Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 8-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}. Dieser Gewinn an Speicher- und Recheneffizienz kann jedoch zu Leistungseinbußen und Genauigkeitsverlusten führen \autocite{edgellm_review}. Sprachmodelle reagieren aufgrund ihrer Architektur empfindlich auf eine verringerte numerische Präzision \autocite{edgellm_review}.
 
 \subsection{Modell und Laufzeitumgebung}
 \label{subsec:MvsL}
@@ -170,7 +173,7 @@ Dieser Ansatz erhöht jedoch den Speicherbedarf der Anwendung.
 Ein \ac{BCI}, zu Deutsch Gehirn-Computer-Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
 Häufig gemessen durch \ac{EEG}, werden mentale Zustände und Absichten in Echtzeit erkannt. Dadurch sind Steuerungsbefehle möglich, die ganz ohne Muskelkraft auskommen \autocite{blum2017}.
 
-\noindent Ein funktionsfähiges \ac{BCI}-System erfasst die Gehirndaten, verarbeitet und analysiert diese Signale sofort in einem geschlossenen System. Der Nutzer erhält basierend auf der Klassifizierung dieser Signale eine unmittelbare Rückmeldung \autocite{blum2017}.
+\noindent Ein \ac{BCI}-System erfasst die Gehirndaten und verarbeitet diese Signale. Häufig geschieht dies in einem geschlossenen System, in dem der Nutzer auf Basis der Klassifizierung eine unmittelbare Rückmeldung erhält \autocite{blum2017}.
 \vspace{\baselineskip}
 
 
@@ -181,7 +184,7 @@ Häufig gemessen durch \ac{EEG}, werden mentale Zustände und Absichten in Echtz
     \item \textbf{Assistenzsysteme:} Auch bei der Fehlerüberwachung können anhand der Gehirnaktivität die Absichten einer Notbremsung erkannt und ausgeführt werden, noch bevor das Bremspedal physisch betätigt wird.
 \end{itemize}
 
-\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
+\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Sie setzt erst nach der Aufnahme an und wertet bereits gespeicherte Sessions aus. Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
 
 %  - Überleitung zu \autoref{ch:standdertechnik} (konkrete Modelle/Frameworks)
 %  (1 Absatz)
