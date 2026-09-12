@@ -310,7 +310,8 @@ public void questionStreaming(String prompt, StreamCallback callback) {
 \section{Prompt-Design und iterative Optimierung}
 \label{sec:impl-prompt}
 Wie schon in \autoref{sec:szenarien} erwähnt, besteht der Prompt aus den aufbereiteten Merkmalen mit einer szenariospezifischen Anweisung. Dieser ist für alle Modelle identisch.
-Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zum finalen Prompt war iterativ: Er wurde anhand der Modellausgaben verfeinert und anschließend für die Evaluation final festgehalten.
+Die Eingabe wird hierbei als beschrifteter Text mit allen Merkmalen übergeben. Dadurch steht jeder Wert mit seiner Bezeichnung und Einheit im Text. Es sind keine Zuordnungen von Spalten nötig, wie sie in einer Tabelle üblich sind. Eine Tabelle würde zusätzliche Trennzeichen erfordern, die Tokens kosten würden, ohne überhaupt sinnvolle Information zusätzlich zu bieten.
+Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zum finalen Prompt war iterativ. Die erste Version enthielt je Szenario die jeweilige Aufgabe, eine Formatvorgabe ohne Begrüßung und den Hinweis, nichts zu erfinden. Ursprünglich hieß die Kennzahl zur Signalqualität noch \enquote{Qualität: X\,\% ungültig}. Diese wurde an Gemma 2 2B geprüft und jeweils in zwei Durchgängen angepasst: zuerst der Merkmalstext, danach der Prompt.
 \vspace{\baselineskip}
 
 \noindent Bei der Optimierung des Prompts ergaben sich folgende Design-Vorgaben, die jeweils auf ein beobachtetes Problem der frühen Ausgaben zurückgehen:
@@ -322,7 +323,7 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 \item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.
 \end{itemize}
 
-\noindent Nach der Optimierung wurde der finale Prompt eingefroren und bildete die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
+\noindent Die Optimierung endete, sobald Gemma 2 2B als Referenzmodell die Vorgaben einhielt. Es wurde bewusst darauf verzichtet, jedes Modell einzeln zu optimieren, da dies Unterschiede zwischen den Modellen verdecken könnte, die in der Evaluation wichtig werden. Der finale Prompt wurde eingefroren und bildete unverändert die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
 \begin{lstlisting}[style=code, breaklines=true, caption={[Prompts je Szenario]Aufbau der Prompts je Szenario in der finalen, eingefrorenen Fassung. Alle drei enden mit dem aufbereiteten Merkmalstext.}, label={lst:prompts}]
 // Szenario 1: Session-Report
 public String buildReport(String featureText) {
