@@ -4,7 +4,7 @@ Dieses Kapitel präsentiert die Durchführung (\autoref{subsec:messbedingungen})
 
 \section{Durchführung der Messungen}
 \label{sec:eval-durchfuehrung}
-Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten \ac{CSV}-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird, da sie durch das Initialisieren des Modells länger ausfallen kann (\autoref{subsec:messbedingungen}). In den Rohdaten ist dieser Effekt bei einzelnen Kombinationen deutlich sichtbar, in anderen tritt er dagegen nicht auf. Ein Beispiel ist Gemma 3 1B, denn dort unterscheidet sich im Report-Szenario die Gesamtdauer bei der ersten Messung mit 13,1\,s gegenüber 6,7\,s in den folgenden vier Läufen (\autoref{tab:app-rohdaten}). In die Mittelwerte fließen je Kombination die verbleibenden vier Messungen ein. Die rohen Messwerte liegen vollständig und ungemittelt in \autoref{tab:app-rohdaten}.
+Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten \ac{CSV}-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird, da sie durch das Initialisieren des Modells länger ausfallen kann (\autoref{sec:messprotokoll}). In den Rohdaten ist dieser Effekt bei einzelnen Kombinationen deutlich sichtbar, in anderen tritt er dagegen nicht auf. Ein Beispiel ist Gemma 3 1B, denn dort unterscheidet sich im Report-Szenario die Gesamtdauer bei der ersten Messung mit 13,1\,s gegenüber 6,7\,s in den folgenden vier Läufen (\autoref{tab:app-rohdaten}). In die Mittelwerte fließen je Kombination die verbleibenden vier Messungen ein. Die rohen Messwerte liegen vollständig und ungemittelt in \autoref{tab:app-rohdaten}.
 Vor der ersten Messung wird ein Aufwärmlauf durchgeführt.
 \vspace{\baselineskip}
 
@@ -205,22 +205,11 @@ Das größere Modell Gemma 2 2B läuft ebenso stabil, obwohl es mit ca.\ 3798\,M
 
 \section{Ausgabequalität}
 \label{sec:eval-qualitaet}
-Bei der Ausgabequalität handelt es sich um eine qualitative Bewertung der generierten Inhalte. Sie ist neben der Latenz und dem Ressourcenverbrauch ein weiterer entscheidender Faktor, um die Eignung der Modelle für die Verarbeitung von \ac{EEG}-Daten zu bewerten. Die Ausgaben werden anhand der in \autoref{subsec:eval-kriterien} definierten Kriterien bewertet. Dies geschieht anhand mehrerer Beispiele. Da alle drei Modelle denselben Prompt (\autoref{sec:impl-prompt}) verwenden, ist es möglich, die Qualität der Ausgaben direkt miteinander zu vergleichen.
-% Qualitative Bewertung. Erst Kriterien definieren, dann Beispielausgaben einordnen.
-
-\subsection{Bewertungskriterien}
-\label{subsec:eval-kriterien}
-Die Ausgaben werden anhand der folgenden vier Kriterien beurteilt:
-\begin{itemize}
-    \item \textbf{Korrektheit:} Stimmt die Aussage mit den extrahierten Merkmalen überein?
-    \item \textbf{Halluzinationsfreiheit:} Werden keine Werte oder Begriffe erfunden, die nicht in den Daten stehen?
-    \item \textbf{Verständlichkeit:} Ist die Ausgabe sprachlich klar und lesbar?
-    \item \textbf{Formattreue:} Hält die Ausgabe die Vorgaben ein (Fließtext, kein Markdown, knappe Länge)?
-\end{itemize}
-
-\subsection{Beispielausgaben je Szenario}
 \label{subsec:eval-beispiele}
-Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta-Dominanz aufweist. Der Fokus liegt auf dem Report-Szenario für alle drei Modelle, bei dem sie im Detail betrachtet werden. Anschließend werden die anspruchsvolleren Szenarien Artefakt-Erklärung und Vergleich zusammengefasst. Dadurch ist erkennbar, wie die Modelle mit steigenden Anforderungen umgehen.
+Die Ausgaben werden anhand der in \autoref{subsec:metriken} definierten Kriterien bewertet. Dies geschieht anhand mehrerer Beispiele. Da alle drei Modelle denselben Prompt (\autoref{sec:impl-prompt}) verwenden, ist es möglich, die Qualität der Ausgaben direkt miteinander zu vergleichen.
+\vspace{\baselineskip}
+
+\noindent Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta-Dominanz aufweist. Der Fokus liegt auf dem Report-Szenario für alle drei Modelle, bei dem sie im Detail betrachtet werden. Anschließend werden die anspruchsvolleren Szenarien Artefakt-Erklärung und Vergleich zusammengefasst. Dadurch ist erkennbar, wie die Modelle mit steigenden Anforderungen umgehen.
 \vspace{\baselineskip}
 
 \noindent Die an die Modelle übergebenen Feature-Texte beider Sessions sind in \autoref{fig:ft-session-a} und \autoref{fig:ft-session-b} im Anhang abgedruckt und ermöglichen den Abgleich der Ausgaben mit der tatsächlichen Eingabe.

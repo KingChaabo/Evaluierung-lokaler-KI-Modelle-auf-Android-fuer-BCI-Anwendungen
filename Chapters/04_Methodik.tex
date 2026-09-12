@@ -126,7 +126,19 @@ Um die Eignung der Modelle für die Analyse von \ac{EEG}-Daten zu untersuchen, w
 \section{Messprotokoll (Benchmark)}
 \label{sec:messprotokoll}
 Eine verlässliche Messung kann nur systematisch und unter kontrollierten Bedingungen ausgeführt werden. Da es sich um mehrere Messungen handelt, werden sie in kurzer Zeit automatisiert über alle Modell-Szenario-Kombinationen durchgeführt und in einer \ac{CSV}-Datei protokolliert. So wird sichergestellt, dass die Messungen eine reproduzierbare und auswertbare Datenbasis für die anschließende Evaluation liefern.
-Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt (eine Wegwerf-Messung), um Kaltstart-Effekte zu vermeiden. Ein solcher Kaltstart äußert sich darin, dass der erste Lauf eines Modells durch das Laden und Initialisieren deutlich länger ausfällt als die nachfolgenden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebnis dieser Messung wird nicht protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich. Die Reihenfolge ist bewusst festgelegt und bleibt über alle Durchläufe gleich. So wird gewährleistet, dass jedes Modell unter identischen Bedingungen im Ablauf gemessen werden kann und die Messreihe reproduzierbar bleibt. Eine zufällige Reihenfolge würde zwar Reihenfolgeeffekte auf alle Modelle verteilen, erfordert jedoch transparentere Angaben, da sich die Effekte sonst nicht mehr nachvollziehen lassen.
+Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgeführt, um Kaltstart-Effekte zu vermeiden. Ein solcher Kaltstart äußert sich darin, dass der erste Lauf eines Modells durch das Laden und Initialisieren deutlich länger ausfällt als die nachfolgenden. Dadurch wird verhindert, dass die erste Kombination verzerrt gemessen wird. Das Ergebnis dieser Messung wird nicht protokolliert und dient allein der Aufwärmung. Alle Messungen richten sich nach einer bestimmten Reihenfolge. Diese startet mit Gemma 3 1B, gefolgt von Gemma 2 2B, und endet mit Qwen 2.5 1.5B, jeweils in den Szenarien Report, Artefakt-Erklärung und Vergleich. Die Reihenfolge ist bewusst festgelegt und bleibt über alle Durchläufe gleich. So wird gewährleistet, dass jedes Modell unter identischen Bedingungen im Ablauf gemessen werden kann und die Messreihe reproduzierbar bleibt. Eine zufällige Reihenfolge würde zwar Reihenfolgeeffekte auf alle Modelle verteilen, erfordert jedoch transparentere Angaben, da sich die Effekte sonst nicht mehr nachvollziehen lassen.
+\vspace{\baselineskip}
+
+\noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung jeder möglichen Kombination aus demselben Grund verworfen. Die zuvor beschriebene Aufwärm-Messung betrifft dagegen nur den einmaligen Systemstart. Die verbleibenden Werte werden gemittelt. Zusätzlich wird die Standardabweichung berechnet, die die Streuung der Messwerte um den Mittelwert beschreibt. Der Mittelwert $\bar{x}$ und die Standardabweichung $s$ über die $n$ einbezogenen Messwerte ergeben sich dabei wie folgt:
+\begin{equation}
+    \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+    \qquad
+    s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}\left(x_i - \bar{x}\right)^2}
+\end{equation}
+Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
+\vspace{\baselineskip}
+
+\noindent Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen dagegen nicht in der Anwendung. Sie werden stattdessen manuell auf Grundlage der in der \ac{CSV}-Datei gespeicherten Rohwerte durchgeführt.
 \newpage
 
 \subsection{Metriken}
@@ -175,7 +187,13 @@ Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbeda
 \noindent Im Gegensatz zum Benchmark, bei dem es gleich fünf Messungen gibt, werden für die reine Analyse einer Session nur Latenzmetriken erfasst. Der Grund liegt hierbei an der Menge der Messungen. Der Energieverbrauch lässt sich nur über eine ganze Messreihe sinnvoll bestimmen, da er sich erst aus der Differenz des Akkustands über mehrere aufeinanderfolgende Durchläufe ergibt. Zudem schwankt der Arbeitsspeicherbedarf stark \autocite{android_memory}, sodass eine Messung keine verlässliche Aussage über den Speicherbedarf zulässt. Die Metriken Status und Ausgabequalität sind nur für die Evaluation relevant und werden daher nicht in der Analyse erfasst.
 \vspace{\baselineskip}
 
-\noindent Bei der Ausgabequalität geht es um die Qualität der vom Modell gegebenen Antwort. Hierfür wird keine automatisierte Messung benötigt, da es keine feste Musterlösung gibt, mit der man sie vergleichen könnte. Ein eindeutiges Richtig oder Falsch existiert nicht. Stattdessen wird der Inhalt der Ausgabe anhand von vier Kriterien bewertet (\autoref{subsec:eval-kriterien}).
+\noindent Bei der Ausgabequalität geht es um die Qualität der vom Modell gegebenen Antwort. Hierfür wird keine automatisierte Messung benötigt, da es keine feste Musterlösung gibt, mit der man sie vergleichen könnte. Ein eindeutiges Richtig oder Falsch existiert nicht. Stattdessen wird der Inhalt der Ausgabe anhand der folgenden vier Kriterien bewertet:
+\begin{itemize}
+    \item \textbf{Korrektheit:} Stimmt die Aussage mit den extrahierten Merkmalen überein?
+    \item \textbf{Halluzinationsfreiheit:} Werden keine Werte oder Begriffe erfunden, die nicht in den Daten stehen?
+    \item \textbf{Verständlichkeit:} Ist die Ausgabe sprachlich klar und lesbar?
+    \item \textbf{Formattreue:} Hält die Ausgabe die Vorgaben ein (Fließtext, kein Markdown, knappe Länge)?
+\end{itemize}
 \subsection{Messbedingungen}
 \label{subsec:messbedingungen}
 Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können, werden sie unter den folgenden Rahmenbedingungen durchgeführt:
@@ -195,15 +213,3 @@ Damit die Messungen unter vergleichbaren und fairen Bedingungen erfolgen können
 
 \noindent Auch wenn alle Modelle denselben szenariospezifischen Prompt erhalten, kann die Anzahl der Eingabe-Tokens je Modell schwanken. Jedes Modell besitzt einen eigenen Tokenizer mit einer anderen Implementierung eines Algorithmus und anderen Vokabulargrößen, um Textsequenzen in numerische Repräsentationen (Tokens) zu zerlegen \autocite{petrov_tokenizer_2023}.
 Die konkreten Verfahren der verwendeten Modelle sind in \autoref{sec:gemma} und \autoref{sec:qwen} beschrieben. Für die Messbedingungen bedeutet das Folgendes: Der Top-K-Wert bleibt unbeeinflusst und ist von der Zerlegung selbst nicht betroffen. Die Kontextgröße von 1280 ist jedoch eine Größe, die je nach Tokenizer schneller (beispielsweise durch ein kleineres Vokabular) oder langsamer erreicht werden kann (\autoref{sec:einschraenkungen}).
-\vspace{\baselineskip}
-
-\noindent Es wird jede Kombination von Modell und Anwendungsszenario N = 5 Mal gemessen, da Temperatur, Hintergrundlast oder Caching die Laufzeit von Lauf zu Lauf erheblich beeinträchtigen können \autocite{guo2025llm}. Dabei wird die erste Messung jeder möglichen Kombination verworfen, da sie durch das Initialisieren des Modells deutlich länger dauert. Die zuvor beschriebene Aufwärm-Messung betrifft dagegen nur den einmaligen Systemstart. Die verbleibenden Werte werden gemittelt. Zusätzlich wird die Standardabweichung berechnet, die die Streuung der Messwerte um den Mittelwert beschreibt. Der Mittelwert $\bar{x}$ und die Standardabweichung $s$ über die $n$ einbezogenen Messwerte ergeben sich dabei wie folgt:
-\begin{equation}
-    \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
-    \qquad
-    s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}\left(x_i - \bar{x}\right)^2}
-\end{equation}
-Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
-\vspace{\baselineskip}
-
- \noindent Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt, jedoch nicht in der \ac{CSV} gespeichert. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen nicht in der Anwendung selbst. Sie werden stattdessen manuell auf Grundlage der in der \ac{CSV}-Datei gespeicherten Rohwerte durchgeführt.
