@@ -10,12 +10,18 @@ Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-S
 \vspace{\baselineskip}
 
 \noindent Traditionelle \ac{EEG}-Laborhardware, wie sie oft stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung. Demgegenüber erlauben moderne, kabellose und am Kopf getragene \ac{EEG}-Geräte (wie das Unicorn Hybrid Black) inzwischen auch Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
-Dennoch ist das Deuten der aufgezeichneten Signale komplex und benötigt oft Fachwissen.
-Gleichzeitig haben große Sprachmodelle, sogenannte \acp{LLM}, die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}.
-Für die vorliegende Arbeit ist die lokale Ausführung dabei nicht nur eine technische Möglichkeit, sondern eine Voraussetzung. Da das Unicorn Hybrid Black auch in der Lehre eingesetzt wird, wie in Vorlesungen zu Gehirn-Computer-Schnittstellen, ist weder eine verlässliche Internetverbindung noch ein Zugang zu einem Cloud-Dienst garantiert. Hinzu kommt, dass \ac{EEG}-Aufzeichnungen personenbezogene Daten sind, die das Gerät nicht verlassen sollen. Eine lokale Verarbeitung kommt ohne Netzanbindung aus und hält die Daten auf dem Gerät \autocite{edgellm_review}.
+Dennoch ist das Deuten der aufgezeichneten Signale komplex \autocite{blum2017}.
+Deutlich wird es im Lehrkontext, bei dem das Unicorn Hybrid Black zum Einsatz kommt, zum Beispiel in Vorlesungen zu Gehirn-Computer-Schnittstellen. Dort werden Messungen durchgeführt, die jedoch trotz des Signalverlaufs schwer zu verstehen sind und nur mit entsprechender Erfahrung eingeordnet werden können.
 \vspace{\baselineskip}
 
-\noindent Durch die Kombination lokaler Sprachmodelle und der aufbereiteten \ac{EEG}-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
+\noindent Gleichzeitig haben große Sprachmodelle, sogenannte \acp{LLM}, die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}. Durch die Kombination lokaler Sprachmodelle und der aufbereiteten \ac{EEG}-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Ein solches Modell soll dabei eine unterstützende Funktion einnehmen.
+\vspace{\baselineskip}
+
+\noindent Für die vorliegende Arbeit ist die lokale Ausführung dabei nicht nur eine technische Möglichkeit, sondern eine Voraussetzung. In diesem Umfeld ist weder eine verlässliche Internetverbindung noch ein Zugang zu einem Cloud-Dienst garantiert. Hinzu kommt, dass \ac{EEG}-Aufzeichnungen personenbezogene Daten sind, die das Gerät nicht verlassen sollen. Eine lokale Verarbeitung kommt ohne Netzanbindung aus und hält die Daten auf dem Gerät \autocite{edgellm_review}.
+\vspace{\baselineskip}
+
+\noindent Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
+Die Motivation dieser Arbeit liegt damit darin, eine Lücke zu füllen, die zwischen dem mobilen Aufzeichnen und dem Verständnis der Daten im Lehrkontext entsteht. Genau da sollen lokal ausgeführte Sprachmodelle ansetzen, um unterstützend zu wirken.
 Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingungen tatsächlich für die Verarbeitung von \ac{EEG}-Daten eignen, ist bislang offen.
 
 \section{Zielsetzung}
