@@ -22,7 +22,7 @@ Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
 \setlength{\tabcolsep}{4pt}
 \begin{table}[H]
     \centering
-    \caption{Latenzmetriken je Modell und Szenario (Mittel aus vier Wiederholungen $\pm$ Standardabweichung).}
+    \caption{Latenzmetriken je Modell und Szenario (Mittel aus vier Wiederholungen $\pm$ Standardabweichung; die Ladezeit wird je Konfiguration einmalig gemessen).}
     \label{tab:eval-latenz}
     \begin{tabular}{llrrrr}
         \toprule
@@ -53,6 +53,7 @@ Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zw
 \vspace{\baselineskip}
 
 \noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
+Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgabe liefern. Der Inhalt bleibt gleich, ebenso die Anzahl der Tokens (\autoref{tab:app-rohdaten}). So kann man erschließen, dass die verbleibende Streuung messumgebungsbedingt ist und nicht auf unterschiedlich lange Antworten zurückzuführen ist.
 \vspace{\baselineskip}
 
 \noindent Zur besseren Vergleichbarkeit sind die Latenzmetriken in \autoref{fig:eval-latenz} zusätzlich grafisch dargestellt.
