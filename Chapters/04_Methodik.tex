@@ -21,7 +21,7 @@ ansonsten den Kontext des Modells überschreitet und keine fachliche Bedeutung
 transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar, token-sparsamer und können vom Sprachmodell verarbeitet werden.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.70\textwidth]{Graphics/DatenPipeline.pdf}
+    \includegraphics[width=0.65\textwidth]{Graphics/DatenPipeline.pdf}
     \caption[Datenfluss der Merkmalsextraktion]{Datenfluss der Merkmalsextraktion von den Rohdaten bis zum Text. Jede Stufe verdichtet die Daten weiter, bis eine für das Modell nutzbare Beschreibung entsteht (erstellt mit draw.io).}
     \label{fig:pipeline}
 \end{figure}
@@ -139,7 +139,6 @@ Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf e
 \vspace{\baselineskip}
 
 \noindent Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen dagegen nicht in der Anwendung. Sie werden stattdessen manuell auf Grundlage der in der \ac{CSV}-Datei gespeicherten Rohwerte durchgeführt.
-\newpage
 
 \subsection{Metriken}
 \label{subsec:metriken}

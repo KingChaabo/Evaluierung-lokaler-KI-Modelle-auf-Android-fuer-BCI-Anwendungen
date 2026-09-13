@@ -6,7 +6,7 @@ Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung au
 Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komponenten (Blau und Grün), die in \autoref{fig:architektur} dargestellt sind:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.52\textwidth]{Graphics/Architektur.pdf}
+    \includegraphics[width=0.48\textwidth]{Graphics/Architektur.pdf}
     \caption[Architektur der Anwendung]{Architektur und Datenfluss der Anwendung. Blau und Grün kennzeichnen die neuen Komponenten, der Weg führt von der Datenbank bis zur Modellantwort (erstellt mit draw.io).}
     \label{fig:architektur}
 \end{figure}
@@ -276,7 +276,6 @@ public void load(Context context) {
 }
 \end{lstlisting}
 
-\newpage
 \subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{gene-
 \noindent rateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
 \begin{lstlisting}[style=code, caption={[Streamende Ausgabe]Streamende Ausgabe mit Messung der Latenz. Beim ersten Teilstück wird die TTFT festgehalten, am Ende zusätzlich die Gesamtdauer.}, label={lst:llmstream}]
@@ -384,9 +383,7 @@ Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailse
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es zudem unten im Dialog weitere Optionen. So lassen sich zusätzlich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Im Falle, dass das Szenario Vergleich gewählt wird, kann eine zusätzliche Session ausgewählt werden, die dann als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die eigentliche Analyse beginnt.
-\needspace{0.6\textheight}
-\noindent \autoref{fig:analyse-dialog} zeigt den beschriebenen Analyse-Dialog.
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es unten im Dialog weitere Optionen. So lassen sich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Wird das Szenario Vergleich gewählt, kann eine zusätzliche Session ausgewählt werden, die als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert und in \autoref{fig:analyse-dialog} dargestellt. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die Analyse beginnt.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -419,8 +416,7 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
-Die Logik der gesamten Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnisAc-
-\noindent tivity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die beiden Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
 \begin{lstlisting}[style=code, caption={[Live-Anzeige der Ausgabe]Live-Anzeige der streamenden Ausgabe. Jedes Teilstück wird angehängt statt gesetzt, damit der Text während der Erzeugung wächst.}, label={lst:onchunk}]
 @Override
 public void onChunk(String partial) {
@@ -467,7 +463,7 @@ public void onChunk(String partial) {
 Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Leser den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
 \vspace{\baselineskip}
 
-\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}).\newpage
+\noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}).
 \subsection{Benchmark-Dialog}
 Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf, über den man die automatisierte Messreihe starten kann. Auch dort startet zuvor ein Dialog (\autoref{fig:benchmark-dialog}), mit dem man für das Vergleichsszenario eine Session auswählen muss.
 \begin{figure}[H]
