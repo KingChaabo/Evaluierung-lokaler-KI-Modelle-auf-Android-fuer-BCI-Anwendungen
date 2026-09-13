@@ -46,26 +46,29 @@ Während der gesamten Arbeit gibt es Einschränkungen, die die Ergebnisse beeinf
 
 \section{Handlungsempfehlungen}
 \label{sec:empfehlungen}
-In diesem Abschnitt werden Handlungen auf Basis meiner Erkenntnisse empfohlen. Diese leiten sich aus den Ergebnissen der Evaluation ab. Die folgenden Empfehlungen gelten für den in dieser Arbeit untersuchten Rahmen, also für die beschriebene Implementierung mit der in \autoref{sec:impl-prompt} festgelegten Prompt-Struktur, für die drei Anwendungsszenarien aus \autoref{sec:szenarien} und für das Testgerät aus \autoref{subsec:messbedingungen}. Auf andere Geräte, Prompts oder Aufgaben lassen sie sich nicht ohne Weiteres übertragen.
+In diesem Abschnitt werden Handlungen auf Basis meiner Erkenntnisse empfohlen. Diese leiten sich aus den Ergebnissen der Evaluation und aus der Umsetzung ab. Die folgenden Empfehlungen gelten für den in dieser Arbeit untersuchten Rahmen, also für die beschriebene Implementierung mit der in \autoref{sec:impl-prompt} festgelegten Prompt-Struktur und der gewählten Konfiguration, für die drei Anwendungsszenarien aus \autoref{sec:szenarien} und für das Testgerät aus \autoref{subsec:messbedingungen}. Auf andere Geräte, Prompts oder Aufgaben lassen sie sich nicht ohne Weiteres übertragen.
 
 \subsection{Allgemeine Empfehlungen}
-Die Prompts sollten im besten Fall kurz und klar gehalten werden, damit sie in den Kontext passen.
+Die Prompts sollten im besten Fall kurz und klar gehalten werden, damit sie in den Kontext passen. Die Länge beeinflusst ebenso die Zeit bis zum ersten Token (\autoref{sec:einordnung}).
 Das Modell sollte die Merkmale in einer klar verständlichen Form erhalten, ohne selbst überfordert zu sein, also keine Rohdaten, sondern aggregierte Merkmale.
 Darüber hinaus sollte man je nach Szenario das passende Modell auswählen, da die Ausgabequalität je nach Komplexität der Aufgabe variiert.
+Da die Modelle jeweils 1,5\,GB, 2,0\,GB und 3,7\,GB im Arbeitsspeicher belegen (\autoref{tab:eval-ressourcen}), sollten sie erst nach der Prüfung der Eingabe geladen werden. Nach der Ausgabe können sie schließlich wieder freigegeben werden.
+Die Inferenz der Modelle sollte auf einen Hintergrund-Thread verlagert werden, da eine Anfrage bis zu 42\,s dauern kann und die Oberfläche einfrieren würde (\autoref{tab:eval-latenz}).
+Das Modell selbst sollte hinter einer eigenen Schnittstelle gekapselt werden. In dieser Arbeit ließen sich die drei Modelle allein über den Modellpfad austauschen (\autoref{sec:architektur}), sodass ein Wechsel des Modells oder der Laufzeitumgebung die übrige Anwendung nicht betrifft.
 Für die Benutzerfreundlichkeit ist es auch sinnvoll, eine wie hier verwendete Streaming-Mechanik einzubinden, um die gefühlte Wartezeit zu verringern. Dabei sollte bei der Ausgabe das Format nach Bedarf angepasst werden.
 Bei Qwen 2.5 1.5B ist es beispielsweise sinnvoll, die Antwort zu kürzen und formatierungstechnisch zu vereinfachen. Es ist dringend empfehlenswert, sich in medizinisch wichtigen Bereichen nicht allein auf solche Modelle zu verlassen. Ihre Ausgaben sollten immer mit Vorsicht und Skepsis betrachtet werden. Selbst das stärkste Modell in dieser Arbeit ist nicht fehlerfrei.
 
 \subsection{Modellempfehlung}
-Wenn der Fokus auf der Qualität liegen soll, geht die Empfehlung an das Modell Gemma 2 2B. Es hält sich am besten an die Vorgaben und bietet die beste Ausgabequalität. Dafür verbraucht es am meisten Speicher und ist am langsamsten, mit einer geringen Token-Rate und der längsten \ac{TTFT}. Aufgrund des Speicherbedarfs von etwa 3,7\,GB für den gesamten Prozess der Anwendung empfiehlt es sich, ein Testgerät mit weitaus mehr \ac{RAM} zu nutzen. Mit Betriebssystem, einem Puffer und möglicherweise weiteren Anwendungen kann der Speicherbedarf schnell ansteigen.
+Wenn der Fokus auf der Qualität liegen soll, geht die Empfehlung an das Modell Gemma 2 2B. Es hält sich am besten an die Vorgaben und bietet die beste Ausgabequalität. Dafür verbraucht es am meisten Speicher und ist am langsamsten, mit einer geringen Token-Rate und der längsten \ac{TTFT}. Aufgrund des Speicherbedarfs von etwa 3,7\,GB für den gesamten Prozess der Anwendung empfiehlt es sich, ein Gerät mit mindestens 6 bis 8\,GB Arbeitsspeicher zu nutzen (\autoref{sec:einordnung}). Mit Betriebssystem, einem Puffer und möglicherweise weiteren Anwendungen kann der Speicherbedarf schnell ansteigen.
 \vspace{\baselineskip}
 
 \noindent Wer hingegen auf Geschwindigkeit, Speicher- und Akkuverbrauch setzen möchte, ist mit dem kleinsten Modell Gemma 3 1B am besten aufgehoben. Vor allem für schwache Geräte ist es die beste Wahl, da es die geringsten Anforderungen an das Gerät stellt.
 \vspace{\baselineskip}
 
-\noindent Qwen 2.5 1.5B ist in diesem Rahmen nicht zu empfehlen. Es schneidet in puncto Qualität und Akkuverbrauch trotz seiner Größe am schlechtesten ab. Die Geschwindigkeit und der Speicherbedarf pendeln sich, mit Ausnahme der Gesamtdauer, wie erwartet in der Mitte ein, können jedoch nicht die mangelnde Ausgabequalität rechtfertigen.
+\noindent Qwen 2.5 1.5B ist in diesem Rahmen nicht zu empfehlen. Es schneidet in puncto Qualität und Akkuverbrauch trotz seiner Größe am schlechtesten ab. Die Geschwindigkeit und der Speicherbedarf pendeln sich, mit Ausnahme der Gesamtdauer, wie erwartet in der Mitte ein, können jedoch nicht die mangelnde Ausgabequalität rechtfertigen. Dabei ist zu berücksichtigen, dass der Prompt an Gemma 2 2B ausgerichtet wurde und Qwen dadurch benachteiligt ist (\autoref{sec:einschraenkungen}).
 \vspace{\baselineskip}
 
-\noindent Je nach Einsatzzweck haben die Modelle von Google einen klaren Vorteil. Wenn schnelle Antworten mit sehr geringer \ac{TTFT} und einer niedrigen Gesamtdauer gefordert sind, führt kein Weg an kleinen Modellen wie Gemma 3 1B vorbei. Wenn hingegen Qualität wichtig und Zeit gegeben ist, beispielsweise als Hintergrundprozess ohne nötige sofortige Rückmeldung, ist Gemma 2 2B die beste Wahl.
+\noindent Je nach Einsatzzweck haben die beiden Gemma-Modelle in dieser Untersuchung Vorteile. Wenn schnelle Antworten mit sehr geringer \ac{TTFT} und einer niedrigen Gesamtdauer gefordert sind, führt kein Weg an kleinen Modellen wie Gemma 3 1B vorbei. Wenn hingegen Qualität wichtig und Zeit gegeben ist, beispielsweise als Hintergrundprozess ohne nötige sofortige Rückmeldung, ist Gemma 2 2B die beste Wahl.
 \vspace{\baselineskip}
 
 \noindent Zusammenfassend lässt sich sagen, dass eine größere Parameteranzahl nicht automatisch eine bessere Wahl darstellt.
