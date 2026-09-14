@@ -1,6 +1,6 @@
 \chapter{Grundlagen}
 \label{ch:grundlagen}
-In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit benötigt werden, vermittelt. Dabei werden folgende zentrale Konzepte vorgestellt, auf denen die weiteren Kapitel aufbauen. Dazu zählen die Elektroenzephalographie mit ihren Frequenzbändern, die Verfahren zur Frequenzanalyse, die Ausführung lokaler Sprachmodelle auf mobilen Geräten sowie die Gehirn-Computer-Schnittstelle als Anwendungsrahmen.
+In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit benötigt werden, vermittelt. Dabei werden folgende zentrale Konzepte vorgestellt, auf denen die weiteren Kapitel aufbauen. Dazu zählen die Elektroenzephalographie mit ihren Frequenzbändern, die Verfahren zur Frequenzanalyse, die Ausführung lokaler Sprachmodelle auf mobilen Geräten sowie die Gehirn"=Computer"=Schnittstelle als Anwendungsrahmen.
 
 \section{Elektroenzephalographie (EEG)}
 \label{sec:eeg}
@@ -16,7 +16,7 @@ Da die erwarteten neuronalen Aktivitäten schwach sind, werden sie schnell von a
 \section{Frequenzbänder}
 \label{sec:baender}
 Frequenzbänder sind Frequenzbereiche, in welche die Gehirnwellen nach ihrer Frequenz eingeteilt werden. Die elektrischen Schwingungen werden in Hertz (Hz) gemessen, also in Ausschlägen pro Sekunde \autocite{10353995}.
-Die gezielte Auswertung spezifischer Frequenzbänder dient somit der fundierten Beurteilung von Gehirnaktivitäten \autocite{10353995}.
+Die Auswertung spezifischer Frequenzbänder dient somit der fundierten Beurteilung von Gehirnaktivitäten \autocite{10353995}.
 
 \vspace{\baselineskip}
 
@@ -71,10 +71,7 @@ Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigensc
     \label{eq:freqaufloesung}
 \end{equation}
 
-\noindent Je größer das Fenster $N$ gewählt wird, desto kleiner wird $\Delta f$ und desto feiner ist folglich die Auflösung \autocite{windowing_welch2021}.
-\vspace{\baselineskip}
-
-\noindent Daraus lässt sich ableiten, dass jeder Bin für eine bestimmte Frequenz steht.
+\noindent Je größer das Fenster $N$ gewählt wird, desto kleiner wird $\Delta f$ und desto feiner ist folglich die Auflösung \autocite{windowing_welch2021}. Daraus lässt sich ableiten, dass jeder Bin für eine bestimmte Frequenz steht.
 
 
 \subsection{Fensterung und spektrale Leckage}
@@ -114,7 +111,7 @@ effizient zu modellieren \autocite{vaswani2017attention}.
 Die hohe Leistungsfähigkeit der Modelle wird durch die gelernten Werte von
 Milliarden von Parametern erreicht. Sie zeigen Stärken im Sprachverstehen, in der Textsynthese, im logischen
 Schlussfolgern sowie in der generativen Texterstellung \autocite{edgellm_review}.
-Dadurch entstehen Herausforderungen, die es zu bewältigen gilt, etwa wenn man
+Dies stellt Herausforderungen dar, unter anderem, wie man
 sie auf ressourcenbeschränkten Endgeräten wie Smartphones (sogenannten
 Edge-Geräten) zum Laufen bringen möchte. So benötigen \acp{LLM} viel
 Speicherplatz und Rechenleistung \autocite{edgellm_review}.
@@ -126,7 +123,7 @@ Speicherplatz und Rechenleistung \autocite{edgellm_review}.
 \noindent Das Kontextfenster ist die maximale Anzahl an Token, die das Modell gleichzeitig verarbeiten kann \autocite{ibm_contextwindow}. Es ist sozusagen das Arbeitsgedächtnis des Modells. Sollte das Kontextfenster überschritten werden, werden die älteren Informationen gekürzt oder zusammengefasst, damit das Modell weiterhin im selben Kontext arbeiten kann \autocite{ibm_contextwindow}. Die Kontextgröße ist die maximale Summe der Eingabe- und Ausgabe-Token, die ein Modell verarbeiten kann \autocite{mediapipe_llm}.
 \subsection{On-Device-Inferenz und Quantisierung}
 \label{subsec:ondevice}
-On-Device-Inferenz beschreibt die lokale Ausführung von KI-Modellen direkt auf den lokalen Endgeräten
+On-Device-Inferenz beschreibt die lokale Ausführung von KI-Modellen direkt auf den Endgeräten
 (beispielsweise einem Smartphone), anstatt die Daten zur Verarbeitung an einen externen 
 Cloud-Server zu senden \autocite{edgellm_review}.
 
@@ -151,11 +148,11 @@ Cloud-Server zu senden \autocite{edgellm_review}.
 \noindent Es spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Die Herausforderung liegt bei den übrigen Punkten: Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
 \vspace{\baselineskip}
 
-\noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein essenzielles Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 8-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}. Dieser Gewinn an Speicher- und Recheneffizienz kann jedoch zu Leistungseinbußen und Genauigkeitsverlusten führen \autocite{edgellm_review}. Sprachmodelle reagieren aufgrund ihrer Architektur empfindlich auf eine verringerte numerische Präzision \autocite{edgellm_review}.
+\noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein notwendiges Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 8-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}. Dieser Gewinn an Speicher- und Recheneffizienz kann jedoch zu Leistungseinbußen und Genauigkeitsverlusten führen \autocite{edgellm_review}. Sprachmodelle reagieren aufgrund ihrer Architektur empfindlich auf eine verringerte numerische Präzision \autocite{edgellm_review}.
 
 \subsection{Modell und Laufzeitumgebung}
 \label{subsec:MvsL}
-Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) lässt sich grundlegend wie folgt beschreiben:
+Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) lässt sich wie folgt beschreiben:
 
 \begin{itemize}
     \item \textbf{Modell:} Ein Modell ist die Basis, die durch das Training Fähigkeiten wie Textverständnis, logisches Schließen oder die Generierung von Inhalten erlernt hat \autocite{edgellm_review}.
@@ -167,14 +164,14 @@ Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) läss
 \label{subsec:systemintegrierte-und-frei-deploybare-modelle}
 Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle, die unterschieden werden können:
 \begin{itemize}
-\item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte \acp{API} auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation erheblich reduziert.
-\item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Dadurch kann eine maximale Flexibilität gewährleistet werden, da sie unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten funktionieren. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um eine reibungslose Ende-zu-Ende-Verarbeitung zu gewährleisten \autocite{mediapipe_llm}.
+\item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte \acp{API} auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation reduziert.
+\item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Sie sind unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten und daher flexibler. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um die Ende-zu-Ende-Verarbeitung zu ermöglichen \autocite{mediapipe_llm}.
 Dieser Ansatz erhöht jedoch den Speicherbedarf der Anwendung.
 \end{itemize}
 
 \section{Brain-Computer-Interface (BCI)}
 \label{sec:bci}
-Ein \ac{BCI}, zu Deutsch Gehirn-Computer-Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
+Ein \ac{BCI}, zu Deutsch Gehirn"=Computer"=Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
 Häufig von einem \ac{EEG} gemessen, werden mentale Zustände und Absichten in Echtzeit erkannt. Durch ein \ac{BCI} kann die natürliche Ausgabe des Zentralnervensystems ersetzt, wiederhergestellt, verbessert, ergänzt oder optimiert werden \autocite{wolpaw2013}. Häufig geht es dabei um Steuerungsbefehle, die ohne den Einsatz von Muskeln auskommen \autocite{blum2017}.
 
 \noindent Ein \ac{BCI}-System erfasst die Gehirndaten und verarbeitet diese Signale. Häufig geschieht dies in einem geschlossenen System, in dem der Nutzer auf Basis der Klassifizierung eine unmittelbare Rückmeldung erhält \autocite{blum2017}.

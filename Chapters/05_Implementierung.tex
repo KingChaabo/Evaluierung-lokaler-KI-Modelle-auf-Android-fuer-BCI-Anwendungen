@@ -11,7 +11,7 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
     \label{fig:architektur}
 \end{figure}
 
-Der Weg startet über die Datenbank, aus der die Samples abgerufen werden:
+Der Weg startet über die Datenbank, die schon Teil der bestehenden Anwendung war und aus der die Samples abgerufen werden:
 \begin{itemize}
 \item \textbf{EegFeatureExtractor} (\texttt{features})\textbf{:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
 \item \textbf{FeatureFormatter} (\texttt{features})\textbf{:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
@@ -35,14 +35,14 @@ Die drei Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B werden in dieser Arbei
 \noindent Auch mit dem \texttt{FeatureFormatter} ist eine einfache Änderung des Textes umsetzbar, da die Textdarstellung von der Berechnungslogik aller Merkmale entkoppelt ist.
 \vspace{\baselineskip}
 
-\noindent Die Erweiterung verändert die Infrastruktur der bestehenden Anwendung nicht, sondern baut auf ihr auf. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
+\noindent Die Erweiterung baut auf der bestehenden Infrastruktur auf. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
 Neue Ansichten fügen sich in die bestehenden Konzepte der Anwendung ein. Neben dem hellen Modus unterstützt die neue Implementierung den Dunkelmodus sowie die Sprachen Deutsch und Englisch.
 \vspace{\baselineskip}
 
 \noindent Der Benchmark verwendet denselben Analyseablauf wie eine vom Nutzer ausgelöste Einzelanalyse.
 \newpage
 
-\noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse. Dadurch ist das Zusammenspiel der Komponenten zur Laufzeit besser nachvollziehbar.
+\noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Graphics/sequenzanalyse.pdf}
@@ -62,7 +62,7 @@ Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig 
 
 \subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 
-\subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft dabei, den zeitlichen Verlauf innerhalb einer Session grob abzubilden, anstatt sie nur als ein einziges Mittel zu betrachten. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
 \begin{lstlisting}[style=code, caption={[Zerlegung in Segmente]Zerlegung der Session in Segmente. Das letzte Segment nimmt die verbleibenden Samples auf, damit keine Messwerte verloren gehen.}, label={lst:extract}]
 public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
@@ -91,7 +91,7 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 \noindent In \texttt{buildSegment} werden zunächst Start- und Endzeit aus dem jeweils ersten sowie dem letzten Sample entnommen. Diese sind später für die aufbereiteten Zeitangaben je Segment wichtig. Anschließend werden die drei Merkmale berechnet. Dazu zählen die Band-Power je Kanal als spektrales Merkmal sowie die Spannweite je Kanal und der Anteil ungültiger Messwerte als statistische Merkmale. Die gesamten Werte werden, nachdem sie in einem Segment-Objekt gesammelt wurden, an \texttt{extract} zurückgegeben.
 \newpage
 
-\subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, das weniger anfällig für zufällige Schwankungen ist.
+\subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, also mit weniger Anfälligkeit für Schwankungen.
 \begin{lstlisting}[style=code, caption={[Band-Power je Kanal]Band-Power je Kanal nach dem Welch-Verfahren. Das Signal wird in überlappende Fenster zerlegt, in Bänder einsortiert und gemittelt.}, label={lst:bandpower}]
 private double[][] computeBandPower(List<SampleEntity> slice) {
     double[][] result = new double[CHANNELS][NUM_BANDS];
@@ -126,7 +126,7 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 }
 \end{lstlisting}
 
-\noindent Wichtig ist, dass die Band-Power vorerst je Kanal berechnet wird, die am Ende für die Aufbereitung für das Sprachmodell über alle acht Kanäle zusammengefasst wird. \texttt{windowCount} fungiert als Zähler, der sicherstellt, dass nur vollständig berechnete Fenster in die Mittelung eingehen.
+\noindent Die Band-Power wird als Erstes je Kanal berechnet und schließlich bei der Aufbereitung für das Sprachmodell über alle acht Kanäle zusammengefasst. \texttt{windowCount} fungiert als Zähler, der sicherstellt, dass nur vollständig berechnete Fenster in die Mittelung eingehen.
 \vspace{\baselineskip}
 
 \noindent Da jedes Sample des Unicorn Hybrid Black alle acht Kanäle gleichzeitig beinhaltet, wird in der Methode \texttt{extractChannelSignal} das Signal eines einzelnen Kanals (z.\,B. Kanal 1) über alle Samples eines Segments gesammelt. Dadurch entsteht ein durchgehender Signalverlauf dieses Kanals, auf den dann die Fensterung angewendet wird.
@@ -226,7 +226,7 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
 }
 \end{lstlisting}
 
-\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}). Der Text wird Segment für Segment aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt. Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell ohnehin keine Rolle spielt.
+\noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}). Der Text wird Segment für Segment aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt. Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell keine Rolle spielt.
 \vspace{\baselineskip}
 
 \newpage
@@ -258,7 +258,7 @@ Abschnitt 4 (45.0--60.0s):\\
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
 Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-
-\noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Anwendung enthält die Modelle somit nicht selbst, sie müssen vor der ersten Analyse auf das Gerät übertragen werden. Die Dateigröße der Modelle würde den Speicher der gesamten Applikation unnötig erhöhen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
+\noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Anwendung enthält die Modelle somit nicht selbst, um Speicher der gesamten Applikation zu sparen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Darum müssen die Modelle vor Beginn der ersten Analyse auf das Gerät übertragen werden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} anhand einer kurzen Kennung wie \texttt{1b}, \texttt{2b} oder \texttt{qwen} selektiert. Falls die Kennung ungültig ist, wird automatisch das kleinste Modell ausgewählt. Die Auswahl des Modells geschieht zuvor im Analyse-Dialog oder im Benchmark, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
 
 \subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen fairen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
@@ -460,7 +460,7 @@ public void onChunk(String partial) {
 \end{figure}
 
 \noindent Der Teilen-Knopf erscheint, sobald die erzeugte Analyse abgeschlossen ist. Mit diesem kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist. 
-Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Leser den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
+Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Nutzer den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
 \vspace{\baselineskip}
 
 \noindent Zusätzlich wird geprüft, ob eine Aufnahme die Mindestlänge erfüllt und die Schwelle der ungültigen Samples nicht überschreitet. Ist dies nicht der Fall, wird die Analyse abgebrochen und eine entsprechende Meldung angezeigt (\autoref{sec:impl-features}).

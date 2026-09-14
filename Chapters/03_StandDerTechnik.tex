@@ -48,7 +48,7 @@ Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden
 
 \section{Die Qwen-Modellfamilie}
 \label{sec:qwen}
-Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Genauso wie die Gemma-Modelle ist es frei deploybar. Jedoch stammt es von einem anderen Hersteller und gehört damit nicht zur selben Modellfamilie \autocite{qwen2025}. Die Generation Qwen2.5 ist in fein abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar, wobei die kompakten Varianten gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert sind \autocite{qwen2025}. Mit 1,5 Milliarden Parametern liegt die in dieser Arbeit verwendete Variante von Qwen genau zwischen Gemma 3 1B und Gemma 2 2B. Qwen 2.5 nutzt hingegen \ac{BBPE} mit einem Vokabular von 151.643 regulären Tokens \autocite{qwen2025} und damit ein anderes Verfahren sowie ein deutlich kleineres Vokabular als die Modelle von Google. Die neueste Generation der Familie ist Qwen3, die einen Thinking-Modus und einen Non-Thinking-Modus in einem einheitlichen Modell vereint \autocite{qwen3_2025}.
+Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Genauso wie die Gemma-Modelle ist es frei deploybar. Jedoch stammt es von einem anderen Hersteller und gehört damit nicht zur selben Modellfamilie \autocite{qwen2025}. Die Generation Qwen2.5 ist in abgestuften Konfigurationen von 0,5 bis 72 Milliarden Parametern verfügbar, wobei die kompakten Varianten gezielt für ressourcenbeschränkte Edge-Szenarien und mobile Endgeräte konzipiert sind \autocite{qwen2025}. Mit 1,5 Milliarden Parametern liegt die in dieser Arbeit verwendete Variante von Qwen genau zwischen Gemma 3 1B und Gemma 2 2B. Qwen 2.5 nutzt hingegen \ac{BBPE} mit einem Vokabular von 151.643 regulären Tokens \autocite{qwen2025} und damit ein anderes Verfahren sowie ein deutlich kleineres Vokabular als die Modelle von Google. Die neueste Generation der Familie ist Qwen3, die einen Thinking-Modus und einen Non-Thinking-Modus in einem einheitlichen Modell vereint \autocite{qwen3_2025}.
 
 \section{Bestehende Anwendung}
 \label{sec:ausgangslage}
@@ -56,9 +56,9 @@ Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Genauso wie d
 Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für die Implementierung der neuen Funktionalität dient.
 
 \subsection{Unicorn Hybrid Black}
-Das Unicorn Hybrid Black ist die \ac{BCI}-Plattform, die in dieser Arbeit verwendet wird. Es ist eine mobile Brain-Computer-Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
+Das Unicorn Hybrid Black ist die \ac{BCI}-Plattform, die in dieser Arbeit verwendet wird. Es ist eine mobile Brain"=Computer"=Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
     Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
-    Besonders ist die Kompaktheit des Geräts. Durch eine tragbare, drahtlose Bauform eignet es sich für den mobilen Einsatz. 
+    Durch die Kompaktheit des Geräts, bei der die drahtlose und tragbare Bauform im Vordergrund steht, eignet es sich für den mobilen Einsatz.
 
 \newpage
 \noindent Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
