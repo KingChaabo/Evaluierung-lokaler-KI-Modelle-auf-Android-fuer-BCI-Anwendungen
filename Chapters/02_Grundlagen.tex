@@ -145,7 +145,7 @@ Cloud-Server zu senden \autocite{edgellm_review}.
     \item \textbf{Drosselung:} Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöhen kann \autocite{zhou2022throttling}.
 \end{itemize}
 
-\noindent Es spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Die Herausforderung liegt bei den übrigen Punkten: Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
+\noindent In dieser Arbeit spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Die Herausforderung liegt bei den übrigen Punkten: Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
 \vspace{\baselineskip}
 
 \noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein notwendiges Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 8-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}. Dieser Gewinn an Speicher- und Recheneffizienz kann jedoch zu Leistungseinbußen und Genauigkeitsverlusten führen \autocite{edgellm_review}. Sprachmodelle reagieren aufgrund ihrer Architektur empfindlich auf eine verringerte numerische Präzision \autocite{edgellm_review}.
@@ -166,7 +166,6 @@ Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle, die unterschieden 
 \begin{itemize}
 \item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte \acp{API} auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation reduziert.
 \item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Sie sind unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten und daher flexibler. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um die Ende-zu-Ende-Verarbeitung zu ermöglichen \autocite{mediapipe_llm}.
-Dieser Ansatz erhöht jedoch den Speicherbedarf der Anwendung.
 \end{itemize}
 
 \section{Brain-Computer-Interface (BCI)}
@@ -185,7 +184,7 @@ Häufig von einem \ac{EEG} gemessen, werden mentale Zustände und Absichten in E
     \item \textbf{Assistenzsysteme:} Auch bei der Fehlerüberwachung können anhand der Gehirnaktivität die Absichten einer Notbremsung erkannt und ausgeführt werden, noch bevor das Bremspedal physisch betätigt wird.
 \end{itemize}
 
-\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Sie setzt erst nach der Aufnahme an und wertet bereits gespeicherte Sessions aus. Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
+\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Sie setzt erst nach der Aufnahme an und wertet bereits gespeicherte Sessions aus.
 
 %  - Überleitung zu \autoref{ch:standdertechnik} (konkrete Modelle/Frameworks)
 %  (1 Absatz)

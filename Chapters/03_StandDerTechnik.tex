@@ -1,4 +1,4 @@
-\chapter{Stand der Technik}
+\chapter{Stand der Technik und Ausgangslage}
 \label{ch:standdertechnik}
 Während \autoref{ch:grundlagen} die allgemeinen Konzepte behandelt, werden in diesem Kapitel aktuell verfügbare Systeme betrachtet und ausgewählt, welche in dieser Arbeit verwendet werden. Zunächst werden die Lösungen für die Ausführung auf dem Endgerät gegenübergestellt, anschließend die verwendeten Sprachmodelle aus der Gemma-Familie sowie Qwen vorgestellt. Schließlich wird die bestehende Anwendung genauer erläutert und der Beitrag dieser Arbeit aufgezeigt.
 
@@ -23,10 +23,10 @@ Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploy
 
 \newpage
 
-\noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, etwa Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Darüber hinaus lassen sich über die LiteRT-Community vorkonvertierte Modelle im MediaPipe-Format einbinden \autocite{mediapipe_llm}, darunter Qwen 2.5 1.5B \autocite{qwen_litert}. Diese drei Modelle werden für den weiteren Verlauf der Arbeit verwendet und sind in \autoref{fig:modelle} zusammengefasst.
+\noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, wie Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Darüber hinaus lassen sich über die LiteRT-Community vorkonvertierte Modelle im MediaPipe-Format einbinden \autocite{mediapipe_llm}, darunter Qwen 2.5 1.5B \autocite{qwen_litert}. Diese drei Modelle werden für den weiteren Verlauf der Arbeit verwendet und sind in \autoref{fig:modelle} zusammengefasst.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{Graphics/modelle.pdf}
+    \includegraphics[width=0.70\textwidth]{Graphics/modelle.pdf}
     \caption[Verwendete Sprachmodelle]{Übersicht der drei verwendeten Sprachmodelle. Sie unterscheiden sich in Größe und Hersteller, laufen aber über dieselbe Laufzeitumgebung (erstellt mit draw.io).}
     \label{fig:modelle}
 \end{figure}
@@ -35,16 +35,12 @@ Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploy
 \noindent Unabhängig von der hier genutzten MediaPipe-Laufzeitumgebung gibt es weitere frei deploybare Modelle anderer Anbieter wie etwa DeepSeek-R1 \autocite{deepseek_r1_2025} oder die Llama-Modelle von Meta \autocite{llama3_2024}.
 \vspace{\baselineskip}
 
-\noindent Zusätzlich zu MediaPipe existieren weitere Laufzeitumgebungen, die auf Android-Geräten laufen. Beispiele sind llama.cpp oder MNN \autocite{guo2025llm}. Nichtsdestotrotz wird in dieser Arbeit MediaPipe verwendet, da in diesem Fall mehrere Aspekte dafür sprechen. Die Bibliothek lässt sich zum einen als offizielle Android-Schnittstelle von Google direkt in die bestehende Java-Anwendung einbinden \autocite{mediapipe_llm}. llama.cpp ist dagegen eine C++-Bibliothek \autocite{guo2025llm}, deren Einbindung in eine Java-Anwendung mit zusätzlichem Aufwand verbunden ist. Zudem liegen die Modelle im passenden \texttt{.task}-Format vor \autocite{mediapipe_llm, qwen_litert}, sodass sich alle drei Modelle unter derselben Laufzeitumgebung mit identischen Parametern ausführen lassen. Die Kombination aus der einfachen Integration und den identischen Parametern der verfügbaren Modelle hat schlussendlich diese Entscheidung treffen lassen.
+\noindent Zusätzlich zu MediaPipe existieren weitere Android-kompatible Laufzeitumgebungen. Beispiele sind llama.cpp oder MNN \autocite{guo2025llm}. Nichtsdestotrotz wird in dieser Arbeit MediaPipe verwendet, da in diesem Fall mehrere Aspekte dafür sprechen. Die Bibliothek lässt sich zum einen als offizielle Android-Schnittstelle von Google direkt in die bestehende Java-Anwendung einbinden \autocite{mediapipe_llm}. llama.cpp ist dagegen eine C++-Bibliothek \autocite{guo2025llm}, deren Einbindung in eine Java-Anwendung mit zusätzlichem Aufwand verbunden ist. Zum anderen liegen die Modelle im passenden \texttt{.task}-Format vor \autocite{mediapipe_llm, gemma3_litert, gemma2_litert, qwen_litert}, sodass sich alle drei Modelle unter derselben Laufzeitumgebung mit identischen Parametern ausführen lassen. Die Kombination aus der einfachen Integration und den identischen Parametern der verfügbaren Modelle hat schlussendlich zu dieser Entscheidung geführt.
 \section{Die Gemma-Modellfamilie}
 \label{sec:gemma}
 Die Gemma-Modellfamilie gehört zu den frei deploybaren und ressourcenschonenden Modellen, die vom Gemma-Team bei Google DeepMind entwickelt wurden \autocite{gemma3_2025}.
-\vspace{\baselineskip}
-
-\noindent Die Gemma-Modelle besitzen mehrere besondere Merkmale. Neben der freien Zugänglichkeit der Modelle zeichnen sie sich durch eine ressourcenschonende Ausführung auf herkömmlicher Standardhardware wie Smartphones aus \autocite{gemma3_2025,gemma2_2024}. Um unterschiedlichen technischen Anforderungen gerecht zu werden, sind die Modelle zudem in mehreren Größen verfügbar. Diese werden in Milliarden von Parametern gemessen. So bietet die zweite Generation (Gemma 2) Varianten mit 2, 9 und 27 Milliarden Parametern \autocite{gemma2_2024}. Die dritte Generation (Gemma 3) erweitert diese Skalierung auf Modelle mit 1, 4, 12 und 27 Milliarden Parametern \autocite{gemma3_2025}. Die aktuellste Generation (Gemma 4) bietet sogar Modelle mit bis zu 31 Milliarden Parametern \autocite{gemma4_2026}.
-\vspace{\baselineskip}
-
-\noindent Auch der Funktionsumfang wurde erweitert. Modelle vor der dritten Generation (Gemma 1--2) unterstützten nur reine Textverarbeitung. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Zudem wurden die Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen sowie zum Erfassen deutlich längerer Textzusammenhänge verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}. Neben der allgemeinen Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}. Gemma 2 und Gemma 3 verwenden einen SentencePiece-Tokenizer mit jeweils ca. 256.000 und 262.000 Vokabulareinträgen \autocite{gemma2_2024, gemma3_2025}.
+Neben der freien Zugänglichkeit der Modelle zeichnen sie sich durch eine ressourcenschonende Ausführung auf herkömmlicher Standardhardware wie Smartphones aus \autocite{gemma3_2025,gemma2_2024}. Um unterschiedlichen technischen Anforderungen gerecht zu werden, sind die Modelle zudem in mehreren Größen verfügbar. Diese werden in Milliarden von Parametern gemessen. So bietet die zweite Generation (Gemma 2) Varianten mit 2, 9 und 27 Milliarden Parametern \autocite{gemma2_2024}. Die dritte Generation (Gemma 3) erweitert diese Skalierung auf Modelle mit 1, 4, 12 und 27 Milliarden Parametern \autocite{gemma3_2025}. Die aktuellste Generation (Gemma 4) bietet sogar Modelle mit bis zu 31 Milliarden Parametern \autocite{gemma4_2026}.
+Auch der Funktionsumfang wurde erweitert. Seit der dritten Generation sind auch multimodale Eingaben möglich, sodass neben Text auch Bilder verarbeitet werden können \autocite{gemma3_2025}. Fähigkeiten zur Verarbeitung unterschiedlicher Sprachen und zur Erfassen deutlich längerer Textzusammenhänge wurden verbessert \autocite{gemma3_2025}. Die neueste Version Gemma 4 unterstützt noch größere Kontextfenster von bis zu 256.000 Tokens und besitzt einen integrierten \enquote{Thinking-Modus} für logisches Schlussfolgern \autocite{gemma4_2026}. Neben der Basisversion gibt es die Modelle auch in einer speziell angepassten Form, die gezielt für das Führen von Dialogen und das präzise Befolgen von Anweisungen trainiert wurde \autocite{gemma2_2024,gemma3_2025}. Gemma 2 und Gemma 3 verwenden einen SentencePiece-Tokenizer mit jeweils ca. 256.000 und 262.000 Vokabulareinträgen \autocite{gemma2_2024, gemma3_2025}.
 
 \section{Die Qwen-Modellfamilie}
 \label{sec:qwen}
@@ -56,15 +52,13 @@ Als drittes Modell wird Qwen des Herstellers Alibaba herangezogen. Genauso wie d
 Im Folgenden wird die bestehende Anwendung vorgestellt, die als Grundlage für die Implementierung der neuen Funktionalität dient.
 
 \subsection{Unicorn Hybrid Black}
-Das Unicorn Hybrid Black ist die \ac{BCI}-Plattform, die in dieser Arbeit verwendet wird. Es ist eine mobile Brain"=Computer"=Interface-Plattform der Firma g.tec \autocite{unicornproduct}.
-    Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden, die auf der Kopfhaut angebracht werden. Die Abtastrate beträgt genau 250\,Hz \autocite{unicornmanual}.
+Das in dieser Arbeit verwendete Unicorn Hybrid Black ist eine mobile \ac{BCI}-Plattform der Firma g.tec \autocite{unicornproduct}.
+    Das Aufnahmegerät erfasst die elektrische Aktivität des Gehirns über acht Elektroden auf der Kopfhaut mit einer Abtastrate von 250\,Hz \autocite{unicornmanual}.
     Durch die Kompaktheit des Geräts, bei der die drahtlose und tragbare Bauform im Vordergrund steht, eignet es sich für den mobilen Einsatz.
-
-\newpage
-\noindent Die in \autoref{fig:unicorn} markierten Komponenten des Geräts wurden für die Messungen dieser Arbeit verwendet.
+\autoref{fig:unicorn} zeigt die markierten Komponenten des Geräts, die für die Messungen dieser Arbeit verwendet wurden.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.90\textwidth]{Graphics/UnicornHybrid.pdf}
+    \includegraphics[width=0.85\textwidth]{Graphics/UnicornHybrid.pdf}
     \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung, erstellt mit draw.io) \autocite{unicornproduct}.}
     \label{fig:unicorn}
 \end{figure}
@@ -93,8 +87,8 @@ Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth
 \end{table}
 
 \subsection{Funktionsumfang der Anwendung}
-Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, \ac{EEG}-Daten aufnimmt und speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-\ac{FFT} visualisiert.
-    Die Daten werden dauerhaft gespeichert und können zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
+Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, \ac{EEG}-Daten aufnimmt und/oder speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-\ac{FFT} visualisiert.
+    Die Daten können dauerhaft gespeichert und zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
 \subsection{Beitrag dieser Arbeit}
 Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eingesetzt, unter anderem zur Erzeugung von Befundtexten oder zur Deutung von Signalen \autocite{eeg_llm_survey2025}. Als offene Herausforderung wird dabei die Ausführung auf Endgeräten mit geringer Latenz genannt \autocite{eeg_llm_survey2025}. Zusätzlich müssen für einen praktischen Einsatz der Speicherbedarf, die Stabilität und die Qualität der Ausgabe, also des erzeugten Textes, angemessen ausfallen.
 \vspace{\baselineskip}
@@ -102,11 +96,13 @@ Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eing
 \noindent Es gibt hierzu unterschiedliche Ansätze, wie vorgegangen wird. Chen u.\,a. betreiben ein Sprachmodell lokal, passen es dafür aber durch Pruning und Fine-Tuning an \autocite{eeg_emotion_copilot2025}. Murhekar u.\,a. belassen nur ein kleines Vorverarbeitungsmodul auf dem Gerät und lagern das Sprachmodell aus \autocite{sense2026}. \ac{EEG}-Anwendungen, die speziell auf Android ausgeführt werden, laufen jedoch ohne Sprachmodell \autocite{blum2017, eeg_android_ml2026}. Umgekehrt untersuchen Messstudien zu Sprachmodellen auf Mobilgeräten allgemeine Aufgaben und keine \ac{EEG}-Daten \autocite{guo2025llm}.
 \vspace{\baselineskip}
 
-\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe (\autoref{tab:verwandte-arbeiten}). Als Anpassung gilt dabei eine Veränderung der Modellgewichte. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K zählen nicht dazu, da sie die Gewichte unberührt lassen.
+\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe. Als Anpassung gilt dabei eine Veränderung der Modellgewichte. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K zählen nicht dazu, da sie die Gewichte unberührt lassen.
+\newpage
 
+\noindent Die folgende \autoref{tab:verwandte-arbeiten} zeigt die Gegenüberstellung, wo das Modell ausgeführt wird, ob das Sprachmodell angepasst wurde (beispielsweise durch eine Veränderung der Gewichte des Sprachmodells durch Fine-Tuning oder Pruning), wie die Eingabe erfolgt und ob es zwischen den Modellen einen Vergleich gibt.
 \begin{table}[H]
     \centering
-    \caption[Einordnung gegenüber verwandten Arbeiten]{Gegenüberstellung nach Ausführungsort des Sprachmodells, Anpassung des Modells, Art der Eingabe sowie Vergleich mehrerer Modelle auf dem Endgerät. Als Anpassung gilt eine Veränderung der Gewichte des Sprachmodells durch Fine-Tuning oder Pruning. Ein Strich bedeutet, dass kein Sprachmodell verwendet wird.}
+    \caption[Einordnung gegenüber verwandten Arbeiten]{Gegenüberstellung nach Ausführungsort, Modellanpassung, Eingabe und Modellvergleich auf dem Endgerät.}
     \label{tab:verwandte-arbeiten}
     \small
     \begin{tabularx}{\textwidth}{X l l l l}
