@@ -51,7 +51,7 @@ Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zw
 \vspace{\baselineskip}
 
 \noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
-Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgabe liefern. Der Inhalt bleibt gleich, ebenso die Anzahl der Tokens (\autoref{tab:app-rohdaten}). So kann man erschließen, dass die verbleibende Streuung messumgebungsbedingt ist und nicht auf unterschiedlich lange Antworten zurückzuführen ist.
+Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgabe liefern. Der Inhalt bleibt gleich, ebenso die Anzahl der Tokens (\autoref{tab:app-rohdaten}). Die verbleibende Streuung geht dementsprechend auf die Messumgebung zurück und nicht auf unterschiedlich lange Antworten.
 \vspace{\baselineskip}
 
 \noindent Zur besseren Vergleichbarkeit sind die Latenzmetriken in \autoref{fig:eval-latenz} zusätzlich grafisch dargestellt.
@@ -151,8 +151,8 @@ Darauffolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorges
     \footnotesize\textsuperscript{*}Verbrauch über den gesamten Messblock (15 Läufe) des jeweiligen Modells.
 \end{table}
 
-\noindent \autoref{tab:eval-ressourcen} zeigt, dass der \textbf{\ac{RAM} (\ac{PSS})} eine klare Rangfolge zwischen den Modellen besitzt. Während Gemma 3 1B mit (1482 MB) den geringsten Wert aufweist, liegt Qwen in der Mitte (ca.\ 2000 MB) und Gemma 2 2B am höchsten (3798 MB).
-Während das 1B-Modell von Gemma mit (ca.\ 70 mAh) den geringsten \textbf{Akkuverbrauch} aufweist, liegt der Verbrauch von Qwen 2.5 1.5B (ca.\ 200 mAh) und Gemma 2 2B (ca.\ 100 mAh) deutlich höher.
+\noindent \autoref{tab:eval-ressourcen} zeigt, dass der \textbf{\ac{RAM} (\ac{PSS})} eine klare Rangfolge zwischen den Modellen besitzt. Während Gemma 3 1B mit 1482\,MB den geringsten Wert aufweist, liegt Qwen in der Mitte (ca.\ 2000\,MB) und Gemma 2 2B am höchsten (3798\,MB).
+Gemma 3 1B liegt beim Punkt \textbf{Akkuverbrauch} mit ca.\ 70\,mAh vorne, dagegen liegen Qwen 2.5 1.5B mit ca.\ 200\,mAh und Gemma 2 2B mit ca.\ 100\,mAh deutlich höher, wobei Qwen sogar über dem 2B-Modell liegt.
 Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht. Über die gesamte Messreihe fällt die Restladung von rund 2234\,mAh auf 1830\,mAh, was einem Gesamtverbrauch von etwa 404\,mAh in gut 16 Minuten entspricht (\autoref{tab:app-rohdaten}).
 \vspace{\baselineskip}
 \newpage
@@ -304,7 +304,7 @@ In \autoref{fig:eval-gesamt} sind jeweils die Stärken und Schwächen jedes Mode
 \label{fig:eval-gesamt}
 \end{figure}
 
-\noindent Der Vergleich zeigt, dass kein Modell in allen Bereichen überlegen ist. Während Qwen 2.5 1.5B am schwächsten ausfällt, besitzen die Gemma-Modelle jeweils unterschiedliche Stärken. Gemma 3 1B bietet eine hohe Effizienz sowie wenig Speicher- und Akkuverbrauch, ist jedoch in den Punkten Qualität und Stabilität hinter Gemma 2 2B zurück. Letzteres glänzt mit einer hohen Ausgabequalität und Stabilität, ist jedoch langsamer und verbraucht mehr Ressourcen.
+\noindent Der Vergleich zeigt, dass kein Modell in allen Bereichen überlegen ist. Während Qwen 2.5 1.5B am schwächsten ausfällt, besitzen die Gemma-Modelle jeweils unterschiedliche Stärken. Gemma 3 1B ist in den Punkten hohe Effizienz sowie wenig Speicher- und Akkuverbrauch Vorreiter, bei der Qualität liegt es jedoch hinter Gemma 2 2B zurück. Letzteres liefert die höchste Ausgabequalität, verbraucht aber mehr Ressourcen und ist langsamer.
 \vspace{\baselineskip}
 
 \noindent Interessant wird es bei der Frage, ob oder welches Modell sich für den praktischen Einsatz eignet und inwiefern, was nachfolgend in \autoref{ch:diskussion} besprochen wird.
