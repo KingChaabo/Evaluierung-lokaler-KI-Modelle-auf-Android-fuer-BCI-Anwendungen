@@ -96,7 +96,7 @@ Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eing
 \noindent Es gibt hierzu unterschiedliche Ansätze, wie vorgegangen wird. Chen u.\,a. betreiben ein Sprachmodell lokal, passen es dafür aber durch Pruning und Fine-Tuning an \autocite{eeg_emotion_copilot2025}. Murhekar u.\,a. belassen nur ein kleines Vorverarbeitungsmodul auf dem Gerät und lagern das Sprachmodell aus \autocite{sense2026}. \ac{EEG}-Anwendungen, die speziell auf Android ausgeführt werden, laufen jedoch ohne Sprachmodell \autocite{blum2017, eeg_android_ml2026}. Umgekehrt untersuchen Messstudien zu Sprachmodellen auf Mobilgeräten allgemeine Aufgaben und keine \ac{EEG}-Daten \autocite{guo2025llm}.
 \vspace{\baselineskip}
 
-\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe. Als Anpassung gilt dabei eine Veränderung der Modellgewichte. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K zählen nicht dazu, da sie die Gewichte unberührt lassen.
+\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K zählen nicht als Anpassung dazu, da sie die Gewichte unberührt lassen.
 \newpage
 
 \noindent Die folgende \autoref{tab:verwandte-arbeiten} zeigt die Gegenüberstellung, wo das Modell ausgeführt wird, ob das Sprachmodell angepasst wurde (beispielsweise durch eine Veränderung der Gewichte des Sprachmodells durch Fine-Tuning oder Pruning), wie die Eingabe erfolgt und ob es zwischen den Modellen einen Vergleich gibt.
@@ -123,8 +123,8 @@ Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eing
 \noindent Die Frage bleibt damit, ob unveränderte, frei verfügbare Sprachmodelle ausreichen, um aufbereitete \ac{EEG}-Merkmale analysieren zu können. Der Beitrag dieser Arbeit ist daher der systematische Vergleich dreier solcher Modelle unter identischen Bedingungen anhand von Latenz, Ressourcenverbrauch, Stabilität und Ausgabequalität.
 \vspace{\baselineskip}
 
-\noindent Die bestehende Anwendung wird um neue Funktionalitäten erweitert. Diese bestehen aus der Verarbeitung der \ac{EEG}-Daten durch lokale Sprachmodelle. Umgesetzt wird dies in drei neuen Kernkomponenten:
-    \begin{itemize}
+\noindent Die bestehende Anwendung wird um vier neue Komponenten erweitert. Davon sind drei Kernkomponenten, die an der Verarbeitung der \ac{EEG}-Daten durch lokale Sprachmodelle arbeiten:
+\begin{itemize}
         \item Schicht zur Merkmalsextraktion (\texttt{features}).
         \item Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}).
         \item Benutzeroberfläche zur KI-gestützten Analyse (\texttt{analyse}).

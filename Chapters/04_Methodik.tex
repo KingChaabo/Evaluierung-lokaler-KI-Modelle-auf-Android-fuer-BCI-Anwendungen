@@ -5,8 +5,7 @@ Abschließend folgt das Messprotokoll, das die Vorgehensweise der Messungen und 
 
 \section{Merkmalsextraktion}
 \label{sec:merkmalsextraktion}
-Die Merkmalsextraktion ist ein zentraler Bestandteil der Arbeit. Ein Sprachmodell
-kann keine \ac{EEG}-Rohdaten verarbeiten, da bei einer Abtastrate von 250 Hz und acht
+Ein Sprachmodell kann keine \ac{EEG}-Rohdaten verarbeiten, da bei einer Abtastrate von 250 Hz und acht
 Kanälen bereits in kurzer Zeit eine große, unstrukturierte Zahlenmenge entsteht.
 Bei einer nur einminütigen Aufnahme ergeben sich beispielsweise
 \begin{equation}
@@ -16,9 +15,7 @@ Bei einer nur einminütigen Aufnahme ergeben sich beispielsweise
     = 120\,000 \ \text{Werte}.
 \end{equation}
 
-\noindent Diese Datenmenge muss zunächst in eine kompakte Form umgewandelt werden (\autoref{fig:pipeline}), weil sie
-ansonsten den Kontext des Modells überschreitet und keine fachliche Bedeutung
-transportiert. Die daraus gewonnenen aggregierten Merkmale sind interpretierbar, token-sparsamer und können vom Sprachmodell verarbeitet werden.
+\noindent Solche Mengen an Daten können den Kontext des Modells überschreiten und geben dem Modell einen geringen Mehrwert, daraus auf Informationen zu schließen, weshalb die Daten vorher erst in eine kompaktere Form umgewandelt werden müssen (\autoref{fig:pipeline}). Die kompaktere Form samt ihren Merkmalen ist für das Modell verständlicher, token-sparsamer und kann besser verarbeitet werden.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.65\textwidth]{Graphics/DatenPipeline.pdf}
@@ -50,11 +47,11 @@ Würden die Merkmale als ein einziger Mittelwert über die gesamte Aufnahme bere
 \subsection{Spektrale Merkmale}
 \label{subsec:spektral}
 Die spektralen Merkmale werden für jedes Segment bestimmt, indem die Signalenergie auf die einzelnen Frequenzbänder verteilt wird.
-Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Segments in überlappende Fenster unterteilt (\autoref{fig:welch-fenster}); im vorliegenden Fall beträgt die Fenstergröße (Standard: 256) Samples.
+Die kanalweise Berechnung erfolgt dabei mit der Welch-Methode \autocite{windowing_welch2021}. Hierfür wird das Signal eines Segments in überlappende Fenster unterteilt (\autoref{fig:welch-fenster}).
 Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließend über alle Fenster gemittelt wird. Durch diese Mittelung wird das resultierende Spektrum deutlich stabiler und weniger rauschanfällig als bei einer einzelnen \ac{FFT}. Allerdings ist dann mit einer geringeren Frequenzauflösung zu rechnen \autocite{windowing_welch2021}.
 \vspace{\baselineskip}
 
-\noindent Um den Gleichanteil (0 Hz) des Signals zu eliminieren, wird vor der Fourier-Transformation zunächst der Mittelwert von jedem Segment subtrahiert. Anschließend wird die Hann-Fensterfunktion (auch Hanning genannt) verwendet, um jedes Fenster zu gewichten \autocite{windowing_welch2021}. Die Gewichtung wird verwendet, da es ansonsten zu einem direkten, abrupten Abschneiden des Signals kommt, was zu harten Übergängen an den Fenstergrenzen führt \autocite{windowing_welch2021}. Durch diesen Vorgang entsteht eine spektrale Leckage. Die Hann-Funktion hilft gegen diese Leckage, indem sie die Amplitudenwerte an den Rändern des Fensters sanft abschwächt \autocite{windowing_welch2021}. 
+\noindent Um den Gleichanteil (0 Hz) des Signals zu eliminieren, wird vor der Fourier-Transformation zunächst der Mittelwert jedes Fensters subtrahiert. Anschließend wird die Hann-Fensterfunktion (auch Hanning genannt) verwendet, um jedes Fenster zu gewichten \autocite{windowing_welch2021}. Die Gewichtung wird verwendet, da es ansonsten zu einem direkten, abrupten Abschneiden des Signals kommt, was zu harten Übergängen an den Fenstergrenzen führt \autocite{windowing_welch2021}. Durch diesen Vorgang entsteht eine spektrale Leckage. Die Hann-Funktion hilft gegen diese Leckage, indem sie die Amplitudenwerte an den Rändern des Fensters sanft abschwächt \autocite{windowing_welch2021}. 
 \vspace{\baselineskip}
 
 \noindent Die Fensterfunktion wird mathematisch wie folgt beschrieben:
@@ -72,7 +69,7 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 
 \subsection{Zeitstatistische Merkmale}
 Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jedes Segment berechnet \autocite{10353995}. Hierfür ist keine \ac{FFT} notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.
-Ein zentrales Merkmal ist die Spannweite (Peak-to-Peak-Amplitude), welche die Differenz zwischen dem größten und dem kleinsten Amplitudenwert beschreibt \autocite{jas2017}.
+Zum einen gibt es die Spannweite (Peak-to-Peak-Amplitude), die die Differenz zwischen dem größten und dem kleinsten Amplitudenwert aufzeigt \autocite{jas2017}.
 Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung eines absoluten Maximalwertes die Unabhängigkeit von einem potenziellen Gleichanteil des Signals gewährleistet. Aus diesem Grund stellt die Peak-to-Peak-Amplitude ein Kriterium dar, um extreme Signalausschläge und Drifts zu identifizieren, wie sie bei Artefakten auftreten können \autocite{jas2017}.
 \vspace{\baselineskip}
 
@@ -108,7 +105,7 @@ Wie schon in \autoref{subsec:systemintegrierte-loesung} beschrieben, stehen syst
 \noindent Um eine geeignete Evaluierung zu ermöglichen, wird der Einfluss der Modellgröße unter konstanten Ausführungsbedingungen untersucht. Dazu werden drei Modelle vergleichend betrachtet: zum einen die kompakte Variante Gemma 3 1B \autocite{gemma3_2025,mediapipe_llm}, zum anderen die parameterstärkere Gemma 2 2B als größeres Referenzmodell \autocite{gemma2_2024,mediapipe_llm}, sowie das Modell Qwen 2.5 1.5B des Herstellers Alibaba \autocite{qwen2025,mediapipe_llm}, dessen Größe zwischen den beiden Gemma-Modellen liegt. Da alle drei Modelle nativ über die MediaPipe-Runtime (LLM Inference API) laufen \autocite{mediapipe_llm}, lässt sich bei gleicher Laufzeitumgebung sowohl der Effekt der Modellgröße als auch der Einfluss des Herstellers auf die Systemperformanz untersuchen.
 \vspace{\baselineskip}
 
-\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich einzig auf die Modellgröße und den Hersteller bezieht. Die Wahl einer Kontextgröße von 1280 Token ergibt sich aus den verfügbaren Modellvarianten. Für Gemma 3 1B und Qwen 2.5 1.5B liegen zwar auch Varianten mit größeren Kontextfenstern vor, für Gemma 2 2B dagegen ausschließlich die Variante mit 1280 Token \autocite{gemma3_litert,qwen_litert,gemma2_litert}. Damit ist 1280 der größte Wert, der für alle drei Modelle einheitlich zur Verfügung steht. Zudem wird die Token-Auswahl über einen festen Top-K-Wert von 64 begrenzt, was bedeutet, dass immer nur die 64 wahrscheinlichsten Token als Kandidaten betrachtet werden. Im Code wird nicht festgelegt, ob die Modelle auf der CPU oder GPU laufen. Daher führt MediaPipe alle Modelle standardmäßig auf dem Standard-Backend aus. Wie die Logcat-Ausgabe beim Laden zeigt, ist dies die CPU (über den XNNPACK-Delegate von TensorFlow Lite).
+\noindent Alle drei Modelle werden in 8-Bit-Quantisierung und mit identischer Kontextgröße (1280 Token) ausgeführt, sodass sich der Vergleich einzig auf die Modellgröße und den Hersteller bezieht. Die Wahl einer Kontextgröße von 1280 Token ergibt sich aus den verfügbaren Modellvarianten. Für Gemma 3 1B und Qwen 2.5 1.5B liegen zwar auch Varianten mit größeren Kontextfenstern vor, für Gemma 2 2B dagegen ausschließlich die Variante mit 1280 Token \autocite{gemma3_litert,qwen_litert,gemma2_litert}. Damit ist 1280 der größte Wert, der für alle drei Modelle einheitlich zur Verfügung steht. Zudem erfolgt die Token-Auswahl bei allen Modellen mit dem Standardwert der Schnittstelle von Top-K 40, was bedeutet, dass bei jedem Schritt nur die 40 wahrscheinlichsten Token als Kandidaten betrachtet werden \autocite{mediapipe_llm}. Die im Code gesetzte Obergrenze von 64 (\autoref{lst:llmload}) wird dabei nicht ausgeschöpft. Im Code wird nicht festgelegt, ob die Modelle auf der CPU oder GPU laufen. Daher führt MediaPipe alle Modelle standardmäßig auf dem Standard-Backend aus. Wie die Logcat-Ausgabe beim Laden zeigt, ist dies die CPU (über den XNNPACK-Delegate von TensorFlow Lite).
 
 \section{Anwendungsszenarien}
 \label{sec:szenarien}
