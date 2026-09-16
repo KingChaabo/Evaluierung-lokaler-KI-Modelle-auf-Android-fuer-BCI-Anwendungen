@@ -124,26 +124,20 @@ Speicherplatz und Rechenleistung \autocite{edgellm_review}.
 \subsection{On-Device-Inferenz und Quantisierung}
 \label{subsec:ondevice}
 On-Device-Inferenz beschreibt die lokale Ausführung von KI-Modellen direkt auf den Endgeräten
-(beispielsweise einem Smartphone), anstatt die Daten zur Verarbeitung an einen externen 
-Cloud-Server zu senden \autocite{edgellm_review}.
-
+(beispielsweise einem Smartphone), anstatt die Daten zur Verarbeitung an einen externen
+Cloud-Server zu senden \autocite{edgellm_review}. Hierbei gibt es wesentliche Vorteile. Zum einen verlassen die Daten das Gerät nicht, wodurch die Privatsphäre geschützt wird \autocite{edgellm_review}. Hinzu kommt, dass lokale Ausführungen offline laufen können und daher keine Internetverbindung benötigen \autocite{edgellm_review}. So erspart man sich zusätzlich Kosten, die durch Cloud-Dienste entstehen würden \autocite{edgellm_review}.
 \vspace{\baselineskip}
-\noindent Dieser Ansatz bietet daher drei wesentliche Vorteile:
 
-\begin{itemize}
-    \item \textbf{Datenschutz:} Da die Daten das Gerät nicht verlassen, wird die Privatsphäre der Nutzer besser geschützt \autocite{edgellm_review}.
-    \item \textbf{Offline-Fähigkeit:} Auch ohne Internetverbindung ist die Anwendung nutzbar \autocite{edgellm_review}.
-    \item \textbf{Kostenersparnis:} Es fallen keine Kosten durch die Abhängigkeit von Cloud-Diensten an \autocite{edgellm_review}.
-\end{itemize}
+\noindent Jedoch gibt es neben den Vorteilen auch Nachteile. Es gibt Herausforderungen, die man zu bewältigen hat. Ein großer Aspekt ist dabei die begrenzte Speicher- und Rechenleistung des Endgeräts, da sie bestimmt, ob ein lokales Modell überhaupt ausgeführt werden kann. \acp{LLM} sind sehr große Sprachmodelle, die wegen ihrer hohen Anzahl an Parametern ausreichend großen \ac{RAM} und Rechenkapazität benötigen. Oft ist dies mehr, als herkömmliche Smartphones bieten, was im Extremfall zu einem Speicherüberlauf führt, im Englischen als memory overflow oder \ac{OOM} bezeichnet \autocite{edgellm_review, android_oom}. \ac{OOM} beschreibt einen Zustand, in dem kein Arbeitsspeicher mehr für neue Objekte verfügbar ist \autocite{android_oom}.
+\vspace{\baselineskip}
 
-\noindent Neben den Vorteilen gibt es auch gewisse Herausforderungen, die man zu bewältigen hat:
+\noindent Ein weiterer Punkt ist das Problem mit der Vielfalt der Geräte. Da es viele Variationen mit unterschiedlichen Prozessoren und Spezialchips gibt, ist die Programmierung einer einheitlichen Lösung, die auf allen Endgeräten funktioniert, herausfordernd \autocite{edgellm_review}.
+\vspace{\baselineskip}
 
-\begin{itemize}
-    \item \textbf{Speicher und Rechenleistung:} Da \acp{LLM} sehr große Sprachmodelle sind, benötigen sie aufgrund ihrer hohen Anzahl an Parametern ausreichend großen \ac{RAM} und Rechenkapazität. Oft ist dies mehr, als herkömmliche Smartphones bieten, was im Extremfall zu einem Speicherüberlauf führt, im Englischen als memory overflow oder \ac{OOM} bezeichnet \autocite{edgellm_review, android_oom}. Ein \ac{OOM} bezeichnet den Zustand, in dem kein Arbeitsspeicher mehr für neue Objekte verfügbar ist \autocite{android_oom}. 
-    \item \textbf{Vielfalt der Endgeräte:} Verschiedene Endgeräte besitzen unterschiedliche Prozessoren und Spezialchips. Eine Lösung zu programmieren, die auf allen Endgeräten funktioniert, stellt daher eine Herausforderung dar \autocite{edgellm_review}.
-    \item \textbf{Katastrophales Vergessen:} Ein häufiges und bekanntes Phänomen ist, dass ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
-    \item \textbf{Drosselung:} Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöhen kann \autocite{zhou2022throttling}.
-\end{itemize}
+\noindent Zusätzlich gibt es das Phänomen des katastrophalen Vergessens, bei dem ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
+\vspace{\baselineskip}
+
+\noindent Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöhen kann \autocite{zhou2022throttling}.
 
 \noindent In dieser Arbeit spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Die Herausforderung liegt bei den übrigen Punkten: Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
 \vspace{\baselineskip}
@@ -152,39 +146,30 @@ Cloud-Server zu senden \autocite{edgellm_review}.
 
 \subsection{Modell und Laufzeitumgebung}
 \label{subsec:MvsL}
-Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) lässt sich wie folgt beschreiben:
-
-\begin{itemize}
-    \item \textbf{Modell:} Ein Modell ist die Basis, die durch das Training Fähigkeiten wie Textverständnis, logisches Schließen oder die Generierung von Inhalten erlernt hat \autocite{edgellm_review}.
-    \item \textbf{Runtime:} Die Runtime ist hingegen die Software, die das Modell auf dem Endgerät ausführt \autocite{edgellm_review,mediapipe_llm}. Sie stellt die notwendigen Ressourcen und Schnittstellen bereit, um das Modell zu betreiben \autocite{edgellm_review}.
-\end{itemize}
+Der Unterschied zwischen einem Modell und einer Runtime (Laufzeitumgebung) lässt sich wie folgt beschreiben: Ein Modell ist die Basis, die durch das Training Fähigkeiten wie Textverständnis, logisches Schließen oder die Generierung von Inhalten erlernt hat \autocite{edgellm_review}, wohingegen die Runtime die Software ist, die das Modell auf dem Endgerät ausführt \autocite{edgellm_review,mediapipe_llm}. Sie stellt die notwendigen Ressourcen und Schnittstellen bereit, um das Modell zu betreiben \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
 \subsection{Systemintegrierte und frei deploybare Modelle}
 \label{subsec:systemintegrierte-und-frei-deploybare-modelle}
-Grundsätzlich gibt es zwei Kategorien lokaler Sprachmodelle, die unterschieden werden können:
-\begin{itemize}
-\item \textbf{Systemintegrierte Modelle:} zum einen gibt es systemintegrierte Modelle, die tief in das Betriebssystem integriert sind. Ein Beispiel hierfür ist das Modell Gemini Nano, welches über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Der architektonische Vorteil dieses Ansatzes besteht darin, dass Entwickler keine eigene Runtime bereitstellen müssen, sondern über standardisierte \acp{API} auf das Modell zugreifen können \autocite{gemininano}. Das Betriebssystem übernimmt dabei die zentrale Verwaltung sowie Aktualisierung, was den Speicher- und Ressourcenbedarf der einzelnen Applikation reduziert.
-\item \textbf{Frei deploybare Modelle:} zum anderen gibt es frei deploybare Modelle, die gemeinsam mit einer passenden Runtime als Paket von Entwicklern direkt auf das Endgerät installiert und in der Applikation ausgeführt werden müssen \autocite{guo2025llm}. Sie sind unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten und daher flexibler. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} (Dateiformate wie .task oder .litertlm) genutzt \autocite{mediapipe_llm}. Diese Datenpakete bündeln das eigentliche Modell mit den notwendigen Tokenizer-Parametern (Werkzeuge zur Textzerlegung), um die Ende-zu-Ende-Verarbeitung zu ermöglichen \autocite{mediapipe_llm}.
-\end{itemize}
+Grundsätzlich lassen sich zwei Kategorien lokaler Sprachmodelle unterscheiden. Zum einen gibt es systemintegrierte Modelle, die fest im Betriebssystem verankert sind. Ein Beispiel hierfür ist Gemini Nano, das über den Android-Systemdienst AICore ausgeführt und lokal verwaltet wird \autocite{gemininano}. Entwickler müssen dafür keine eigene Runtime bereitstellen und greifen über standardisierte \acp{API} auf das Modell zu \autocite{gemininano}. Da das Betriebssystem die Verwaltung und Aktualisierung übernimmt, verringert sich der Speicher- und Ressourcenbedarf der einzelnen Applikation \autocite{gemininano}.
+\vspace{\baselineskip}
+
+\noindent Zum anderen gibt es frei deploybare Modelle. Sie werden von Entwicklern gemeinsam mit einer passenden Runtime als Paket auf das Endgerät gebracht und in der Applikation ausgeführt \autocite{guo2025llm}. Dadurch sind sie unabhängiger von spezifischen Systemvorgaben oder vorinstallierten Systemdiensten und daher flexibler. Für die technische Umsetzung werden sogenannte \enquote{Task Bundles} genutzt, also Dateiformate wie .task oder .litertlm \autocite{mediapipe_llm}. Diese bündeln das eigentliche Modell mit den für die Textzerlegung nötigen Tokenizer-Parametern, um die Ende-zu-Ende-Verarbeitung zu ermöglichen \autocite{mediapipe_llm}.
 
 \section{Brain-Computer-Interface (BCI)}
 \label{sec:bci}
 Ein \ac{BCI}, zu Deutsch Gehirn"=Computer"=Schnittstelle, beschreibt eine Technologie, die eine Kommunikation zwischen Gehirn und Computer (externem Gerät) ermöglicht \autocite{blum2017}.
 Häufig von einem \ac{EEG} gemessen, werden mentale Zustände und Absichten in Echtzeit erkannt. Durch ein \ac{BCI} kann die natürliche Ausgabe des Zentralnervensystems ersetzt, wiederhergestellt, verbessert, ergänzt oder optimiert werden \autocite{wolpaw2013}. Häufig geht es dabei um Steuerungsbefehle, die ohne den Einsatz von Muskeln auskommen \autocite{blum2017}.
+\vspace{\baselineskip}
 
 \noindent Ein \ac{BCI}-System erfasst die Gehirndaten und verarbeitet diese Signale. Häufig geschieht dies in einem geschlossenen System, in dem der Nutzer auf Basis der Klassifizierung eine unmittelbare Rückmeldung erhält \autocite{blum2017}.
 \vspace{\baselineskip}
 
 
-\noindent Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-Systemen. Zu den bekannten Beispielen zählen \autocite{blum2017, 10353995}:
-\begin{itemize}
-    \item \textbf{Kommunikationssysteme:} Spezielle Systeme ermöglichen gelähmten Personen die Kommunikation mit ihrer Umwelt.
-    \item \textbf{Bewegung und Steuerung:} \ac{BCI}-Systeme erlauben die gedankliche Steuerung von Prothesen, Rollstühlen sowie das Steuern eines Cursors auf dem Computerbildschirm.
-    \item \textbf{Assistenzsysteme:} Auch bei der Fehlerüberwachung können anhand der Gehirnaktivität die Absichten einer Notbremsung erkannt und ausgeführt werden, noch bevor das Bremspedal physisch betätigt wird.
-\end{itemize}
+\noindent Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-Systemen. Zu den bekannten Beispielen zählen die folgenden \autocite{blum2017, 10353995}. Spezielle Systeme ermöglichen es gelähmten Personen, mit der Umwelt zu kommunizieren. \ac{BCI}-Systeme erlauben eine Steuerung von Prothesen, Rollstühlen oder dem Cursor eines Computerbildschirms rein mit Gedanken. Auch bei der Fehlerüberwachung können anhand der Gehirnaktivität die Absichten einer Notbremsung erkannt und ausgeführt werden, noch bevor das Bremspedal physisch betätigt wird.
+\vspace{\baselineskip}
 
-\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Sie setzt erst nach der Aufnahme an und wertet bereits gespeicherte Sessions aus.
+\noindent Diese Arbeit setzt auf einem solchen \ac{EEG}-basierten \ac{BCI} auf und ergänzt es um ein lokales Sprachmodell, das die Messwerte in verständlichen Text überführt. Sie setzt erst nach der Aufnahme an und wertet bereits gespeicherte Sessions aus. Im folgenden Kapitel werden Modelle und Software-Frameworks vorgestellt, die für den mobilen Einsatz optimiert sind.
 
 %  - Überleitung zu \autoref{ch:standdertechnik} (konkrete Modelle/Frameworks)
 %  (1 Absatz)

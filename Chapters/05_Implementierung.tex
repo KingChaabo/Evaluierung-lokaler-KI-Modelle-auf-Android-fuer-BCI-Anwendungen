@@ -11,12 +11,12 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
     \label{fig:architektur}
 \end{figure}
 
-Der Weg startet über die Datenbank, die schon Teil der bestehenden Anwendung war und aus der die Samples abgerufen werden:
+\noindent Der Weg startet über die Datenbank, die schon Teil der bestehenden Anwendung war und aus der die Samples abgerufen werden:
 \begin{itemize}
 \item \textbf{EegFeatureExtractor} (\texttt{features})\textbf{:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
 \item \textbf{FeatureFormatter} (\texttt{features})\textbf{:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
 \item \textbf{PromptBuilder} (\texttt{llm})\textbf{:} Baut die Anweisung für den Prompt (je Szenario).
-\item \textbf{LlmEngine} (\texttt{llm})\textbf{:} Führt das Modell (Gemma via MediaPipe) aus und gibt die Antwort zurück.
+\item \textbf{LlmEngine} (\texttt{llm})\textbf{:} Führt das Modell (Gemma oder Qwen via MediaPipe) aus und gibt die Antwort zurück.
 \item \textbf{Analyse-Oberfläche} (\texttt{analyse})\textbf{:} Zeigt letztlich die Antwort an.
 \item \textbf{Benchmark} (\texttt{benchmark})\textbf{:} Misst die Verarbeitung (Laufzeit, Speicherverbrauch etc.).
 \end{itemize}
@@ -25,8 +25,7 @@ Der Weg startet über die Datenbank, die schon Teil der bestehenden Anwendung wa
 \noindent Durch die Trennung dieser Pakete bleibt der Code übersichtlich und erweiterbar.
 \vspace{\baselineskip}
 
-\noindent Ein Hauptmerkmal der Architektur ist die Kapselung des Sprachmodells in der Klasse \texttt{LlmEngine}. Die Klasse stellt eine einfache Schnittstelle bereit, die für das Laden, Anfragen und Freigeben verantwortlich ist. Dadurch ist die Modell- und Laufzeitumgebung vom Rest der Anwendung unbeeinflusst. So lassen sich Modelle einfach austauschen, ohne andere Komponenten anzupassen.
-Die drei Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B werden in dieser Arbeit allein durch den Wechsel des Modellpfads geladen. Aus diesem Grund würde sich an derselben Schnittstelle auch ein anderes Modell anbinden lassen. Möglich wäre es auch, eine andere Laufzeitumgebung oder gegebenenfalls ein systemintegriertes Modell anzubinden.
+\noindent Die Architektur enthält wichtige Merkmale, wie zum Beispiel, dass sich die gesamte Logik des Modells in der Klasse \texttt{LlmEngine} befindet. Dort wird eine Schnittstelle bereitgestellt, die das Laden, Anfragen und Freigeben ermöglicht. Äußere Änderungen beeinflussen die Klasse nicht, da Modell- und Laufzeitumgebung vom Rest der Anwendung unabhängig sind. Die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B lassen sich daher einfach durch den Wechsel des Modellpfads austauschen und laden. Andere Modelle oder sogar Laufzeitumgebungen sind bei Bedarf auch möglich. Wenn das Gerät es unterstützt, können systemintegrierte Modelle eingebunden werden.
 \vspace{\baselineskip}
 
 \noindent Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich neue Szenarien ergänzen, ohne die restliche Anwendung anpassen zu müssen.
@@ -55,14 +54,14 @@ Neue Ansichten fügen sich in die bestehenden Konzepte der Anwendung ein. Neben 
 
 \section{Implementierung der Merkmalsextraktion}
 \label{sec:impl-features}
-Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie statistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
+Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie zeitstatistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
 
 \subsection{Vorbereitung} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das \ac{FFT}-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
 \newpage
 
 \subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 
-\subsection{Segmentierung} Die Methode \texttt{extract} stellt den Einstiegspunkt der Merkmalsextraktion dar. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\subsection{Segmentierung} Die eigentliche Merkmalsextraktion beginnt mit der Methode \texttt{extract}. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
 \begin{lstlisting}[style=code, caption={[Zerlegung in Segmente]Zerlegung der Session in Segmente. Das letzte Segment nimmt die verbleibenden Samples auf, damit keine Messwerte verloren gehen.}, label={lst:extract}]
 public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
@@ -88,10 +87,10 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 \noindent Die Anzahl der Samples ist nicht immer genau durch \texttt{SEGMENT\_COUNT} teilbar. Daher werden am Ende alle restlichen Samples in das letzte Segment aufgenommen. Dadurch gehen keine Messwerte verloren. \texttt{buildSegment} übernimmt die eigentliche Merkmalsextraktion je Segment.
 \vspace{\baselineskip}
 
-\noindent In \texttt{buildSegment} werden zunächst Start- und Endzeit aus dem jeweils ersten sowie dem letzten Sample entnommen. Diese sind später für die aufbereiteten Zeitangaben je Segment wichtig. Anschließend werden die drei Merkmale berechnet. Dazu zählen die Band-Power je Kanal als spektrales Merkmal sowie die Spannweite je Kanal und der Anteil ungültiger Messwerte als statistische Merkmale. Die gesamten Werte werden, nachdem sie in einem Segment-Objekt gesammelt wurden, an \texttt{extract} zurückgegeben.
+\noindent In \texttt{buildSegment} werden zunächst Start- und Endzeit aus dem jeweils ersten sowie dem letzten Sample entnommen. Diese sind später für die aufbereiteten Zeitangaben je Segment wichtig. Anschließend werden die drei Merkmale berechnet. Dazu zählen die Band-Power je Kanal als spektrales Merkmal sowie die Spannweite je Kanal und der Anteil ungültiger Messwerte als zeitstatistische Merkmale. Die gesamten Werte werden, nachdem sie in einem Segment-Objekt gesammelt wurden, an \texttt{extract} zurückgegeben.
 \newpage
 
-\subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das geschieht nach dem Verfahren der Welch-Methode (\autoref{lst:bandpower}), bei der die Fourier-Transformation auf 50\,\% überlappende Segmente des Signals angewendet wird. Für jedes Fenster wird das Leistungsspektrum berechnet und in Bänder einsortiert, und über alle Fenster hinweg wird gemittelt. Durch die Mittelung wird ein stabileres Ergebnis geliefert, also mit weniger Anfälligkeit für Schwankungen.
+\subsection{Spektrale Merkmale (Welch-Methode)} Für jeden der acht \ac{EEG}-Kanäle wird die Leistung in den Frequenzbändern Delta (\(\delta\)), Theta (\(\theta\)), Alpha (\(\alpha\)), Beta (\(\beta\)) und Gamma (\(\gamma\)) berechnet. Das wird durch die Welch-Methode (\autoref{lst:bandpower}) ermöglicht. Es wird also für 50\,\% überlappende Fenster des Signals das Leistungsspektrum durch die \ac{FFT} berechnet und dann in Bänder einsortiert. Das passiert über alle Fenster hinweg, über die anschließend gemittelt wird. Durch dieses Verfahren gibt es weniger Anfälligkeit für Schwankungen, und es bietet ein stabileres Ergebnis (\autoref{subsec:spektral}).
 \begin{lstlisting}[style=code, caption={[Band-Power je Kanal]Band-Power je Kanal nach dem Welch-Verfahren. Das Signal wird in überlappende Fenster zerlegt, in Bänder einsortiert und gemittelt.}, label={lst:bandpower}]
 private double[][] computeBandPower(List<SampleEntity> slice) {
     double[][] result = new double[CHANNELS][NUM_BANDS];
@@ -162,7 +161,7 @@ private double[] powerSpectrum(double[] window) {
 }
 \end{lstlisting}
 
-\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Sie bietet eine Java-basierte Implementierung der Fourier-Transformation, die den Aufruf \texttt{realForward} für reelle Eingangssignale bereitstellt. Das Ergebnis wird dabei in dasselbe Array geschrieben, sodass die geraden Indizes die Real- und die ungeraden Indizes die Imaginärteile der Frequenz-Bins enthalten.
+\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Sie bietet eine Java-basierte Implementierung der Fourier-Transformation, die den Aufruf \texttt{realForward} für reelle Eingangssignale bereitstellt. Die Ergebnisse werden dann in dasselbe Array geschrieben. Die geraden Indizes enthalten die Realteile, während die ungeraden die Imaginärteile der Frequenz-Bins enthalten.
 \newpage
 
 \subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
@@ -182,9 +181,9 @@ private double[] sumBands(double[] power) {
 }
 \end{lstlisting}
 
-\noindent Die Einteilung in die Frequenzbänder ist zentral im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen.
+\noindent Die Einteilung in die Frequenzbänder ist im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen, , wobei das Gamma-Band auf 45\,Hz begrenzt ist.
 
-\subsection{Statistische Merkmale} Als erstes der zwei statistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite statistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Vollständigkeit der Übertragung.
+\subsection{Zeitstatistische Merkmale} Als erstes der zwei zeitstatistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite zeitstatistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Vollständigkeit der Übertragung.
 \vspace{\baselineskip}
 
 \noindent Bei der Berechnung des Peak-to-Peak-Werts wird das Segment einmal durchlaufen. Dabei werden alle acht Kanäle pro Sample verglichen, und das jeweils n-mal bis zum Ende eines Segments. Es merkt sich den niedrigsten sowie den höchsten Wert und kann anhand der Differenz aus beiden Werten die Spannweite berechnen.
@@ -194,12 +193,9 @@ Bei dem Anteil der ungültigen Messwerte wird jedes Sample eines Segments auf se
 \vspace{\baselineskip}
 
 \noindent Das Objekt beinhaltet die Kennung der Session, ihre Dauer, die Anzahl der Samples sowie die Liste der Segmente. Jedes Segment besteht aus seiner Start- und Endzeit, der Band-Power der acht Kanäle in jeweils fünf Bändern, also 40 Werten je Segment, dazu den acht Spannweiten je Kanal und dem Anteil ungültiger Messwerte.
-\vspace{\baselineskip}
+Die Merkmale liegen an dieser Stelle noch kanalweise und als reine Zahlenwerte vor. Erst der \texttt{FeatureFormatter} fasst sie über die Kanäle zusammen und wandelt sie in Text um.
 
-\noindent Die Merkmale liegen an dieser Stelle noch kanalweise und als reine Zahlenwerte vor. Erst der \texttt{FeatureFormatter} fasst sie über die Kanäle zusammen und wandelt sie in Text um.
-
-\subsection{Aufbereitung für das Sprachmodell} Die Aufbereitung erfolgt in der Klasse \texttt{FeatureFormatter}, bei der die Merkmale in ein lesbares Format für das Sprachmodell umgewandelt werden.
-Zunächst wird die absolute Band-Power über alle acht Kanäle summiert und anhand dieses Wertes in einen relativen Prozentwert je Band umgerechnet (\autoref{lst:relbandpower}). Zusätzlich wird der Peak-to-Peak-Wert jedes Kanals pro Segment verglichen und der mit dem höchsten Ausschlag bestimmt.
+\subsection{Aufbereitung für das Sprachmodell} Die Klasse \texttt{FeatureFormatter} wandelt die Merkmale in ein lesbares Format für das Sprachmodell um. Zunächst wird die Band-Power jedes Bandes über alle acht Kanäle summiert und durch die Summe aller Bänder geteilt, sodass sich ein Prozentwert je Band ergibt (\autoref{lst:relbandpower}). Zusätzlich werden die Peak-to-Peak-Werte der acht Kanäle je Segment verglichen, um den Kanal mit dem größten Ausschlag zu bestimmen.
 \begin{lstlisting}[style=code, caption={[Relative Band-Power]Umrechnung der absoluten Band-Power in relative Anteile. Die Werte werden über alle Kanäle summiert und als Prozentanteil ausgegeben.}, label={lst:relbandpower}]
 private double[] relativeBandPower(SessionFeatures.Segment seg) {
     int channels = seg.bandPower.length;
