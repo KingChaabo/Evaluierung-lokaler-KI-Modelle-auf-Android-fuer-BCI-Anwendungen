@@ -74,11 +74,11 @@ public SessionFeatures extract(List<SampleEntity> samples) {
     int segLength = samples.size() / SEGMENT_COUNT;
     for (int i = 0; i < SEGMENT_COUNT; i++) {
         int start = i * segLength;
-        int end   = (i == SEGMENT_COUNT - 1) ? samples.size() : start 
+        // das letzte Segment nimmt die restlichen Samples auf
+        int end   = (i == SEGMENT_COUNT - 1) ? samples.size() : start
             + segLength;
         List<SampleEntity> slice = samples.subList(start, end);
         features.segments.add(buildSegment(slice));
-        // Merkmale pro Segment berechnen
     }
     return features;
 }
@@ -94,30 +94,32 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 \begin{lstlisting}[style=code, caption={[Band-Power je Kanal]Band-Power je Kanal nach dem Welch-Verfahren. Das Signal wird in überlappende Fenster zerlegt, in Bänder einsortiert und gemittelt.}, label={lst:bandpower}]
 private double[][] computeBandPower(List<SampleEntity> slice) {
     double[][] result = new double[CHANNELS][NUM_BANDS];
-    int hop = windowSize / 2;
-    // 50% Ueberlappung
+    int hop = windowSize / 2;   // 50% Ueberlappung
 
     for (int i = 0; i < CHANNELS; i++) {
         double[] signal = extractChannelSignal(slice, i);
         double[] bandAccum = new double[NUM_BANDS];
         int windowCount = 0;
 
-        for (int start = 0; start + windowSize <= signal.length; 
+        // nur vollstaendige Fenster, ein angebrochenes Restfenster
+        // am Ende entfaellt
+        for (int start = 0; start + windowSize <= signal.length;
         start += hop) {
-            double[] window = Arrays.copyOfRange(signal, start, start + 
+            // Kopie des Fensters
+            double[] window = Arrays.copyOfRange(signal, start, start +
             windowSize);
+            // Leistung je Frequenz-Bin (windowSize / 2 Werte)
             double[] power  = powerSpectrum(window);
-            // Fenster -> Spektrum
+            // Leistung je Band (5 Werte)
             double[] bands  = sumBands(power);
-            // Spektrum -> Baender
-            for (int b = 0; b < NUM_BANDS; b++) bandAccum[b] += 
+            for (int b = 0; b < NUM_BANDS; b++) bandAccum[b] +=
             bands[b];
             windowCount++;
         }
         if (windowCount > 0) {
+            // ueber alle Fenster mitteln (Welch)
             for (int b = 0; b < NUM_BANDS; b++) {
                 result[i][b] = bandAccum[b] / windowCount;
-                // ueber alle Fenster mitteln (Welch)
             }
         }
     }
@@ -135,24 +137,24 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 \noindent Die Methode \texttt{powerSpectrum} berechnet das Leistungsspektrum eines Fensters (\autoref{lst:powerspectrum}). Zunächst wird der Mittelwert (Gleichanteil) abgezogen. Danach wird das Hann-Fenster angewendet, um anschließend die Fourier-Transformation durchzuführen. Schließlich wird die Leistung je Frequenz-Bin berechnet, indem die Real- und Imaginärteile quadriert und summiert werden.
 \begin{lstlisting}[style=code, caption={[Leistungsspektrum eines Fensters]Berechnung des Leistungsspektrums eines Fensters. Vor der Transformation werden der Gleichanteil entfernt und das Hann-Fenster angewendet.}, label={lst:powerspectrum}]
 private double[] powerSpectrum(double[] window) {
-    // 1. Mittelwert (Gleichanteil)
+    // 1. Mittelwert (Gleichanteil) des Fensters berechnen
     double mean = 0;
     for (double v : window) mean += v;
     mean /= window.length;
 
-    // 2. Mittelwert abziehen + Hann anwenden
+    // 2. Mittelwert abziehen und Hann-Fenster anwenden
     double[] data = new double[windowSize];
     for (int n = 0; n < windowSize; n++) {
         data[n] = (window[n] - mean) * hann[n];
     }
 
-    // 3. FFT (in-place, JTransforms)
+    // 3. FFT mit JTransforms, rechnet in-place im selben Array
     fft.realForward(data);
 
-    // 4. Leistung pro Frequenz-Bin
+    // 4. Leistung je Frequenz-Bin: gerade Indizes Realteil,
+    //    ungerade Imaginaerteil
     double[] power = new double[windowSize / 2];
-    power[0] = data[0] * data[0];
-    // DC-Bin
+    power[0] = data[0] * data[0];   // DC-Bin
     for (int k = 1; k < windowSize / 2; k++) {
         double re = data[2 * k], im = data[2 * k + 1];
         power[k] = re * re + im * im;
@@ -168,10 +170,12 @@ private double[] powerSpectrum(double[] window) {
 \begin{lstlisting}[style=code, caption={[Zuordnung zu den Bändern]Zuordnung der Frequenz-Bins zu den Bändern. Jeder Bin-Index wird in eine Frequenz umgerechnet und dem passenden Band zugeordnet.}, label={lst:sumbands}]
 private double[] sumBands(double[] power) {
     double[] bandSum = new double[NUM_BANDS];
+    // ab Bin 1, der Gleichanteil (Bin 0) gehoert zu keinem Band
     for (int i = 1; i < power.length; i++) {
+        // Bin-Index -> Frequenz in Hz
         double freq = (double) (i * SAMPLE_RATE) / windowSize;
-        // Bin-Index -> Frequenz
         for (FrequencyBand band : FrequencyBand.values()) {
+            // untere Grenze inklusive, obere exklusiv
             if (freq >= band.lowHz && freq < band.highHz) {
                 bandSum[band.ordinal()] += power[i];
             }
@@ -181,7 +185,7 @@ private double[] sumBands(double[] power) {
 }
 \end{lstlisting}
 
-\noindent Die Einteilung in die Frequenzbänder ist im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen, , wobei das Gamma-Band auf 45\,Hz begrenzt ist.
+\noindent Die Einteilung in die Frequenzbänder ist im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen, wobei das Gamma-Band auf 45\,Hz begrenzt ist.
 
 \subsection{Zeitstatistische Merkmale} Als erstes der zwei zeitstatistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite zeitstatistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Vollständigkeit der Übertragung.
 \vspace{\baselineskip}
@@ -198,24 +202,28 @@ Die Merkmale liegen an dieser Stelle noch kanalweise und als reine Zahlenwerte v
 \subsection{Aufbereitung für das Sprachmodell} Die Klasse \texttt{FeatureFormatter} wandelt die Merkmale in ein lesbares Format für das Sprachmodell um. Zunächst wird die Band-Power jedes Bandes über alle acht Kanäle summiert und durch die Summe aller Bänder geteilt, sodass sich ein Prozentwert je Band ergibt (\autoref{lst:relbandpower}). Zusätzlich werden die Peak-to-Peak-Werte der acht Kanäle je Segment verglichen, um den Kanal mit dem größten Ausschlag zu bestimmen.
 \begin{lstlisting}[style=code, caption={[Relative Band-Power]Umrechnung der absoluten Band-Power in relative Anteile. Die Werte werden über alle Kanäle summiert und als Prozentanteil ausgegeben.}, label={lst:relbandpower}]
 private double[] relativeBandPower(SessionFeatures.Segment seg) {
-    int channels = seg.bandPower.length;
-    int bands    = seg.bandPower[0].length;
+    int channelNumber = seg.bandPower.length;
+    int bandNumber    = seg.bandPower[0].length;
 
-    double[] bandTotal = new double[bands];
-    for (int c = 0; c < channels; c++) {
-        for (int b = 0; b < bands; b++) {
-            bandTotal[b] += seg.bandPower[c][b];   
-            // ueber alle Kanaele summieren
+    double[] bandTotal = new double[bandNumber];
+
+    // Band-Power je Band ueber alle Kanaele summieren
+    for (int i = 0; i < channelNumber; i++) {
+        for (int a = 0; a < bandNumber; a++) {
+            bandTotal[a] += seg.bandPower[i][a];
         }
     }
     double sumAll = 0;
-    for (double v : bandTotal) sumAll += v;
+    for (int b = 0; b < bandNumber; b++) {
+        sumAll += bandTotal[b];
+    }
 
-    double[] rel = new double[bands];
+    double[] rel = new double[bandNumber];
+
+    // Anteil jedes Bands an der Gesamtleistung in Prozent
     if (sumAll > 0) {
-        for (int b = 0; b < bands; b++) {
-            rel[b] = bandTotal[b] / sumAll * 100;   
-            // Anteil in Prozent
+        for (int c = 0; c < bandNumber; c++) {
+            rel[c] = bandTotal[c] / sumAll * 100;
         }
     }
     return rel;
@@ -262,10 +270,11 @@ Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} imple
 public void load(Context context) {
     LlmInferenceOptions options = LlmInferenceOptions.builder()
             .setModelPath(modelPath)
+            // nur Obergrenze, gesampelt wird mit dem
+            // Standardwert Top-K 40
             .setMaxTopK(64)
-            // Sampling-Obergrenze
+            // Kontext fuer Eingabe und Ausgabe zusammen
             .setMaxTokens(1280)
-            // Kontextgroesse (Prompt + Ausgabe)
             .build();
 
     llm = LlmInference.createFromOptions(context, options);
@@ -278,16 +287,17 @@ public void load(Context context) {
 public void questionStreaming(String prompt, StreamCallback callback) {
     StringBuilder full = new StringBuilder();
     long start = System.nanoTime();
+    // Array, damit der Wert im Lambda gesetzt werden kann
     long[] ttft = {-1};
 
     llm.generateResponseAsync(prompt, (partial, done) -> {
+        // erstes Teilstueck -> TTFT festhalten
         if (ttft[0] < 0) {
             ttft[0] = (System.nanoTime() - start) / 1_000_000;
-            // erstes Token -> TTFT festhalten
         }
         full.append(partial);
+        // Teilstueck an die Oberflaeche weiterreichen
         callback.onChunk(partial);
-        // Teilstueck weiterreichen
         if (done) {
             long totalMs = (System.nanoTime() - start) / 1_000_000;
             callback.onDone(full.toString(), ttft[0], totalMs);
@@ -320,7 +330,7 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 
 \noindent Die Optimierung endete, sobald Gemma 2 2B als Referenzmodell die Vorgaben einhielt. Es wurde bewusst darauf verzichtet, jedes Modell einzeln zu optimieren, da dies Unterschiede zwischen den Modellen verdecken könnte, die in der Evaluation wichtig werden. Der finale Prompt wurde eingefroren und bildete unverändert die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
 \begin{lstlisting}[style=code, breaklines=true, caption={[Prompts je Szenario]Aufbau der Prompts je Szenario in der finalen, eingefrorenen Fassung. Alle drei enden mit dem aufbereiteten Merkmalstext.}, label={lst:prompts}]
-// Szenario 1: Session-Report
+// Szenario 1: lesbarer Session-Bericht aus den Messwerten
 public String buildReport(String featureText) {
     return "Fasse die folgenden EEG-Messwerte in 3 bis 4 Saetzen sachlich zusammen. "
          + "Schreibe nur den Bericht: keine Begruessung, keine Rueckfragen, kein Schlusssatz. "
@@ -329,7 +339,7 @@ public String buildReport(String featureText) {
          + "Erfinde nichts und nutze nur die folgenden Werte:\n\n"
          + featureText;
 }
-// Szenario 2: Artefakt-Erklaerung
+// Szenario 2: auffaellige Muster / moegliche Artefakte erklaeren
 public String buildArtefaktErklaerung(String featureText) {
     return "Analysiere die folgenden EEG-Messwerte und beziehe dich konkret auf die genannten Werte. "
          + "Benenne die auffaelligsten Punkte dieser Session (z. B. sehr hohe Ausschlaege, "
@@ -340,7 +350,7 @@ public String buildArtefaktErklaerung(String featureText) {
          + "die folgenden Werte:\n\n"
          + featureText;
 }
-// Szenario 3: Session-Vergleich
+// Szenario 3: zwei Sessions vergleichen
 public String buildVergleich(String featureTextA, String featureTextB) {
     return "Vergleiche die folgenden zwei EEG-Sessions und beschreibe die wichtigsten "
          + "Unterschiede in einfachen Worten (z. B. Banddominanz, Signalqualitaet, Ausschlaege). "
@@ -417,8 +427,10 @@ Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebn
 @Override
 public void onChunk(String partial) {
     runOnUiThread(() -> {
+        // Ladeanzeige ausblenden
         progressBar.setVisibility(View.GONE);
-        tvReport.append(partial);   // live anhaengen, nicht setText
+        // Text live anhaengen statt ersetzen
+        tvReport.append(partial);
     });
 }
 \end{lstlisting}
@@ -505,7 +517,8 @@ Runnable done) {
         String[] modelle   = {"1b", "2b", "qwen"};
         String[] szenarien = {"report", "artefakt", "vergleich"};
 
-        // Aufwaermphase: eine Wegwerf-Inferenz gegen Kaltstart-Effekte
+        // Aufwaermphase: Wegwerf-Inferenz gegen Kaltstart-Effekte,
+        // wird nicht gespeichert
         try {
             LlmEngine warm = new LlmEngine(LlmEngine.
             pathFor(modelle[0]));
@@ -520,8 +533,8 @@ Runnable done) {
                 numberConfig);
             }
         }
-        if (done != null) done.run();   
-        // Benchmark fertig -> UI benachrichtigen
+        // Oberflaeche ueber das Ende der Messreihe informieren
+        if (done != null) done.run();
     }).start();
 }
 \end{lstlisting}
@@ -534,15 +547,16 @@ Runnable done) {
 \noindent Die beschriebene Wiederholung mit der Synchronisation über den \texttt{CountDownLatch} ist in \autoref{lst:messloop} dargestellt.
 \begin{lstlisting}[style=code, caption={[Wiederholte Messung]Wiederholte Messung mit Synchronisation ueber CountDownLatch. Die Schleife wartet, bis die asynchrone Ausgabe abgeschlossen ist.}, label={lst:messloop}]
 for (int i = 0; i < nc; i++) {
+    // Arrays, damit der Callback die Werte setzen kann
     long[]   ttftHolder  = {0};
     long[]   totalHolder = {0};
     String[] textHolder  = {""};
     CountDownLatch latch = new CountDownLatch(1);
 
     engine.questionStreaming(prompt, new LlmEngine.StreamCallback() {
-        @Override public void onChunk(String partial) { 
-            /* im Benchmark egal */ }
-        @Override public void onDone(String fullText, long ttftMs, 
+        @Override public void onChunk(String partial) {
+            /* im Benchmark nicht benoetigt */ }
+        @Override public void onDone(String fullText, long ttftMs,
         long totalMs) {
             ttftHolder[0]  = ttftMs;
             totalHolder[0] = totalMs;
@@ -551,18 +565,20 @@ for (int i = 0; i < nc; i++) {
         }
     });
 
-    latch.await();                      // warten, bis onDone kam
+    latch.await();                // Schleife wartet, bis onDone kam
 
     long inferMs = totalHolder[0];
+    long ttftMs  = ttftHolder[0];
     int outputTokens = engine.tokenCount(textHolder[0]);
     double tokensPerSec = outputTokens / (inferMs / 1000.0);
 
+    // Speicher und Akku erst nach der Inferenz auslesen
     long pssMb   = Metrics.pssMb();
     long battUAh = Metrics.batteryUAh(context);
     int  battPct = Metrics.batteryPct(context);
 
     logger.logRow(modell, szenario, promptTokens, outputTokens,
-                  loadMs, inferMs, ttftHolder[0], tokensPerSec,
+                  loadMs, inferMs, ttftMs, tokensPerSec,
                   pssMb, battUAh, battPct, "ok");
 }
 \end{lstlisting}
