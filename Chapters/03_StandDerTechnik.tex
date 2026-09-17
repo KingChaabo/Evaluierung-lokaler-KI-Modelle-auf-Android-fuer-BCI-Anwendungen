@@ -90,16 +90,16 @@ Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth
 Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, \ac{EEG}-Daten aufnimmt und/oder speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-\ac{FFT} visualisiert.
     Die Daten können dauerhaft gespeichert und zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
 \subsection{Beitrag dieser Arbeit}
-Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eingesetzt, unter anderem zur Erzeugung von Befundtexten oder zur Deutung von Signalen \autocite{eeg_llm_survey2025}. Als offene Herausforderung wird dabei die Ausführung auf Endgeräten mit geringer Latenz genannt \autocite{eeg_llm_survey2025}. Zusätzlich müssen für einen praktischen Einsatz der Speicherbedarf, die Stabilität und die Qualität der Ausgabe, also des erzeugten Textes, angemessen ausfallen.
+Sprachmodelle sind immer häufiger bei der Auswertung von \ac{EEG}-Daten im Einsatz \autocite{eeg_llm_survey2025}. Sie werden unter anderem zur Erzeugung von Befundtexten oder zur Deutung von Signalen verwendet \autocite{eeg_llm_survey2025}. Als zukünftige Richtung nennen Babu u.\,a. eine echtzeitfähige Ausführung mit geringer Latenz, wie durch Quantisierung \autocite{eeg_llm_survey2025}. Für einen Einsatz in der Praxis müssen dazu der Speicherbedarf, die Stabilität und die Qualität des erzeugten Textes angemessen ausfallen.
 \vspace{\baselineskip}
 
-\noindent Es gibt hierzu unterschiedliche Ansätze, wie vorgegangen wird. Chen u.\,a. betreiben ein Sprachmodell lokal, passen es dafür aber durch Pruning und Fine-Tuning an \autocite{eeg_emotion_copilot2025}. Murhekar u.\,a. belassen nur ein kleines Vorverarbeitungsmodul auf dem Gerät und lagern das Sprachmodell aus \autocite{sense2026}. \ac{EEG}-Anwendungen, die speziell auf Android ausgeführt werden, laufen jedoch ohne Sprachmodell \autocite{blum2017, eeg_android_ml2026}. Umgekehrt untersuchen Messstudien zu Sprachmodellen auf Mobilgeräten allgemeine Aufgaben und keine \ac{EEG}-Daten \autocite{guo2025llm}.
+\noindent Bei Kim u.\,a. werden die aus dem \ac{EEG} berechneten Merkmale als Text an GPT-3 übergeben \autocite{eeg_gpt2024}. Dieses wird über die Schnittstelle von OpenAI angesprochen und weitgehend nachtrainiert \autocite{eeg_gpt2024}. Bei Murhekar u.\,a. werden von einem kleinen Modul auf dem Gerät aus dem \ac{EEG} Schlüsselwörter erzeugt, die an ein ausgelagertes, nicht nachtrainiertes Sprachmodell weitergegeben werden \autocite{sense2026}. Guo u.\,a. messen die Leistung von Sprachmodellen auf Android-Smartphones, beziehen sich dabei aber nicht auf \ac{EEG}-Daten \autocite{guo2025llm}. Am nächsten an dieser Arbeit sind Wang u.\,a., denn sie übergeben aufbereitete Sensordaten von Wearables als Text an kleine Sprachmodelle und vergleichen diese auf einem Smartphone \autocite{healthslm_bench2025}. Dort werden aber nur nachtrainierte Modelle eingesetzt \autocite{healthslm_bench2025}.
 \vspace{\baselineskip}
 
-\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K zählen nicht als Anpassung dazu, da sie die Gewichte unberührt lassen.
-\newpage
+\noindent Keiner dieser Ansätze verbindet die lokale Ausführung eines unveränderten Sprachmodells mit aufbereiteten Merkmalen als Eingabe. Die Wahl einer bereits quantisiert veröffentlichten Variante sowie Laufzeitparameter wie Kontextgröße oder Top-K gelten dabei nicht als Anpassung, da sie die Gewichte unberührt lassen.
+\vspace{\baselineskip}
 
-\noindent Die folgende \autoref{tab:verwandte-arbeiten} zeigt die Gegenüberstellung, wo das Modell ausgeführt wird, ob das Sprachmodell angepasst wurde (beispielsweise durch eine Veränderung der Gewichte des Sprachmodells durch Fine-Tuning oder Pruning), wie die Eingabe erfolgt und ob es zwischen den Modellen einen Vergleich gibt.
+\noindent \autoref{tab:verwandte-arbeiten} stellt die Arbeiten danach gegenüber, wo das Sprachmodell ausgeführt wird, ob es angepasst wurde, wie die Eingabe erfolgt und ob mehrere Modelle auf dem Endgerät verglichen werden. Als Anpassung gilt dabei eine Veränderung der Gewichte, wie durch Fine-Tuning oder \ac{LoRA}.
 \begin{table}[H]
     \centering
     \caption[Einordnung gegenüber verwandten Arbeiten]{Gegenüberstellung nach Ausführungsort, Modellanpassung, Eingabe und Modellvergleich auf dem Endgerät.}
@@ -109,25 +109,17 @@ Sprachmodelle werden immer häufiger für die Auswertung von \ac{EEG}-Daten eing
         \toprule
         \textbf{Arbeit} & \textbf{Modell lokal} & \textbf{Sprachmodell angepasst} & \textbf{Eingabe} & \textbf{Vergleich} \\
         \midrule
-        Chen u.\,a. \autocite{eeg_emotion_copilot2025}    & ja   & ja   & Rohsignale & nein \\
-        Murhekar u.\,a. \autocite{sense2026}              & nein & nein & Rohsignale & nein \\
-        Blum u.\,a. \autocite{blum2017}                   & kein Sprachmodell & --- & Rohsignale & nein \\
-        Hazarika u.\,a. \autocite{eeg_android_ml2026}     & kein Sprachmodell & --- & Rohsignale & nein \\
-        Guo u.\,a. \autocite{guo2025llm}                  & ja   & nein & kein \ac{EEG} & ja \\
+        Kim u.\,a. \autocite{eeg_gpt2024}                 & nein & ja   & Merkmale        & nein \\
+        Murhekar u.\,a. \autocite{sense2026}              & nein & nein & Schlüsselwörter & nein \\
+        Guo u.\,a. \autocite{guo2025llm}                  & ja   & nein & kein \ac{EEG}   & ja \\
+        Wang u.\,a. \autocite{healthslm_bench2025}        & ja   & ja   & kein \ac{EEG}   & ja \\
         \midrule
-        Diese Arbeit                                      & ja   & nein & Merkmale   & ja \\
+        Diese Arbeit                                      & ja   & nein & Merkmale        & ja \\
         \bottomrule
     \end{tabularx}
 \end{table}
 
-\noindent Die Frage bleibt damit, ob unveränderte, frei verfügbare Sprachmodelle ausreichen, um aufbereitete \ac{EEG}-Merkmale analysieren zu können. Der Beitrag dieser Arbeit ist daher der systematische Vergleich dreier solcher Modelle unter identischen Bedingungen anhand von Latenz, Ressourcenverbrauch, Stabilität und Ausgabequalität.
+\noindent Offen ist damit, ob unveränderte, frei verfügbare Sprachmodelle ausreichen, um aufbereitete \ac{EEG}-Merkmale zu analysieren. Der Beitrag dieser Arbeit ist daher der systematische Vergleich dreier solcher Modelle unter identischen technischen Bedingungen anhand von Latenz, Ressourcenverbrauch, Stabilität und Ausgabequalität.
 \vspace{\baselineskip}
 
-\noindent Die bestehende Anwendung wird um vier neue Komponenten erweitert. Davon sind drei Kernkomponenten, die an der Verarbeitung der \ac{EEG}-Daten durch lokale Sprachmodelle arbeiten:
-\begin{itemize}
-        \item Schicht zur Merkmalsextraktion (\texttt{features}).
-        \item Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}).
-        \item Benutzeroberfläche zur KI-gestützten Analyse (\texttt{analyse}).
-    \end{itemize}
-Darüber hinaus wird für die in der Evaluation benötigten Messungen ein Benchmark implementiert, bei dem systematisch und automatisiert gemessen wird (\texttt{benchmark}).
-    Im Originalcode wurden nur minimale Änderungen vorgenommen.
+\noindent Die bestehende Anwendung wird um vier neue Komponenten erweitert. Davon sind drei Kernkomponenten, die an der Verarbeitung der \ac{EEG}-Daten durch lokale Sprachmodelle arbeiten: die Schicht zur Merkmalsextraktion (\texttt{features}), die Anbindung eines oder mehrerer Sprachmodelle (\texttt{llm}) und die Benutzeroberfläche zur KI-gestützten Analyse (\texttt{analyse}). Darüber hinaus wird für die in der Evaluation benötigten Messungen ein Benchmark implementiert, bei dem systematisch und automatisiert gemessen wird (\texttt{benchmark}). Wie die Komponenten zusammenspielen, zeigt \autoref{fig:architektur}. Im Originalcode wurden nur minimale Änderungen vorgenommen.
