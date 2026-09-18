@@ -1,23 +1,23 @@
 \chapter{Einleitung}
 \label{ch:einleitung}
-Lokal ausgeführte Sprachmodelle lassen sich inzwischen mit Gehirn"=Computer"=Schnittstellen verbinden. Durch diese Kombination beider Technologien eröffnen sich neue Möglichkeiten, unter anderem der Einsatz lokaler Sprachmodelle zur Verarbeitung von \ac{EEG}-Daten auf einem mobilen Android-Gerät. Die vorliegende Arbeit untersucht, wie diese Kombination in der Praxis funktioniert. Dieses Kapitel gibt einen Überblick über die Motivation, Zielsetzung und den Aufbau der Arbeit.
+Lokal ausgeführte Sprachmodelle lassen sich inzwischen mit Gehirn"=Computer"=Schnittstellen verbinden. Es entstehen neue Möglichkeiten durch die Kombination beider Technologien. So können lokale Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten auf einem mobilen Android-Gerät verwendet werden. Die vorliegende Arbeit untersucht, wie dieser Fall in der Praxis funktioniert. Dieses Kapitel gibt einen Überblick über die Motivation, Zielsetzung und den Aufbau der Arbeit.
 
 \section{Motivation}
 \label{sec:motivation}
-Das \ac{EEG} ist ein etabliertes Verfahren zur nicht-invasiven Aufzeichnung der elektrischen Aktivität des Gehirns \autocite{blum2017}.
+Das \ac{EEG} ist ein Verfahren zur nicht-invasiven Aufzeichnung der elektrischen Aktivität des Gehirns \autocite{blum2017}.
 Eine Gehirn"=Computer"=Schnittstelle, ein sogenanntes \ac{BCI}, zielt anhand dieser Grundlage darauf ab, kognitive Zustände in Echtzeit zu identifizieren, um unter anderem eine Steuerung und Kommunikation ohne den Einsatz von Muskeln zu ermöglichen \autocite{blum2017, wolpaw2013}.
 Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-Systemen. Gelähmten Personen ist es unter anderem so möglich, \ac{BCI}-basierte Buchstabiersysteme zu nutzen, die ein wichtiger Kommunikationskanal sind \autocite{blum2017}.
 \vspace{\baselineskip}
 
-\noindent Traditionelle \ac{EEG}-Laborhardware, wie sie oft stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung. Demgegenüber erlauben moderne, kabellose und am Kopf getragene \ac{EEG}-Geräte (wie das Unicorn Hybrid Black) inzwischen auch Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
+\noindent Übliche \ac{EEG}-Laborhardware, wie sie stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung \autocite{blum2017}. Kabellose, am Kopf getragene \ac{EEG}-Geräte wie das Unicorn Hybrid Black ermöglichen dagegen Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
 Dennoch ist das Deuten der aufgezeichneten Signale komplex \autocite{blum2017}.
 Deutlich wird es im Lehrkontext, bei dem das Unicorn Hybrid Black zum Einsatz kommt, zum Beispiel in Vorlesungen zu Gehirn"=Computer"=Schnittstellen. Dort werden Messungen durchgeführt, die jedoch trotz des Signalverlaufs schwer zu verstehen sind und nur mit entsprechender Erfahrung eingeordnet werden können.
 \vspace{\baselineskip}
 
-\noindent Gleichzeitig haben große Sprachmodelle, sogenannte \acp{LLM}, die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}. Durch die Kombination lokaler Sprachmodelle und der aufbereiteten \ac{EEG}-Daten ist es möglich, verständliche und textuelle Beschreibungen zu erzeugen. Ein solches Modell soll dabei eine unterstützende Funktion übernehmen.
+\noindent Große Sprachmodelle, sogenannte \acp{LLM}, haben die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}. Durch die Kombination lokaler Sprachmodelle und der aufbereiteten \ac{EEG}-Daten ist es möglich, verständliche Beschreibungen zu erzeugen. Ein solches Modell soll dabei eine unterstützende Funktion übernehmen.
 \vspace{\baselineskip}
 
-\noindent Für die vorliegende Arbeit ist die lokale Ausführung eine Voraussetzung. In diesem Umfeld ist weder eine verlässliche Internetverbindung noch ein Zugang zu einem Cloud-Dienst garantiert. Hinzu kommt, dass \ac{EEG}-Aufzeichnungen personenbezogene Daten sind, die das Gerät nicht verlassen sollen. Eine lokale Verarbeitung kommt ohne Netzanbindung aus und hält die Daten auf dem Gerät \autocite{edgellm_review}.
+\noindent Für die vorliegende Arbeit ist die lokale Ausführung eine Voraussetzung. In diesem Umfeld gibt es keine Garantie für eine Internetverbindung oder einen Zugang zu einem Cloud-Dienst. Hinzu kommt, dass \ac{EEG}-Aufzeichnungen personenbezogene Daten sind, die das Gerät nicht verlassen sollen. Eine lokale Verarbeitung kommt ohne Netzanbindung aus und hält die Daten auf dem Gerät \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
 \noindent Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
@@ -26,7 +26,7 @@ Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingu
 
 \section{Zielsetzung}
 \label{sec:zielsetzung}
-Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain"=Computer"=Interface-Anwendungen eignen. Damit stellt sich folgende Forschungsfrage:
+Das Ziel dieser Arbeit ist die Untersuchung, ob und inwieweit sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain"=Computer"=Interface-Anwendungen eignen. Damit stellt sich folgende Forschungsfrage:
 
 \begin{quote}
 \itshape Inwieweit eignen sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain"=Computer"=Interface-Anwendungen?
@@ -42,4 +42,4 @@ Ziel dieser Arbeit ist die systematische Untersuchung, ob und inwieweit sich lok
 
 \section{Aufbau der Arbeit}
 \label{sec:aufbau}
-Die Arbeit gliedert sich in acht Kapitel. Nach dieser Einleitung vermittelt \autoref{ch:grundlagen} das Wissen, das für das Verständnis der Arbeit erforderlich ist. \autoref{ch:standdertechnik} beschreibt den derzeitigen Stand der Technik sowie die Ausgangslage, auf der die Arbeit aufbaut. Anschließend erläutert \autoref{ch:methodik} das Vorgehen, mit dem die Forschungsfrage beantwortet werden soll, und \autoref{ch:implementierung} zeigt, wie die Anwendung konkret umgesetzt wurde. Die Ergebnisse der Evaluation folgen in \autoref{ch:evaluation} und werden in \autoref{ch:diskussion} zusammen mit den praktischen Einschränkungen diskutiert. \autoref{ch:fazit} schließt die Arbeit mit einem Fazit und einem Ausblick auf mögliche Weiterentwicklungen ab.
+Es liegen acht Kapitel vor. Nach dieser Einleitung vermittelt \autoref{ch:grundlagen} das Wissen, das für das Verständnis der Arbeit erforderlich ist. \autoref{ch:standdertechnik} beschreibt den derzeitigen Stand der Technik sowie die Ausgangslage, auf der die Arbeit aufbaut. Anschließend erläutert \autoref{ch:methodik} das Vorgehen, mit dem die Forschungsfrage beantwortet werden soll, und \autoref{ch:implementierung} zeigt, wie die Anwendung konkret umgesetzt wurde. Die Ergebnisse der Evaluation folgen in \autoref{ch:evaluation} und werden in \autoref{ch:diskussion} zusammen mit den praktischen Einschränkungen diskutiert. \autoref{ch:fazit} schließt die Arbeit mit einem Fazit und einem Ausblick auf mögliche Weiterentwicklungen ab.

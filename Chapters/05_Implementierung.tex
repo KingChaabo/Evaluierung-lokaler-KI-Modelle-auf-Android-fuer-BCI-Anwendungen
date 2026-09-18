@@ -56,12 +56,12 @@ Neue Ansichten fügen sich in die bestehenden Konzepte der Anwendung ein. Neben 
 \label{sec:impl-features}
 Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig dafür ist die Klasse \texttt{EegFeatureExtractor}. Sie durchläuft für jede Session eine feste Abfolge von Schritten: Als Erstes wird die Session aus der Datenbank geladen, daraufhin wird sie auf ihre Verwertbarkeit geprüft. Anschließend wird sie in gleich große Segmente aufgeteilt, bei denen dann jeweils die spektralen sowie zeitstatistischen Merkmale berechnet werden. Die Ergebnisse werden alle im Objekt \texttt{SessionFeatures} gesammelt und schließlich vom \texttt{FeatureFormatter} in einen lesbaren Text umgewandelt, den das Sprachmodell verarbeiten kann. Im Folgenden wird chronologisch auf die einzelnen Schritte genauer eingegangen.
 
-\subsection{Vorbereitung} Sobald die Klasse erzeugt wird, werden vorab alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das \ac{FFT}-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet.
+\subsection{Vorbereitung} Wenn die Klasse erzeugt wird, werden im Konstruktor alle wiederverwendbaren Bestandteile angelegt. Dazu gehört das Hann-Fenster, das für die Fourier-Transformation vorab berechnet wird, um bei jedem Fenster nicht erneut erzeugt zu werden. Außerdem wird das \ac{FFT}-Objekt der Bibliothek JTransforms für die gewählte Fenstergröße instanziiert \autocite{jtransforms}. Der Standardwert für die Fenstergröße beträgt 256, kann aber variabel angepasst werden. Aus ihr und der Anzahl der Segmente wird die Mindestlänge \texttt{minSamples} der Session berechnet. Beide Werte werden multipliziert und ergeben so die Mindestanzahl der Samples.
 \newpage
 
 \subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 
-\subsection{Segmentierung} Die eigentliche Merkmalsextraktion beginnt mit der Methode \texttt{extract}. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Für jedes dieser Segmente werden separat die Merkmale (\autoref{lst:extract}) berechnet. Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\subsection{Segmentierung} Die eigentliche Merkmalsextraktion beginnt mit der Methode \texttt{extract}. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Die Methode \texttt{buildSegment} übernimmt jeweils ein Segment, für das dann die dazugehörigen Merkmale berechnet werden (\autoref{lst:extract}). Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
 \begin{lstlisting}[style=code, caption={[Zerlegung in Segmente]Zerlegung der Session in Segmente. Das letzte Segment nimmt die verbleibenden Samples auf, damit keine Messwerte verloren gehen.}, label={lst:extract}]
 public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
@@ -84,7 +84,7 @@ public SessionFeatures extract(List<SampleEntity> samples) {
 }
 \end{lstlisting}
 
-\noindent Die Anzahl der Samples ist nicht immer genau durch \texttt{SEGMENT\_COUNT} teilbar. Daher werden am Ende alle restlichen Samples in das letzte Segment aufgenommen. Dadurch gehen keine Messwerte verloren. \texttt{buildSegment} übernimmt die eigentliche Merkmalsextraktion je Segment.
+\noindent Die Anzahl der Samples ist nicht immer genau durch \texttt{SEGMENT\_COUNT} teilbar. Daher werden am Ende alle restlichen Samples in das letzte Segment aufgenommen. Dadurch gehen keine Messwerte verloren.
 \vspace{\baselineskip}
 
 \noindent In \texttt{buildSegment} werden zunächst Start- und Endzeit aus dem jeweils ersten sowie dem letzten Sample entnommen. Diese sind später für die aufbereiteten Zeitangaben je Segment wichtig. Anschließend werden die drei Merkmale berechnet. Dazu zählen die Band-Power je Kanal als spektrales Merkmal sowie die Spannweite je Kanal und der Anteil ungültiger Messwerte als zeitstatistische Merkmale. Die gesamten Werte werden, nachdem sie in einem Segment-Objekt gesammelt wurden, an \texttt{extract} zurückgegeben.
@@ -127,7 +127,7 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 }
 \end{lstlisting}
 
-\noindent Die Band-Power wird als Erstes je Kanal berechnet und schließlich bei der Aufbereitung für das Sprachmodell über alle acht Kanäle zusammengefasst. \texttt{windowCount} fungiert als Zähler, der sicherstellt, dass nur vollständig berechnete Fenster in die Mittelung eingehen.
+\noindent Die Band-Power wird zunächst getrennt nach Kanal berechnet. Erst bei der späteren Aufbereitung für das Sprachmodell wird sie über alle acht Kanäle zusammengefasst. Der Zähler \texttt{windowCount} hält fest, wie viele vollständige Fenster in ein Band eingegangen sind, und dient anschließend als Teiler bei der Mittelung.
 \vspace{\baselineskip}
 
 \noindent Da jedes Sample des Unicorn Hybrid Black alle acht Kanäle gleichzeitig beinhaltet, wird in der Methode \texttt{extractChannelSignal} das Signal eines einzelnen Kanals (z.\,B. Kanal 1) über alle Samples eines Segments gesammelt. Dadurch entsteht ein durchgehender Signalverlauf dieses Kanals, auf den dann die Fensterung angewendet wird.
