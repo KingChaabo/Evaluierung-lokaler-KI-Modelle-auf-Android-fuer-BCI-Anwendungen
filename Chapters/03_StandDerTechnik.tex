@@ -87,7 +87,7 @@ Die Übertragung der Messdaten an das Endgerät erfolgt drahtlos über Bluetooth
 \end{table}
 
 \subsection{Funktionsumfang der Anwendung}
-Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie eine Verbindung mit dem Unicorn Hybrid Black aufbaut, \ac{EEG}-Daten aufnimmt und/oder speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-\ac{FFT} visualisiert.
+Die als Grundlage für diese Arbeit genutzte Anwendung ist das Ergebnis eines Projektes aus einem vorangegangenen Praktikum. Sie bildet deren Basis, indem sie über die Unicorn Android API \autocite{unicornapi} eine Verbindung mit dem Unicorn Hybrid Black aufbaut, \ac{EEG}-Daten aufnimmt und/oder speichert. Diese Daten werden zugleich als Zeitverlauf oder als Live-\ac{FFT} visualisiert.
     Die Daten können dauerhaft gespeichert und zusätzlich als .db- oder .json-Datei exportiert werden. Der Datenpfad verläuft dabei vom Gerät über Bluetooth zu einem Hintergrunddienst, der die eingehenden Samples in der Datenbank ablegt.
 \subsection{Beitrag dieser Arbeit}
 Sprachmodelle sind immer häufiger bei der Auswertung von \ac{EEG}-Daten im Einsatz \autocite{eeg_llm_survey2025}. Sie werden unter anderem zur Erzeugung von Befundtexten oder zur Deutung von Signalen verwendet \autocite{eeg_llm_survey2025}. Als zukünftige Richtung nennen Babu u.\,a. eine echtzeitfähige Ausführung mit geringer Latenz, wie durch Quantisierung \autocite{eeg_llm_survey2025}. Für einen Einsatz in der Praxis müssen dazu der Speicherbedarf, die Stabilität und die Qualität des erzeugten Textes angemessen ausfallen.

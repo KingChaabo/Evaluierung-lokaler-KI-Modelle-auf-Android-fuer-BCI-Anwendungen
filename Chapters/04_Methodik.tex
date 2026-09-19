@@ -169,6 +169,9 @@ Zur Bewertung der Modelle werden mehrere Metriken erfasst, die sich in Latenz, R
     \end{tabularx}
 \end{table}
 
+\noindent Die Zeitmessungen laufen alle über \texttt{System.nanoTime()}, bei der die Differenz in Nanosekunden durch eine Million geteilt wird. So erhält man die Angabe als Millisekunde.
+\vspace{\baselineskip}
+
 \noindent Die Tokens pro Sekunde erlauben einen fairen Vergleich unabhängig von der Länge der Ausgabe. Eine reine Zeitmessung würde längere Antworten benachteiligen. Die Metrik erhält man, wie in folgender Gleichung dargestellt, indem man die Anzahl der erzeugten Token durch die gesamte Inferenzdauer teilt:
 \begin{equation}
     \text{Tokens/s} = \frac{N_{\text{Token}}}{t_{\text{Inferenz}}}
