@@ -4,7 +4,7 @@ Dieses Kapitel präsentiert die Durchführung (\autoref{subsec:messbedingungen})
 
 \section{Durchführung der Messungen}
 \label{sec:eval-durchfuehrung}
-Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten \ac{CSV}-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird, da sie durch das Initialisieren des Modells länger ausfallen kann. In den Rohdaten ist dieser Effekt bei einzelnen Kombinationen deutlich sichtbar, in anderen tritt er dagegen nicht auf. Ein Beispiel ist Gemma 3 1B, denn dort unterscheidet sich im Report-Szenario die Gesamtdauer bei der ersten Messung mit 13,1\,s gegenüber 6,7\,s in den folgenden vier Läufen. In die Mittelwerte fließen je Kombination die verbleibenden vier Messungen ein. Die rohen Messwerte liegen vollständig in \autoref{tab:app-rohdaten}.
+Wie schon in \autoref{sec:messprotokoll} beschrieben, wird die Eingabe für alle Modelle identisch gehalten. Insgesamt werden so alle neun Kombinationen aus drei Modellen und drei Szenarien auf dem Samsung Galaxy S23 vermessen und anschließend in einer neu erstellten \ac{CSV}-Datei protokolliert. Dies geschieht je fünfmal, wobei die erste Messung jeder Kombination verworfen wird, da sie durch das Initialisieren des Modells länger ausfallen kann. In den Rohdaten ist dieser Effekt bei einzelnen Kombinationen deutlich sichtbar, in anderen tritt er dagegen nicht auf. Ein Beispiel ist Gemma 3 1B, denn dort unterscheidet sich im Report-Szenario die Inferenzdauer bei der ersten Messung mit 13,1\,s gegenüber 6,7\,s in den folgenden vier Läufen. In die Mittelwerte fließen je Kombination die verbleibenden vier Messungen ein. Die rohen Messwerte liegen vollständig in \autoref{tab:app-rohdaten}.
 Vor der ersten Messung wird ein Aufwärmlauf durchgeführt.
 Als Eingabe für das Modell werden zwei Sessions verwendet. Beide sind beim Tragen des Unicorn-Hybrid-Headsets durch den Verfasser entstanden und haben eine Laufzeit von knapp über 120 Sekunden. Im Report- und Artefakt-Szenario wird allein Session A übergeben (\autoref{fig:ft-session-a}), im Vergleichsszenario zusätzlich Session B (\autoref{fig:ft-session-b}).
 % Kurzer Recap (kein Wiederholen der ganzen Methodik):
@@ -16,7 +16,7 @@ Als Eingabe für das Modell werden zwei Sessions verwendet. Beide sind beim Trag
 \section{Latenz}
 \label{sec:eval-latenz}
 Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
-% Deutung: welches Modell schneller? TTFT vs Gesamtdauer? Tokens/s als fairer Vergleich.
+% Deutung: welches Modell schneller? TTFT vs Inferenzdauer? Tokens/s als fairer Vergleich.
 \setlength{\tabcolsep}{4pt}
 \begin{table}[H]
     \centering
@@ -24,7 +24,7 @@ Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
     \label{tab:eval-latenz}
     \begin{tabular}{llrrrr}
         \toprule
-        \textbf{Modell} & \textbf{Szenario} & \textbf{Ladezeit (s)} & \textbf{TTFT (s)} & \textbf{Gesamtdauer (s)} & \textbf{Tok/s} \\
+        \textbf{Modell} & \textbf{Szenario} & \textbf{Ladezeit (s)} & \textbf{TTFT (s)} & \textbf{Inferenzdauer (s)} & \textbf{Tok/s} \\
         \midrule
         \multirow{3}{*}{Gemma 3 1B}
             & Report    & 0,45 & 1,94 $\pm$ 0,07 & 6,70 $\pm$ 0,14  & 21,65 $\pm$ 0,44 \\
@@ -47,10 +47,10 @@ Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
 \noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 25,34 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 2,87 Tok/s). Der Durchsatz ist dabei im Vergleichsszenario über alle Modelle hinweg am geringsten.
 Die \textbf{Ladezeit} ist bei Gemma 2 2B am höchsten; die beiden kleineren Modelle Gemma 3 1B und Qwen 2.5 1.5B laden schneller. Sie liegt durchweg unter einer Sekunde (zwischen 0,27 und 0,87\,s).
 Die \textbf{\ac{TTFT}} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die \ac{TTFT} mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,60\,s.
-Die \textbf{Gesamtdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
+Die \textbf{Inferenzdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
 \vspace{\baselineskip}
 
-\noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Gesamtdauer) deutlich höher als bei allen anderen Messungen.
+\noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Inferenzdauer) deutlich höher als bei allen anderen Messungen.
 Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgabe liefern. Der Inhalt bleibt gleich, ebenso die Anzahl der Tokens (\autoref{tab:app-rohdaten}). Die verbleibende Streuung geht dementsprechend auf die Messumgebung zurück und nicht auf unterschiedlich lange Antworten.
 \vspace{\baselineskip}
 
@@ -78,8 +78,8 @@ Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgab
     \addplot[eb, fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,1.94)+-(0,0.07) (Artefakt,1.95)+-(0,0.04) (Vergleich,5.86)+-(0,0.49)};
     \addplot[eb, fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,5.36)+-(0,0.10) (Artefakt,5.31)+-(0,0.13) (Vergleich,13.99)+-(0,0.55)};
     \addplot[eb, fill=mGemma2, draw=black]            coordinates {(Report,6.09)+-(0,0.49) (Artefakt,6.75)+-(0,0.38) (Vergleich,16.60)+-(0,0.23)};
-    % --- (b) Gesamtdauer ---
-    \nextgroupplot[ylabel={Gesamtdauer (s)}, title={(b) Gesamtdauer (s)}]
+    % --- (b) Inferenzdauer ---
+    \nextgroupplot[ylabel={Inferenzdauer (s)}, title={(b) Inferenzdauer (s)}]
     \addplot[eb, fill=mGemma1, draw=mGemma1!60!black] coordinates {(Report,6.70)+-(0,0.14) (Artefakt,11.44)+-(0,0.04) (Vergleich,9.89)+-(0,0.46)};
     \addplot[eb, fill=mQwen,   draw=mQwen!60!black]   coordinates {(Report,34.43)+-(0,0.24) (Artefakt,26.70)+-(0,0.12) (Vergleich,42.00)+-(0,1.94)};
     \addplot[eb, fill=mGemma2, draw=black]            coordinates {(Report,14.25)+-(0,0.49) (Artefakt,18.57)+-(0,0.58) (Vergleich,27.19)+-(0,0.13)};

@@ -61,7 +61,7 @@ Die Merkmalsextraktion ist im Paket \texttt{features} implementiert; zuständig 
 
 \subsection{Validierung} Die Methode \texttt{validate} prüft eine Session auf ihre Verwertbarkeit. Es gibt zwei Kriterien, die erfüllt sein müssen. Zum einen muss die Session mindestens so viele Samples enthalten, wie in \texttt{minSamples} berechnet wurde, ansonsten wird \texttt{TOO\_SHORT} zurückgegeben. Zum anderen muss der Anteil ungültiger Samples unter 50\,\% liegen. Ist dies nicht der Fall, wird \texttt{TOO\_MANY\_INVALID} zurückgegeben. Sind beide Kriterien erfüllt, wird die Analyse mit der Rückgabe von \texttt{OK} fortgesetzt, ansonsten wird dem Nutzer eine entsprechende Meldung angezeigt.
 
-\subsection{Segmentierung} Die eigentliche Merkmalsextraktion beginnt mit der Methode \texttt{extract}. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Die Methode \texttt{buildSegment} übernimmt jeweils ein Segment, für das dann die dazugehörigen Merkmale berechnet werden (\autoref{lst:extract}). Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
+\subsection{Segmentierung} Die eigentliche Merkmalsextraktion beginnt mit der Methode \texttt{extract}. Dort wird die Session in \texttt{SEGMENT\_COUNT} gleich große Segmente (hier vier) zerlegt. Die Methode \texttt{build\-Segment} übernimmt jeweils ein Segment, für das dann die dazugehörigen Merkmale berechnet werden (\autoref{lst:extract}). Die Aufteilung in gleich große Stücke hilft, den zeitlichen Verlauf innerhalb einer Session grob abzubilden. Die einzelnen Segmente werden jeweils im \texttt{SessionFeatures}-Objekt abgelegt.
 \begin{lstlisting}[style=code, caption={[Zerlegung in Segmente]Zerlegung der Session in Segmente. Das letzte Segment nimmt die verbleibenden Samples auf, damit keine Messwerte verloren gehen.}, label={lst:extract}]
 public SessionFeatures extract(List<SampleEntity> samples) {
     SessionFeatures features = new SessionFeatures();
@@ -127,14 +127,14 @@ private double[][] computeBandPower(List<SampleEntity> slice) {
 }
 \end{lstlisting}
 
-\noindent Die Band-Power wird zunächst getrennt nach Kanal berechnet. Erst bei der späteren Aufbereitung für das Sprachmodell wird sie über alle acht Kanäle zusammengefasst. Der Zähler \texttt{windowCount} hält fest, wie viele vollständige Fenster in ein Band eingegangen sind, und dient anschließend als Teiler bei der Mittelung.
+\noindent Die Band-Power wird zunächst getrennt nach Kanal berechnet. Erst bei der späteren Aufbereitung für das Sprachmodell wird sie über alle acht Kanäle zusammengefasst. Der Zähler \texttt{windowCount} hält fest, wie viele vollständige Fenster je Kanal verarbeitet wurden, und dient anschließend als Teiler bei der Mittelung.
 \vspace{\baselineskip}
 
 \noindent Da jedes Sample des Unicorn Hybrid Black alle acht Kanäle gleichzeitig beinhaltet, wird in der Methode \texttt{extractChannelSignal} das Signal eines einzelnen Kanals (z.\,B. Kanal 1) über alle Samples eines Segments gesammelt. Dadurch entsteht ein durchgehender Signalverlauf dieses Kanals, auf den dann die Fensterung angewendet wird.
 
 \newpage
 
-\noindent Die Methode \texttt{powerSpectrum} berechnet das Leistungsspektrum eines Fensters (\autoref{lst:powerspectrum}). Zunächst wird der Mittelwert (Gleichanteil) abgezogen. Danach wird das Hann-Fenster angewendet, um anschließend die Fourier-Transformation durchzuführen. Schließlich wird die Leistung je Frequenz-Bin berechnet, indem die Real- und Imaginärteile quadriert und summiert werden.
+\noindent Die Methode \texttt{powerSpectrum} berechnet das Leistungsspektrum eines Fensters (\autoref{lst:powerspectrum}). Als erstes wird der Mittelwert (Gleichanteil) abgezogen. Danach wird das Hann-Fenster angewendet, um anschließend die Fourier-Transformation durchzuführen. Schließlich wird die Leistung je Frequenz-Bin berechnet, indem die Real- und Imaginärteile quadriert und summiert werden.
 \begin{lstlisting}[style=code, caption={[Leistungsspektrum eines Fensters]Berechnung des Leistungsspektrums eines Fensters. Vor der Transformation werden der Gleichanteil entfernt und das Hann-Fenster angewendet.}, label={lst:powerspectrum}]
 private double[] powerSpectrum(double[] window) {
     // 1. Mittelwert (Gleichanteil) des Fensters berechnen
@@ -163,10 +163,10 @@ private double[] powerSpectrum(double[] window) {
 }
 \end{lstlisting}
 
-\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Sie bietet eine Java-basierte Implementierung der Fourier-Transformation, die den Aufruf \texttt{realForward} für reelle Eingangssignale bereitstellt. Die Ergebnisse werden dann in dasselbe Array geschrieben. Die geraden Indizes enthalten die Realteile, während die ungeraden die Imaginärteile der Frequenz-Bins enthalten.
+\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Mit ihr wird die Fourier-Transformation in der Programmiersprache Java berechnet. Dafür wird der Aufruf \texttt{realForward} verwendet, der reelle Eingangssignale entgegennimmt. Die Ergebnisse werden dann in dasselbe Array geschrieben. Die geraden Indizes enthalten die Realteile, während die ungeraden die Imaginärteile der Frequenz-Bins enthalten.
 \newpage
 
-\subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Beziehung \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
+\subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Formel \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
 \begin{lstlisting}[style=code, caption={[Zuordnung zu den Bändern]Zuordnung der Frequenz-Bins zu den Bändern. Jeder Bin-Index wird in eine Frequenz umgerechnet und dem passenden Band zugeordnet.}, label={lst:sumbands}]
 private double[] sumBands(double[] power) {
     double[] bandSum = new double[NUM_BANDS];
@@ -187,19 +187,19 @@ private double[] sumBands(double[] power) {
 
 \noindent Die Einteilung in die Frequenzbänder ist im Aufzählungstyp (\texttt{enum}) \texttt{FrequencyBand} definiert, in dem jedes Band mit seiner unteren und oberen Grenzfrequenz hinterlegt ist. Die verwendeten Grenzen entsprechen den in \autoref{tab:eegbaender} genannten Bereichen, wobei das Gamma-Band auf 45\,Hz begrenzt ist.
 
-\subsection{Zeitstatistische Merkmale} Als erstes der zwei zeitstatistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind starke Ausschläge oder Drift sichtbar. Der zweite zeitstatistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Vollständigkeit der Übertragung.
+\subsection{Zeitstatistische Merkmale} Als erstes der zwei zeitstatistischen Merkmale wird der Peak-to-Peak-Wert berechnet. Dieser stellt die Spannweite je Kanal dar. Er beschreibt die Differenz zwischen dem höchsten und dem niedrigsten Messwert. Dadurch sind stärkere Schwankungen oder Veränderungen gegenüber der Grundlinie in den Signalen erkennbar. Der zweite zeitstatistische Wert ist der Anteil der ungültigen Samples (\texttt{valid == 0}) an der Gesamtzahl im Segment. Er dient als Maß für die Vollständigkeit der Übertragung.
 \vspace{\baselineskip}
 
 \noindent Bei der Berechnung des Peak-to-Peak-Werts wird das Segment einmal durchlaufen. Dabei werden alle acht Kanäle pro Sample verglichen, und das jeweils n-mal bis zum Ende eines Segments. Es merkt sich den niedrigsten sowie den höchsten Wert und kann anhand der Differenz aus beiden Werten die Spannweite berechnen.
 Bei dem Anteil der ungültigen Messwerte wird jedes Sample eines Segments auf sein Gültigkeitskennzeichen geprüft. Steht dieses auf 0, wird der Zähler an ungültigen Samples erhöht. Abschließend wird der Zähler durch die Gesamtzahl aller Samples dividiert. Dadurch erhält man den relativen Anteil an ungültigen Samples.
 
-\subsection{Ergebnis} Abschließend werden die berechneten Merkmale in einem Objekt \texttt{SessionFeatures} gesammelt. Dieses dient als Datencontainer, der alle Daten der Session sowie die Liste der Segmente mit ihren Merkmalen enthält. Das Ergebnis dieser Schritte ist die Grundlage für die anschließende Aufbereitung.
+\subsection{Ergebnis} Alle Schritte führen dazu, dass die berechneten Merkmale in einem Objekt \texttt{Session\-Features} gesammelt werden. Es stellt einen Datencontainer dar und enthält die Daten der Session sowie die Liste der Segmente mit ihren Merkmalen. Das Ergebnis ist anschließend die Grundlage der Aufbereitung für das Sprachmodell.
 \vspace{\baselineskip}
 
-\noindent Das Objekt beinhaltet die Kennung der Session, ihre Dauer, die Anzahl der Samples sowie die Liste der Segmente. Jedes Segment besteht aus seiner Start- und Endzeit, der Band-Power der acht Kanäle in jeweils fünf Bändern, also 40 Werten je Segment, dazu den acht Spannweiten je Kanal und dem Anteil ungültiger Messwerte.
+\noindent Das Objekt beinhaltet die Kennung der Session, ihre Dauer, die Anzahl der Samples sowie die Liste der Segmente. Jedes Segment besteht aus seiner Start- und Endzeit, der Band-Power der acht Kanäle in jeweils fünf Bändern, also 40 Werten je Segment, dazu den Spannweiten je Kanal, also insgesamt acht Werten, und dem Anteil ungültiger Messwerte.
 Die Merkmale liegen an dieser Stelle noch kanalweise und als reine Zahlenwerte vor. Erst der \texttt{FeatureFormatter} fasst sie über die Kanäle zusammen und wandelt sie in Text um.
 
-\subsection{Aufbereitung für das Sprachmodell} Die Klasse \texttt{FeatureFormatter} wandelt die Merkmale in ein lesbares Format für das Sprachmodell um. Zunächst wird die Band-Power jedes Bandes über alle acht Kanäle summiert und durch die Summe aller Bänder geteilt, sodass sich ein Prozentwert je Band ergibt (\autoref{lst:relbandpower}). Zusätzlich werden die Peak-to-Peak-Werte der acht Kanäle je Segment verglichen, um den Kanal mit dem größten Ausschlag zu bestimmen.
+\subsection{Aufbereitung für das Sprachmodell} Die Klasse \texttt{FeatureFormatter} wandelt die gesamten Merkmale in ein Format um, das für das Modell verständlicher ist. Die Band-Power wird hier je Band über alle acht Kanäle summiert. Diese wird dann durch die Summe aller Bänder geteilt, sodass sich die relative Band-Power als Prozentwert ergibt (\autoref{lst:relbandpower}). Zusätzlich werden die Peak-to-Peak-Werte der acht Kanäle je Segment verglichen, um den Kanal mit dem größten Ausschlag zu bestimmen.
 \begin{lstlisting}[style=code, caption={[Relative Band-Power]Umrechnung der absoluten Band-Power in relative Anteile. Die Werte werden über alle Kanäle summiert und als Prozentanteil ausgegeben.}, label={lst:relbandpower}]
 private double[] relativeBandPower(SessionFeatures.Segment seg) {
     int channelNumber = seg.bandPower.length;
@@ -261,11 +261,10 @@ Abschnitt 4 (45.0--60.0s):\\
 
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
-Die gesamte Integration rund um das Sprachmodell ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die für die gesamte Kommunikation mit dem Modell zuständig ist. Dabei hat die Klasse drei Kernaufgaben. Dazu zählen das Laden, Anfragen und Freigeben des Modells. Die MediaPipe LLM Inference API wird für die lokale Ausführung des Modells verwendet \autocite{mediapipe_llm}, die als Abhängigkeit \texttt{com.google.mediapipe:tasks-
-\noindent genai} eingebunden ist. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem lokalen Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Dabei ist die Trennung der Modelle von der Anwendung bewusst gewählt. Die Anwendung enthält die Modelle somit nicht selbst, um Speicher der gesamten Applikation zu sparen. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Darum müssen die Modelle vor Beginn der ersten Analyse auf das Gerät übertragen werden. Im Weiteren wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
+Die Integration des Sprachmodells ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die die Kommunikation mit dem Modell übernimmt. Sie hat drei Kernaufgaben: das Laden, das Anfragen und das Freigeben des Modells. Für die lokale Ausführung wird die MediaPipe LLM Inference API verwendet \autocite{mediapipe_llm}. Sie ist als Abhängigkeit \texttt{com.google.media\-pipe:tasks\-genai} eingebunden. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Diese Trennung von der Anwendung ist bewusst gewählt, denn die Modelle belegen so keinen Speicher innerhalb der Anwendung. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Vor der ersten Analyse müssen sie daher auf das Gerät übertragen werden. Im Folgenden wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} anhand einer kurzen Kennung wie \texttt{1b}, \texttt{2b} oder \texttt{qwen} selektiert. Falls die Kennung ungültig ist, wird automatisch das kleinste Modell ausgewählt. Die Auswahl des Modells geschieht zuvor im Analyse-Dialog oder im Benchmark, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
 
-\subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen technisch einheitlichen Vergleich zu bieten (\autoref{ch:methodik}). Erzeugt und einsatzbereit ist das Modell anschließend nach dem Aufruf von \texttt{createFromOptions}.
+\subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen technisch einheitlichen Vergleich zu bieten (\autoref{ch:methodik}). Nach dem Aufruf von \texttt{create\-From\-Options} ist das Modell schließlich einsatzbereit.
 \begin{lstlisting}[style=code, caption={[Laden des Modells]Laden und Konfigurieren des Modells. Kontextgröße und Sampling-Obergrenze sind für alle Modelle identisch gesetzt.}, label={lst:llmload}]
 public void load(Context context) {
     LlmInferenceOptions options = LlmInferenceOptions.builder()
@@ -282,8 +281,8 @@ public void load(Context context) {
 \end{lstlisting}
 
 \subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{gene-
-\noindent rateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Gesamtdauer zurückgegeben.
-\begin{lstlisting}[style=code, caption={[Streamende Ausgabe]Streamende Ausgabe mit Messung der Latenz. Beim ersten Teilstück wird die TTFT festgehalten, am Ende zusätzlich die Gesamtdauer.}, label={lst:llmstream}]
+\noindent rateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Inferenzdauer zurückgegeben.
+\begin{lstlisting}[style=code, caption={[Streamende Ausgabe]Streamende Ausgabe mit Messung der Latenz. Beim ersten Teilstück wird die TTFT festgehalten, am Ende zusätzlich die Inferenzdauer.}, label={lst:llmstream}]
 public void questionStreaming(String prompt, StreamCallback callback) {
     StringBuilder full = new StringBuilder();
     long start = System.nanoTime();
@@ -308,27 +307,23 @@ public void questionStreaming(String prompt, StreamCallback callback) {
 
 \noindent Abgesehen von der streamenden Ausgabe gibt es noch eine einfache Anfrage, die auf die vollständige Antwort wartet und sie am Stück zurückgibt. Diese Anfrage wird im Benchmark für die Aufwärmmessung genutzt, da weder eine Live-Anzeige noch die Latenzwerte benötigt werden.
 
-\subsection{Zählen der Token} Die \texttt{LlmEngine} stellt die Methode \texttt{tokenCount} bereit, die die Anzahl der Tokens berechnet. Diese sind für die Metriken der Evaluation wichtig. Dabei ruft \texttt{tokenCount} die Methode \texttt{sizeInTokens} der MediaPipe-Schnittstelle auf. Gezählt wird immer anhand des Tokenizers, den das jeweils verwendete Modell bereitstellt. Diese Logik wird einmal bei dem Prompt selbst verwendet, woraus sich die Anzahl der Eingabe-Tokens ergibt, und bei der anschließenden Ausgabe des Modells, woraus zusammen mit der Inferenzdauer die Tokens pro Sekunde berechnet werden. Der Aufruf erfolgt dabei jeweils außerhalb des Callbacks der MediaPipe-Schnittstelle.
+\subsection{Zählen der Token} Die \texttt{LlmEngine} stellt die Methode \texttt{tokenCount} bereit, die die Anzahl der Tokens berechnet. Diese sind für die Metriken der Evaluation wichtig. Dabei ruft \texttt{tokenCount} die Methode \texttt{sizeInTokens} der MediaPipe-Schnittstelle auf. Gezählt wird immer anhand des Tokenizers, den das jeweils verwendete Modell bereitstellt. Angewendet wird das an zwei Stellen. Der Prompt selbst ergibt die Anzahl der Eingabe-Tokens, die anschließende Ausgabe des Modells die Anzahl der Ausgabe-Tokens. Aus dieser und der Inferenzdauer werden die Tokens pro Sekunde berechnet. Der Aufruf erfolgt dabei jeweils außerhalb des Callbacks der MediaPipe-Schnittstelle.
 
 \subsection{Freigabe} Am Ende wird das Modell über \texttt{close} freigegeben. Dabei wird die MediaPipe-Instanz geschlossen und die Referenz zurückgesetzt. Das ist nötig, weil ein geladenes Modell mehrere Gigabyte Arbeitsspeicher belegt, der sonst bis zum Beenden der Anwendung reserviert bliebe. In der Analyse geschieht das nach dem Ende der Ausgabe, im Benchmark nach jeder Konfiguration.
 
 \section{Prompt-Design und iterative Optimierung}
 \label{sec:impl-prompt}
 Wie schon in \autoref{sec:szenarien} erwähnt, besteht der Prompt aus den aufbereiteten Merkmalen mit einer szenariospezifischen Anweisung. Dieser ist für alle Modelle identisch.
-Die Eingabe wird hierbei als beschrifteter Text mit allen Merkmalen übergeben. Dadurch steht jeder Wert mit seiner Bezeichnung und Einheit im Text. Es sind keine Zuordnungen von Spalten nötig, wie sie in einer Tabelle üblich sind. Eine Tabelle würde zusätzliche Trennzeichen erfordern, die Tokens kosten würden, ohne überhaupt sinnvolle Information zusätzlich zu bieten.
-Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zum finalen Prompt war iterativ. Die erste Version enthielt je Szenario die jeweilige Aufgabe, eine Formatvorgabe ohne Begrüßung und den Hinweis, nichts zu erfinden. Ursprünglich hieß die Kennzahl zur Signalqualität noch \enquote{Qualität: X\,\% ungültig}. Diese wurde an Gemma 2 2B geprüft und jeweils in zwei Durchgängen angepasst: zuerst der Merkmalstext, danach der Prompt.
+Die Eingabe wird hierbei als beschrifteter Text mit allen Merkmalen übergeben. So ist jeder Wert mit seiner Bezeichnung, seiner Einheit und dem zugehörigen Abschnitt im Text enthalten. Es sind keine Zuordnungen von Spalten nötig, wie sie in einer Tabelle üblich sind. Eine Tabelle würde zusätzliche Trennzeichen erfordern, die Tokens kosten würden, ohne überhaupt sinnvolle Information zusätzlich zu bieten.
+Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zum finalen Prompt war iterativ. Die erste Version enthielt je Szenario die jeweilige Aufgabe, eine Formatvorgabe ohne Begrüßung und den Hinweis, nichts zu erfinden. Diese wurde an Gemma 2 2B geprüft und in zwei Durchgängen angepasst. Als Erstes wurde der Merkmalstext geändert, danach der Prompt. Wie sich der Prompt entwickelt hat und welche Probleme dadurch verhindert wurden, wird im Folgenden aufgezeigt.
 \vspace{\baselineskip}
 
-\noindent Bei der Optimierung des Prompts ergaben sich folgende Design-Vorgaben, die jeweils auf ein beobachtetes Problem der frühen Ausgaben zurückgehen:
-\begin{itemize}
-\item \textbf{Datentreue:} Dem Modell wird klargestellt, nur die genannten Werte zu verwenden. Dies soll verhindern, dass das Modell selbst neue Annahmen trifft. In früheren Ausgaben wurden fälschlicherweise Begriffe wie \enquote{Dominanzindex} verwendet.
-\item \textbf{Reines Textformat:} Die Ausgabe des Modells soll textuelle Informationen erzeugen. Es wird vorgegeben, dass Sonderzeichen und Markdown verboten werden. Zuvor entstanden Formatierungszeichen wie \texttt{**} in den Ausgaben.
-\item \textbf{Eindeutige Merkmalsbenennung:} Im \texttt{FeatureFormatter} wird der Anteil ungültiger Werte als \enquote{Ungültige Messwerte: X\,\%} statt als \enquote{Qualität: X\,\%} ausgegeben. Zuvor interpretierte das Modell \enquote{Qualität: X\,\%} fälschlich als schlechte Qualität.
-\item \textbf{Begrenzung der Interpretation:} Der Prompt untersagt falsche Interpretationen wie zum Beispiel Deutungen in Richtung medizinischer Diagnosen. Solche Fälle haben davor ein Problem dargestellt.
-\item \textbf{Kompaktheit:} Wenige Sätze, keine Begrüßung oder Rückfragen.
-\end{itemize}
+\noindent Dabei ergaben sich bei der Optimierung des Prompts Design-Vorgaben, die jeweils die direkte Antwort auf ein zuvor aufgetretenes Problem sind. Die erste betrifft die Einhaltung der verwendeten Daten. Das wird dem Modell klargestellt, da sonst wie in früheren Ausgaben Begriffe wie \enquote{Dominanzindex} auftreten. Ebenso wird ein reines Textformat vorgegeben. Die Ausgabe des Modells soll textuelle Informationen erzeugen, weshalb Sonderzeichen und Markdown verboten werden. Zuvor entstanden Formatierungszeichen wie \texttt{**} in den Ausgaben.
+\vspace{\baselineskip}
 
-\noindent Die Optimierung endete, sobald Gemma 2 2B als Referenzmodell die Vorgaben einhielt. Es wurde bewusst darauf verzichtet, jedes Modell einzeln zu optimieren, da dies Unterschiede zwischen den Modellen verdecken könnte, die in der Evaluation wichtig werden. Der finale Prompt wurde eingefroren und bildete unverändert die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
+\noindent Eine weitere Vorgabe ist die eindeutige Merkmalsbenennung. Der \texttt{FeatureFormatter} gibt den Anteil ungültiger Werte deshalb als \enquote{Ungültige Messwerte: X\,\%} aus. Zuvor hieß die Zeile \enquote{Qualität: X\,\%}, was das Modell fälschlich als schlechte Qualität las. Hinzu kommt die Begrenzung der Interpretation. Der Prompt untersagt falsche Interpretationen wie zum Beispiel Deutungen in Richtung medizinischer Diagnosen, die davor ein Problem dargestellt haben. Als Letztes wird gefordert, die Ausgabe kompakt zu halten. Die Antwort soll aus wenigen Sätzen bestehen, ohne Begrüßung und ohne Rückfragen.
+
+\noindent Die Optimierung endete, sobald Gemma 2 2B als Referenzmodell die Vorgaben einhielt. Die Eingabe wird nicht an jedes Modell einzeln optimiert, sondern nur an das Referenzmodell Gemma 2 2B. Ansonsten könnten Unterschiede zwischen den Modellen verdeckt bleiben. Welche Auswirkungen dies dementsprechend hat, wird in \autoref{sec:einschraenkungen} eingeordnet. Der finale Prompt wurde eingefroren und bildete unverändert die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
 \begin{lstlisting}[style=code, breaklines=true, caption={[Prompts je Szenario]Aufbau der Prompts je Szenario in der finalen, eingefrorenen Fassung. Alle drei enden mit dem aufbereiteten Merkmalstext.}, label={lst:prompts}]
 // Szenario 1: lesbarer Session-Bericht aus den Messwerten
 public String buildReport(String featureText) {
@@ -366,7 +361,7 @@ public String buildVergleich(String featureTextA, String featureTextB) {
 
 \section{Benutzeroberfläche}
 \label{sec:impl-ui}
-Als Grundlage für das Auslösen der neuen Funktionen dient die Session-Detailseite, die es schon in der ursprünglichen Anwendung gab (\autoref{fig:session-detail}). Hinzugekommen sind zwei neue Knöpfe. Die Benutzeroberfläche, die für die KI-Analyse zuständig ist, befindet sich im Paket analyse. Die Oberfläche startet mit dem Auslösen des Analyseknopfes. Daraufhin erfolgt ein Dialog zum Einstellen der Parameter und anschließend die Anzeige der Ergebnisse. Zudem gibt es einen Benchmark-Knopf, der über einen weiteren Dialog die automatisierte Messreihe startet.
+Für die Benutzeroberfläche werden zwei verschiedene Arten verwendet. Zum einen eine Activity, die das Fenster bereitstellt, in dem die Anwendung ihre Oberfläche zeichnet und das in der Regel den gesamten Bildschirm ausfüllt \autocite{android_activity}. Zum anderen ein Dialog, also ein kleines Fenster, das den Bildschirm nicht ausfüllt und eine Entscheidung oder eine Eingabe des Nutzers verlangt \autocite{android_dialogs}. Als Grundlage für das Auslösen der neuen Funktionen dient die \texttt{SessionDetail\-Activity}, die es schon in der ursprünglichen Anwendung gab (\autoref{fig:session-detail}). Hinzugekommen sind zwei neue Knöpfe. Die Benutzeroberfläche, die für die KI-Analyse zuständig ist, befindet sich im Paket analyse. Die Oberfläche startet mit dem Auslösen des Analyseknopfes. Daraufhin erfolgt ein Dialog zum Einstellen der Parameter und anschließend die Anzeige der Ergebnisse. Zudem gibt es einen Benchmark-Knopf, der über einen weiteren Dialog die automatisierte Messreihe startet.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -422,7 +417,7 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
-Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst der Prompt erstellt. Dieser wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell gestellt. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst die gesamte Eingabe erstellt. Diese wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell übergeben. Da die Ausgabe streamend verläuft, ist ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
 \begin{lstlisting}[style=code, caption={[Live-Anzeige der Ausgabe]Live-Anzeige der streamenden Ausgabe. Jedes Teilstück wird angehängt statt gesetzt, damit der Text während der Erzeugung wächst.}, label={lst:onchunk}]
 @Override
 public void onChunk(String partial) {
@@ -439,7 +434,7 @@ public void onChunk(String partial) {
 \noindent Ein Modell kann mehrere Gigabyte groß sein, weshalb die Analyse in einem eigenen Thread läuft. Ansonsten könnte das Laden die Oberfläche blockieren. Änderungen an der Benutzeroberfläche können in Android nur im Haupt-Thread erfolgen, weshalb dafür \texttt{runOnUiThread} verwendet wird. Falls beim Vorbereiten der Daten oder beim Laden des Modells ein Fehler auftreten sollte, wird eine dementsprechende Fehlermeldung im Textbereich angezeigt, sodass kein Absturz erfolgt.
 \vspace{\baselineskip}
 
-\noindent Die Ergebnis-Ansicht zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. Sobald die Ausgabe vollständig ist, erscheint unten rechts ein Knopf zum Teilen der Analyse. \autoref{fig:analyse-ergebnis} zeigt die Ansicht.
+\noindent Die Ergebnis-Ansicht (\autoref{fig:analyse-ergebnis}) zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. Sobald die Ausgabe vollständig ist, erscheint unten rechts ein Knopf zum Teilen der Analyse.
 
 
 \begin{figure}[H]
@@ -467,7 +462,7 @@ public void onChunk(String partial) {
     \label{fig:analyse-ergebnis}
 \end{figure}
 
-\noindent Der Teilen-Knopf erscheint, sobald die erzeugte Analyse abgeschlossen ist. Mit diesem kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist. 
+\noindent Mit dem Knopf kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist. 
 Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Nutzer den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
 \vspace{\baselineskip}
 
@@ -493,7 +488,7 @@ Neben dem Analyse-Knopf gibt es in derselben Ansicht noch einen Benchmark-Knopf,
     \label{fig:benchmark-dialog}
 \end{figure}
 
-\noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese befindet sich in keiner eigenen Klasse, sondern in \texttt{SessionDetailActivity}, welche schon in der bestehenden Anwendung vorhanden war. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben.\newpage
+\noindent Zuständig für den Benchmark-Dialog ist die Methode \texttt{showBenchmarkDialog}. Diese ist in keiner eigenen Klasse, sondern in \texttt{SessionDetail\-Activity}, die schon zur bestehenden Anwendung gehört. Die restliche Benchmark-Logik ist in \autoref{sec:impl-benchmark} beschrieben.\newpage
 \section{Benchmark}
 \label{sec:impl-benchmark}
 Die gesamte Logik des Benchmarks befindet sich im Paket \texttt{benchmark}. Von dort aus werden alle Messungen, die in \autoref{sec:messprotokoll} definiert sind, automatisiert durchgeführt. Dabei werden alle Kombinationen durchlaufen und in die \ac{CSV}-Datei geschrieben. Die Implementierung wird in drei Klassen aufgeteilt: \texttt{BenchmarkRunner} steuert den Ablauf, \texttt{Metrics} liefert die Mess\-werte für Speicher und Akku, und \texttt{BenchmarkLogger} schreibt die Ergebnisse. Den Start bildet der Benchmark-Button in der Session-Detailansicht. 

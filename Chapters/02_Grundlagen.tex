@@ -65,6 +65,8 @@ Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigensc
     \label{eq:power}
 \end{equation}
 
+\noindent Der Zusatz \enquote{schnell} bezieht sich auf den Rechenaufwand. Die \ac{FFT} zerlegt das Signal dafür wiederholt in zwei Hälften. Bei 256 Werten sind das acht Stufen, auf denen jeweils jeder Wert einmal verarbeitet wird. Der Aufwand liegt damit in der Größenordnung von $N \log_2 N$. Die direkte Berechnung müsste dagegen für jeden der $N$ Ausgabewerte alle $N$ Eingabewerte durchlaufen und wächst proportional zu $N^2$ \autocite{smith1997dsp}. In dieser Form setzt die Zerlegung voraus, dass $N$ eine Zweierpotenz ist.
+
 \noindent Ein zentrales Merkmal der \ac{FFT} ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
 \begin{equation}
     \Delta f = \frac{f_s}{N}.
