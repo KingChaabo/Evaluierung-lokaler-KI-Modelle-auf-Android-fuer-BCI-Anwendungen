@@ -4,9 +4,9 @@ Lokal ausgeführte Sprachmodelle lassen sich inzwischen mit Gehirn"=Computer"=Sc
 
 \section{Motivation}
 \label{sec:motivation}
-Das \ac{EEG} ist ein Verfahren zur nicht-invasiven Aufzeichnung der elektrischen Aktivität des Gehirns \autocite{blum2017}.
+Ein \ac{EEG} wird verwendet, um nicht-invasive Aufzeichnungen des Gehirns zu erstellen, und zwar mithilfe der elektrischen Aktivität \autocite{blum2017}.
 Eine Gehirn"=Computer"=Schnittstelle, ein sogenanntes \ac{BCI}, zielt anhand dieser Grundlage darauf ab, kognitive Zustände in Echtzeit zu identifizieren, um unter anderem eine Steuerung und Kommunikation ohne den Einsatz von Muskeln zu ermöglichen \autocite{blum2017, wolpaw2013}.
-Vor allem körperlich stark beeinträchtigte Menschen profitieren von \ac{BCI}-Systemen. Gelähmten Personen ist es unter anderem so möglich, \ac{BCI}-basierte Buchstabiersysteme zu nutzen, die ein wichtiger Kommunikationskanal sind \autocite{blum2017}.
+Vor allem Menschen, die körperlich stark beeinträchtigt sind, können von \ac{BCI}-Systemen profitieren. Gelähmten Personen ist es unter anderem so möglich, \ac{BCI}-basierte Buchstabiersysteme zu nutzen, die ein wichtiger Kommunikationskanal sind \autocite{blum2017}.
 \vspace{\baselineskip}
 
 \noindent Übliche \ac{EEG}-Laborhardware, wie sie stationär verwendet wird, ist groß und unpraktisch für den Gebrauch außerhalb einer Laborumgebung \autocite{blum2017}. Kabellose, am Kopf getragene \ac{EEG}-Geräte wie das Unicorn Hybrid Black ermöglichen dagegen Messungen außerhalb des Labors \autocite{unicornproduct, blum2017}.
@@ -17,10 +17,10 @@ Deutlich wird es im Lehrkontext, bei dem das Unicorn Hybrid Black zum Einsatz ko
 \noindent Große Sprachmodelle, sogenannte \acp{LLM}, haben die Verarbeitung natürlicher Sprache stark geprägt \autocite{edgellm_review}. Durch die Kombination lokaler Sprachmodelle und der aufbereiteten \ac{EEG}-Daten ist es möglich, verständliche Beschreibungen zu erzeugen. Ein solches Modell soll dabei eine unterstützende Funktion übernehmen.
 \vspace{\baselineskip}
 
-\noindent Für die vorliegende Arbeit ist die lokale Ausführung eine Voraussetzung. In diesem Umfeld gibt es keine Garantie für eine Internetverbindung oder einen Zugang zu einem Cloud-Dienst. Hinzu kommt, dass \ac{EEG}-Aufzeichnungen personenbezogene Daten sind, die das Gerät nicht verlassen sollen. Eine lokale Verarbeitung kommt ohne Netzanbindung aus und hält die Daten auf dem Gerät \autocite{edgellm_review}.
+\noindent Für die vorliegende Arbeit ist die lokale Ausführung eine Voraussetzung. In diesem Umfeld gibt es keine Garantie für eine Internetverbindung oder einen Zugang zu einem Cloud-Dienst. Hinzu kommt, dass die \ac{EEG}-Aufzeichnungen der Nutzer das Gerät nicht verlassen sollen. Eine lokale Verarbeitung kommt ohne Netzanbindung aus und hält die Daten auf dem Gerät \autocite{edgellm_review}.
 \vspace{\baselineskip}
 
-\noindent Der Betrieb solcher Modelle auf Mobilgeräten wird jedoch durch erhebliche rechentechnische Limitierungen sowie durch einen stark begrenzten Arbeits- und Energiespeicher eingeschränkt \autocite{edgellm_review}.
+\noindent Der Betrieb solcher Modelle auf Mobilgeräten stößt jedoch an Grenzen bei Rechenleistung und Arbeitsspeicher \autocite{edgellm_review}.
 Die Motivation dieser Arbeit liegt damit darin, eine Lücke zu füllen, die zwischen dem mobilen Aufzeichnen und dem Verständnis der Daten im Lehrkontext entsteht. Genau da sollen lokal ausgeführte Sprachmodelle ansetzen, um unterstützend zu wirken.
 Inwieweit sich lokale Sprachmodelle unter diesen ressourcenbeschränkten Bedingungen tatsächlich für die Verarbeitung von \ac{EEG}-Daten eignen, ist bislang offen.
 
@@ -32,7 +32,7 @@ Das Ziel dieser Arbeit ist die Untersuchung, ob und inwieweit sich lokal auf And
 \itshape Inwieweit eignen sich lokal auf Android-Geräten ausgeführte Sprachmodelle für die Verarbeitung von \ac{EEG}-Daten im Rahmen mobiler Brain"=Computer"=Interface-Anwendungen?
 \end{quote}
 
-\noindent Um diese Frage zu beantworten, wird eine bestehende Android-\ac{EEG}-Anwendung um lokale Sprachmodelle erweitert, die dann aufbereitete \ac{EEG}-Merkmale in verständliche, textuelle Beschreibungen übersetzen. Dabei werden drei verschiedene Anwendungsszenarien sowie drei verschiedene Sprachmodelle mit unterschiedlicher Größe und unterschiedlichem Hersteller betrachtet. So ist es möglich, sowohl den Einfluss der Modellgröße als auch des Herstellers auf die jeweiligen Szenarien zu untersuchen.
+\noindent Um diese Frage zu beantworten, wird eine bestehende Android-\ac{EEG}-Anwendung um lokale Sprachmodelle erweitert, die dann aufbereitete \ac{EEG}-Merkmale in verständliche, textuelle Beschreibungen übersetzen. Dabei werden drei verschiedene Anwendungsszenarien sowie drei verschiedene Sprachmodelle mit unterschiedlicher Größe und unterschiedlichem Hersteller betrachtet. So sollte erkennbar sein, wie viel Einfluss die verschiedenen Modellgrößen sowie Hersteller haben.
 \vspace{\baselineskip}
 
 \noindent Die Eignung wird anhand verschiedener Kriterien bewertet. Dazu zählen Latenz, Ressourcenverbrauch, Stabilität sowie die Qualität der ausgegebenen Texte. Darüber hinaus werden praktische Einschränkungen wie die Geräteabhängigkeit systemintegrierter Modelle dokumentiert. Das Ergebnis dieser Arbeit liefert einen systematischen Vergleich, aus dem sich Handlungsempfehlungen für den Einsatz lokaler Sprachmodelle in mobilen \ac{BCI}-Anwendungen ableiten lassen.

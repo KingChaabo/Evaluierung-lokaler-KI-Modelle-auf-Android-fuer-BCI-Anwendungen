@@ -47,7 +47,7 @@ Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
 \noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 25,34 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 2,87 Tok/s). Der Durchsatz ist dabei im Vergleichsszenario über alle Modelle hinweg am geringsten.
 Die \textbf{Ladezeit} ist bei Gemma 2 2B am höchsten; die beiden kleineren Modelle Gemma 3 1B und Qwen 2.5 1.5B laden schneller. Sie liegt durchweg unter einer Sekunde (zwischen 0,27 und 0,87\,s).
 Die \textbf{\ac{TTFT}} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die \ac{TTFT} mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,60\,s.
-Die \textbf{Inferenzdauer} reicht von etwa 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
+Die \textbf{Inferenzdauer} reicht von 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
 \vspace{\baselineskip}
 
 \noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Inferenzdauer) deutlich höher als bei allen anderen Messungen.
@@ -153,7 +153,7 @@ Darauffolgend werden die Ergebnisse der Messungen zum Ressourcenverbrauch vorges
 
 \noindent \autoref{tab:eval-ressourcen} zeigt, dass der \textbf{\ac{RAM} (\ac{PSS})} eine klare Rangfolge zwischen den Modellen besitzt. Während Gemma 3 1B mit 1482\,MB den geringsten Wert aufweist, liegt Qwen in der Mitte (ca.\ 2000\,MB) und Gemma 2 2B am höchsten (3798\,MB).
 Gemma 3 1B liegt beim Punkt \textbf{Akkuverbrauch} mit ca.\ 70\,mAh vorne, dagegen liegen Qwen 2.5 1.5B mit ca.\ 200\,mAh und Gemma 2 2B mit ca.\ 100\,mAh deutlich höher, wobei Qwen sogar über dem 2B-Modell liegt.
-Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht. Über die gesamte Messreihe fällt die Restladung von rund 2234\,mAh auf 1830\,mAh, was einem Gesamtverbrauch von etwa 404\,mAh in gut 16 Minuten entspricht (\autoref{tab:app-rohdaten}).
+Auffällig ist, dass das Modell Qwen am meisten Akku verbraucht. Über die gesamte Messreihe fällt die Restladung von rund 2234\,mAh auf 1830\,mAh, was einem Gesamtverbrauch von rund 404\,mAh in gut 16 Minuten entspricht (\autoref{tab:app-rohdaten}).
 \vspace{\baselineskip}
 \newpage
 

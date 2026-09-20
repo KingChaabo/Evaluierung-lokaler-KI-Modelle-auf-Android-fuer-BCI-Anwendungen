@@ -1,27 +1,27 @@
 \chapter{Grundlagen}
 \label{ch:grundlagen}
-In diesem Kapitel werden die Grundlagen, die für das Verständnis der Arbeit benötigt werden, vermittelt. Dabei werden folgende zentrale Konzepte vorgestellt, auf denen die weiteren Kapitel aufbauen. Dazu zählen die Elektroenzephalographie mit ihren Frequenzbändern, die Verfahren zur Frequenzanalyse, die Ausführung lokaler Sprachmodelle auf mobilen Geräten sowie die Gehirn"=Computer"=Schnittstelle als Anwendungsrahmen.
+Im Weiteren wird alles benötigte Wissen vermittelt, um dieser Arbeit folgen zu können. Dabei werden folgende zentrale Konzepte vorgestellt, auf denen die weiteren Kapitel aufbauen. Dazu zählen die Elektroenzephalographie mit ihren Frequenzbändern, die Verfahren zur Frequenzanalyse, die Ausführung lokaler Sprachmodelle auf mobilen Geräten sowie die Gehirn"=Computer"=Schnittstelle als Anwendungsrahmen.
 
 \section{Elektroenzephalographie (EEG)}
 \label{sec:eeg}
 
-Das \ac{EEG} ist ein Verfahren zur Aufzeichnung der elektrischen Aktivität des menschlichen Gehirns. Die aufgezeichneten Signale bestehen aus Spannungsschwankungen im Mikrovoltbereich, welche aus der synchronen elektrischen Aktivität von Neuronen resultieren \autocite{blum2017}. Die Messung erfolgt über Elektroden, die auf der Kopfhaut platziert werden und die Potenzialdifferenzen zwischen verschiedenen Punkten erfassen \autocite{10353995}.
+Das \ac{EEG} ist ein Verfahren, das die elektrische Aktivität des menschlichen Gehirns aufzeichnet. Die Signale sind Spannungsschwankungen im Mikrovoltbereich, die durch die synchrone Aktivität von Neuronen entstehen \autocite{blum2017}. Die Messung erfolgt über Elektroden, die auf der Kopfhaut platziert werden und die Potenzialdifferenzen zwischen verschiedenen Punkten erfassen \autocite{10353995}.
 \vspace{\baselineskip}
 
-\noindent \ac{EEG}-Signale haben die Eigenschaft, extrem geringe Amplitude im Mikrovoltbereich zu besitzen, weshalb sie bei der Erfassung systematisch verstärkt werden müssen \autocite{blum2017,10353995}.
-Das Frequenzspektrum erstreckt sich dabei meist von 0,1~Hz bis 100~Hz \autocite{10353995}.
-In seiner Rohform ist ein \ac{EEG}-Signal stark von Rauschen geprägt, weshalb es ein unzureichendes \ac{SNR} aufweist \autocite{blum2017}.
-Da die erwarteten neuronalen Aktivitäten schwach sind, werden sie schnell von amplitudenstarken physiologischen Artefakten (wie z.\,B. Muskel- oder Augenbewegungen) sowie technischen Störeinflüssen überlagert, was zu Verzerrungen des Originalsignals führt \autocite{10353995}.
+\noindent \ac{EEG}-Signale haben sehr geringe Amplitudenwerte, die im Mikrovoltbereich liegen. Deswegen müssen sie beim Erfassen verstärkt werden \autocite{blum2017,10353995}.
+Das Frequenzspektrum liegt meistens in einem Bereich, der sich von 0,1~Hz bis 100~Hz erstreckt \autocite{10353995}.
+Ein \ac{EEG}-Signal ist in seiner Rohform stark verrauscht und hat dadurch ein geringes \ac{SNR} \autocite{blum2017}.
+Die erwarteten neuronalen Aktivitäten sind schwach und werden deswegen leicht von amplitudenstarken physiologischen Artefakten wie Muskel- oder Augenbewegungen sowie von technischen Störeinflüssen überlagert. Das kann zu Verzerrungen des originalen Signals führen \autocite{10353995}.
 
 \section{Frequenzbänder}
 \label{sec:baender}
 Frequenzbänder sind Frequenzbereiche, in welche die Gehirnwellen nach ihrer Frequenz eingeteilt werden. Die elektrischen Schwingungen werden in Hertz (Hz) gemessen, also in Ausschlägen pro Sekunde \autocite{10353995}.
-Die Auswertung spezifischer Frequenzbänder dient somit der fundierten Beurteilung von Gehirnaktivitäten \autocite{10353995}.
+Die Auswertung der jeweiligen Frequenzbänder wird zur Beurteilung der Gehirnaktivitäten verwendet \autocite{10353995}.
 
 \vspace{\baselineskip}
 
 \noindent Das \ac{EEG}-Spektrum wird in fünf Frequenzbänder unterteilt \autocite{10353995}.
-Es ist in der Literatur nicht einheitlich festgelegt, wie die Grenzen der jeweiligen Bänder zu ziehen sind. Vor allem zwischen Alpha und Beta wird die Grenze uneinheitlich bei 12\,Hz oder bei 13\,Hz angesetzt. Für diese Arbeit werden durchgehend die Grenzen des Glossars der International Federation of Clinical Neurophysiology verwendet \autocite{ifcn_glossary2017,ifcn_glossary2019}.
+Die Bandgrenzen werden nicht einheitlich gezogen. Amer und Belhaouari geben für Alpha 8 bis 12\,Hz an \autocite{10353995}, das Glossar der International Federation of Clinical Neurophysiology dagegen 8 bis 13\,Hz \autocite{ifcn_glossary2017,ifcn_glossary2019}. Für diese Arbeit werden durchgehend die Grenzen des Glossars verwendet.
 \vspace{\baselineskip}
 \newpage
 
@@ -29,7 +29,7 @@ Es ist in der Literatur nicht einheitlich festgelegt, wie die Grenzen der jeweil
 
 \begin{table}[H]
 \centering
-\caption[EEG-Frequenzbänder]{Die fünf EEG-Frequenzbänder mit ihren Frequenzbereichen und Zuständen. Die Bereiche folgen dem Glossar der International Federation of Clinical Neurophysiology \autocite{ifcn_glossary2017,ifcn_glossary2019}, die zugeordneten Zustände \autocite{10353995}. Diese Einteilung ist die Grundlage für die spätere Zuordnung der Leistungswerte}
+\caption[EEG-Frequenzbänder]{Die fünf EEG-Frequenzbänder mit ihren Frequenzbereichen und zugeordneten Zuständen. Die Bereiche folgen dem Glossar der International Federation of Clinical Neurophysiology \autocite{ifcn_glossary2017,ifcn_glossary2019}, die Zustände \autocite{10353995}. Auf dieser Einteilung beruht die spätere Zuordnung der Leistungswerte.}
 \label{tab:eegbaender}
 \begin{tabularx}{\textwidth}{l l X}
 \toprule
@@ -65,9 +65,9 @@ Dies wird verwendet, um bei der Analyse der Gehirnströme die spektralen Eigensc
     \label{eq:power}
 \end{equation}
 
-\noindent Der Zusatz \enquote{schnell} bezieht sich auf den Rechenaufwand. Die \ac{FFT} zerlegt das Signal dafür wiederholt in zwei Hälften. Bei 256 Werten sind das acht Stufen, auf denen jeweils jeder Wert einmal verarbeitet wird. Der Aufwand liegt damit in der Größenordnung von $N \log_2 N$. Die direkte Berechnung müsste dagegen für jeden der $N$ Ausgabewerte alle $N$ Eingabewerte durchlaufen und wächst proportional zu $N^2$ \autocite{smith1997dsp}. In dieser Form setzt die Zerlegung voraus, dass $N$ eine Zweierpotenz ist.
+\noindent Der Zusatz \enquote{schnell} bezieht sich auf den Rechenaufwand. Die \ac{FFT} zerlegt das Signal dafür wiederholt in zwei Hälften. Bei 256 Werten sind das acht Stufen, auf denen jeweils jeder Wert einmal verarbeitet wird. Der Aufwand liegt damit in der Größenordnung von $N \log_2 N$. Die direkte Berechnung müsste dagegen für jeden der $N$ Ausgabewerte alle $N$ Eingabewerte durchlaufen und wächst proportional zu $N^2$ \autocite{smith1997dsp}. Damit sich die Zerlegung vollständig durchführen lässt, wird die Fenstergröße $N$ in dieser Arbeit als Zweierpotenz gewählt.
 
-\noindent Ein zentrales Merkmal der \ac{FFT} ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
+\noindent Ein Merkmal der \ac{FFT} ist die Frequenzauflösung $\Delta f$, die angibt, wie genau die einzelnen Frequenzstützstellen unterteilt werden können. Die Auflösung ergibt sich aus der Abtastrate $f_s$ und der Anzahl der Werte $N$ pro Fenster \autocite{kuttner2015}:
 \begin{equation}
     \Delta f = \frac{f_s}{N}.
     \label{eq:freqaufloesung}
@@ -104,15 +104,10 @@ große Sprachmodelle, deren Vor- und Nachteile sowie die Quantisierung vorgestel
 
 \subsection{Large Language Models}
 \label{subsec:llm}
-\acp{LLM} haben die Verarbeitung natürlicher Sprache
-(Natural Language Processing) maßgeblich verändert. \acp{LLM} sind komplex
-und basieren auf der Transformer-Architektur \autocite{edgellm_review}.
-Das Besondere daran ist der Self-Attention-Mechanismus (Selbstaufmerksamkeit).
-Dieser dient dazu, globale Abhängigkeiten zwischen Ein- und Ausgabesequenzen
-effizient zu modellieren \autocite{vaswani2017attention}.
+\acp{LLM} haben die Verarbeitung natürlicher Sprache (Natural Language Processing) stark verändert. Die Modelle basieren auf der sogenannten Transformer-Architektur \autocite{edgellm_review}. Sie beinhalten den Self-Attention-Mechanismus (Selbstaufmerksamkeit), der globale Abhängigkeiten zwischen Ein- und Ausgabesequenzen modelliert \autocite{vaswani2017attention}.
 Die hohe Leistungsfähigkeit der Modelle wird durch die gelernten Werte von
-Milliarden von Parametern erreicht. Sie zeigen Stärken im Sprachverstehen, in der Textsynthese, im logischen
-Schlussfolgern sowie in der generativen Texterstellung \autocite{edgellm_review}.
+Milliarden von Parametern erreicht. Sie sind stark im Sprachverstehen, in der Textsynthese, im logischen
+Schlussfolgern und in der generativen Texterstellung \autocite{edgellm_review}.
 Dies stellt Herausforderungen dar, unter anderem, wie man
 sie auf ressourcenbeschränkten Endgeräten wie Smartphones (sogenannten
 Edge-Geräten) zum Laufen bringen möchte. So benötigen \acp{LLM} viel

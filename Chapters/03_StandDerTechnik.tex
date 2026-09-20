@@ -32,7 +32,7 @@ Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploy
 \end{figure}
 \vspace{\baselineskip}
 
-\noindent Unabhängig von der hier genutzten MediaPipe-Laufzeitumgebung gibt es weitere frei deploybare Modelle anderer Anbieter wie etwa DeepSeek-R1 \autocite{deepseek_r1_2025} oder die Llama-Modelle von Meta \autocite{llama3_2024}.
+\noindent Unabhängig von der hier genutzten MediaPipe-Laufzeitumgebung gibt es weitere frei deploybare Modelle anderer Anbieter wie zum Beispiel DeepSeek-R1 \autocite{deepseek_r1_2025} oder die Llama-Modelle von Meta \autocite{llama3_2024}.
 \vspace{\baselineskip}
 
 \noindent Zusätzlich zu MediaPipe existieren weitere Android-kompatible Laufzeitumgebungen. Beispiele sind llama.cpp oder MNN \autocite{guo2025llm}. Nichtsdestotrotz wird in dieser Arbeit MediaPipe verwendet, da in diesem Fall mehrere Aspekte dafür sprechen. Die Bibliothek lässt sich zum einen als offizielle Android-Schnittstelle von Google direkt in die bestehende Java-Anwendung einbinden \autocite{mediapipe_llm}. llama.cpp ist dagegen eine C++-Bibliothek \autocite{guo2025llm}, deren Einbindung in eine Java-Anwendung mit zusätzlichem Aufwand verbunden ist. Zum anderen liegen die Modelle im passenden \texttt{.task}-Format vor \autocite{mediapipe_llm, gemma3_litert, gemma2_litert, qwen_litert}, sodass sich alle drei Modelle unter derselben Laufzeitumgebung mit identischen Parametern ausführen lassen. Die Kombination aus der einfachen Integration und den identischen Parametern der verfügbaren Modelle hat schlussendlich zu dieser Entscheidung geführt.
