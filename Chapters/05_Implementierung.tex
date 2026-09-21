@@ -1,6 +1,6 @@
 \chapter{Implementierung}
 \label{ch:implementierung}
-Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung auf sie aufbaut, wird sie ebenfalls in derselben Programmiersprache realisiert. Android Studio wird dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt. Der vollständige Quellcode der Anwendung liegt dem digitalen Anhang bei.
+Da die bestehende Anwendung bereits in Java umgesetzt ist und die Erweiterung auf sie aufbaut, wird sie ebenfalls in derselben Programmiersprache realisiert. Android Studio wird dabei als Entwicklungsumgebung verwendet, und der Build erfolgt über das Build-System Gradle. Die im Folgenden verwendeten Bibliotheken werden in den jeweiligen Abschnitten genannt.
 \section{Architektur}
 \label{sec:architektur}
 Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komponenten (Blau und Grün), die in \autoref{fig:architektur} dargestellt sind:
@@ -231,13 +231,10 @@ private double[] relativeBandPower(SessionFeatures.Segment seg) {
 \end{lstlisting}
 
 \noindent Die Methode \texttt{format} erzeugt schließlich diesen aufbereiteten Text, der mit der szenariospezifischen Anweisung zu einem verwendbaren Prompt kombiniert wird (\autoref{sec:impl-prompt}). Der Text wird Segment für Segment aufgebaut. Er beginnt mit einer Kopfzeile, die die Dauer der Session und die Anzahl der Kanäle nennt. Danach folgt für jedes Segment ein eigener Block mit dem Zeitraum, den fünf Bandanteilen, dem Anteil ungültiger Messwerte sowie dem Kanal mit dem größten Ausschlag samt seinem Wert in Mikrovolt. Die Bandanteile werden dabei auf ganze Prozent gerundet, der Anteil ungültiger Messwerte auf eine Nachkommastelle. Diese Rundung hält den Text kurz und vermeidet eine Genauigkeit, die für die Auswertung durch das Sprachmodell keine Rolle spielt.
-\vspace{\baselineskip}
-
-\newpage
-\noindent Im erzeugten Text sind die Segmente als Abschnitte bezeichnet. Ein Beispiel dafür zeigt \autoref{fig:featuretext}.
+Im erzeugten Text sind die Segmente als Abschnitte bezeichnet. Ein Beispiel dafür zeigt \autoref{fig:featuretext}.
 \begin{figure}[H]
 \centering
-{\setlength{\fboxsep}{9pt}%
+\scalebox{0.92}{\setlength{\fboxsep}{9pt}%
 \fcolorbox{black!30}{lstbg}{%
 \begin{minipage}{0.75\linewidth}
 \fontfamily{phv}\selectfont\footnotesize
@@ -261,10 +258,10 @@ Abschnitt 4 (45.0--60.0s):\\
 
 \section{Integration des Sprachmodells}
 \label{sec:impl-llm}
-Die Integration des Sprachmodells ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die die Kommunikation mit dem Modell übernimmt. Sie hat drei Kernaufgaben: das Laden, das Anfragen und das Freigeben des Modells. Für die lokale Ausführung wird die MediaPipe LLM Inference API verwendet \autocite{mediapipe_llm}. Sie ist als Abhängigkeit \texttt{com.google.media\-pipe:tasks\-genai} eingebunden. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/local/tmp/llm/} auf dem Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Diese Trennung von der Anwendung ist bewusst gewählt, denn die Modelle belegen so keinen Speicher innerhalb der Anwendung. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,6\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Vor der ersten Analyse müssen sie daher auf das Gerät übertragen werden. Im Folgenden wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
+Die Integration des Sprachmodells ist im Paket \texttt{llm} implementiert. Dort befindet sich die Klasse \texttt{LlmEngine}, die die Kommunikation mit dem Modell übernimmt. Die Aufgaben sind das Laden, das Anfragen und das Freigeben des Modells. Für die lokale Ausführung wird die MediaPipe LLM Inference API verwendet \autocite{mediapipe_llm}. Sie ist als Abhängigkeit \texttt{com.google.\allowbreak mediapipe:\allowbreak tasks-genai} eingebunden. Die quantisierten Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B liegen als \texttt{.task}-Dateien im Verzeichnis \texttt{/data/\allowbreak local/\allowbreak tmp/\allowbreak llm/} auf dem Gerät, wohin sie vorab per \texttt{adb} übertragen wurden. Diese Trennung von der Anwendung ist bewusst gewählt, denn die Modelle belegen so keinen Speicher innerhalb der Anwendung. In der verwendeten 8-Bit-Quantisierung belegen die \texttt{.task}-Dateien rund 1\,GB (Gemma 3 1B), 1,6\,GB (Qwen 2.5 1.5B) beziehungsweise 2,7\,GB (Gemma 2 2B) \autocite{gemma3_litert, qwen_litert, gemma2_litert}. Vor der ersten Analyse müssen sie daher auf das Gerät übertragen werden. Im Folgenden wird der Lebenszyklus eines Modells in seiner Ausführungsreihenfolge beschrieben.
 \subsection{Modellauswahl und Pfade} Die jeweils verwendeten Modelle sind als konstante Pfade hinterlegt. Diese werden mithilfe der Methode \texttt{pathFor} anhand einer kurzen Kennung wie \texttt{1b}, \texttt{2b} oder \texttt{qwen} selektiert. Falls die Kennung ungültig ist, wird automatisch das kleinste Modell ausgewählt. Die Auswahl des Modells geschieht zuvor im Analyse-Dialog oder im Benchmark, wobei die Kennung an die \texttt{LlmEngine} übergeben wird.
 
-\subsection{Laden und Konfiguration} Das Laden des Modells besteht aus dem Konfigurieren der Optionen (\autoref{lst:llmload}). Hierzu werden nach dem Builder-Muster in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} und \texttt{maxTokens} festgelegt. Die Obergrenze der wählbaren Token wird auf 64 gesetzt. Als maximale Anzahl der Token wird 1280 festgelegt. Hierbei gelten diese Werte über alle Modelle hinweg, um einen technisch einheitlichen Vergleich zu bieten (\autoref{ch:methodik}). Nach dem Aufruf von \texttt{create\-From\-Options} ist das Modell schließlich einsatzbereit.
+\subsection{Laden und Konfiguration} Zum Laden des Modells werden zuerst die Optionen konfiguriert (\autoref{lst:llmload}). Nach dem Builder-Muster werden in einem \texttt{LlmInferenceOptions}-Objekt die Pfadangabe, \texttt{maxTopK} mit 64 als Obergrenze der Kandidaten und \texttt{maxTokens} mit 1280 als Kontextgröße festgelegt. Für einen einheitlichen Vergleich sind diese Werte bei allen Modellen gleich (\autoref{ch:methodik}). Danach erzeugt \texttt{createFromOptions} das einsatzbereite Modell.
 \begin{lstlisting}[style=code, caption={[Laden des Modells]Laden und Konfigurieren des Modells. Kontextgröße und Sampling-Obergrenze sind für alle Modelle identisch gesetzt.}, label={lst:llmload}]
 public void load(Context context) {
     LlmInferenceOptions options = LlmInferenceOptions.builder()
@@ -280,8 +277,7 @@ public void load(Context context) {
 }
 \end{lstlisting}
 
-\subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{gene-
-\noindent rateResponseAsync} an das Modell übergeben. Dabei wird jedes Teilstück über einen Callback gemeldet. So wird der Verlauf der Entstehung der Antwort in Echtzeit an die Benutzeroberfläche weitergeleitet. Gleichzeitig wird der Time-To-First-Token gemessen. Dieser wird mit der vollständigen Antwort samt Inferenzdauer zurückgegeben.
+\subsection{Streamende Ausgabe} Die Antwort eines Modells erfolgt in einem Stream, bei dem die Token nach und nach geliefert werden (\autoref{lst:llmstream}). Der vom \texttt{PromptBuilder} erzeugte Prompt wird über \texttt{generate\-Response\-Async} an das Modell übergeben, und jedes Teilstück wird über einen Callback gemeldet. So gelangt die Antwort in Echtzeit an die Benutzeroberfläche. Gleichzeitig wird die \ac{TTFT} gemessen und mit der vollständigen Antwort samt Inferenzdauer zurückgegeben.
 \begin{lstlisting}[style=code, caption={[Streamende Ausgabe]Streamende Ausgabe mit Messung der Latenz. Beim ersten Teilstück wird die TTFT festgehalten, am Ende zusätzlich die Inferenzdauer.}, label={lst:llmstream}]
 public void questionStreaming(String prompt, StreamCallback callback) {
     StringBuilder full = new StringBuilder();
@@ -300,9 +296,7 @@ public void questionStreaming(String prompt, StreamCallback callback) {
         if (done) {
             long totalMs = (System.nanoTime() - start) / 1_000_000;
             callback.onDone(full.toString(), ttft[0], totalMs);
-        }
-    });
-}
+        } }); }
 \end{lstlisting}
 
 \noindent Abgesehen von der streamenden Ausgabe gibt es noch eine einfache Anfrage, die auf die vollständige Antwort wartet und sie am Stück zurückgibt. Diese Anfrage wird im Benchmark für die Aufwärmmessung genutzt, da weder eine Live-Anzeige noch die Latenzwerte benötigt werden.
@@ -321,9 +315,8 @@ Der Prompt wurde in der Klasse \texttt{PromptBuilder} realisiert. Der Weg bis zu
 \noindent Dabei ergaben sich bei der Optimierung des Prompts Design-Vorgaben, die jeweils die direkte Antwort auf ein zuvor aufgetretenes Problem sind. Die erste betrifft die Einhaltung der verwendeten Daten. Das wird dem Modell klargestellt, da sonst wie in früheren Ausgaben Begriffe wie \enquote{Dominanzindex} auftreten. Ebenso wird ein reines Textformat vorgegeben. Die Ausgabe des Modells soll textuelle Informationen erzeugen, weshalb Sonderzeichen und Markdown verboten werden. Zuvor entstanden Formatierungszeichen wie \texttt{**} in den Ausgaben.
 \vspace{\baselineskip}
 
-\noindent Eine weitere Vorgabe ist die eindeutige Merkmalsbenennung. Der \texttt{FeatureFormatter} gibt den Anteil ungültiger Werte deshalb als \enquote{Ungültige Messwerte: X\,\%} aus. Zuvor hieß die Zeile \enquote{Qualität: X\,\%}, was das Modell fälschlich als schlechte Qualität las. Hinzu kommt die Begrenzung der Interpretation. Der Prompt untersagt falsche Interpretationen wie zum Beispiel Deutungen in Richtung medizinischer Diagnosen, die davor ein Problem dargestellt haben. Als Letztes wird gefordert, die Ausgabe kompakt zu halten. Die Antwort soll aus wenigen Sätzen bestehen, ohne Begrüßung und ohne Rückfragen.
-
-\noindent Die Optimierung endete, sobald Gemma 2 2B als Referenzmodell die Vorgaben einhielt. Die Eingabe wird nicht an jedes Modell einzeln optimiert, sondern nur an das Referenzmodell Gemma 2 2B. Ansonsten könnten Unterschiede zwischen den Modellen verdeckt bleiben. Welche Auswirkungen dies dementsprechend hat, wird in \autoref{sec:einschraenkungen} eingeordnet. Der finale Prompt wurde eingefroren und bildete unverändert die Grundlage für alle Messungen und den Benchmark. \autoref{lst:prompts} zeigt die finalen Prompts je Szenario.
+\noindent Eine weitere Vorgabe ist die eindeutige Merkmalsbenennung. Der \texttt{FeatureFormatter} gibt den Anteil ungültiger Werte deshalb als \enquote{Ungültige Messwerte: X\,\%} aus. Zuvor hieß die Zeile \enquote{Qualität: X\,\%}, was das Modell fälschlich als schlechte Qualität las. Hinzu kommt die Begrenzung der Interpretation. Der Prompt untersagt Fehldeutungen wie medizinische Diagnosen, die zuvor ein Problem darstellten. Zuletzt soll die Antwort kompakt aus wenigen Sätzen bestehen, ohne Begrüßung und ohne Rückfragen.
+Die Optimierung endete, sobald Gemma 2 2B als Referenzmodell die Vorgaben einhielt. Die Eingabe wird nur an dieses Modell angepasst, da sonst Unterschiede zwischen den Modellen verdeckt bleiben könnten. Die Auswirkungen davon ordnet \autoref{sec:einschraenkungen} ein. Der finale Prompt wurde eingefroren und bildete unverändert die Grundlage für alle Messungen, \autoref{lst:prompts} zeigt ihn je Szenario.
 \begin{lstlisting}[style=code, breaklines=true, caption={[Prompts je Szenario]Aufbau der Prompts je Szenario in der finalen, eingefrorenen Fassung. Alle drei enden mit dem aufbereiteten Merkmalstext.}, label={lst:prompts}]
 // Szenario 1: lesbarer Session-Bericht aus den Messwerten
 public String buildReport(String featureText) {
@@ -384,7 +377,7 @@ Für die Benutzeroberfläche werden zwei verschiedene Arten verwendet. Zum einen
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es unten im Dialog weitere Optionen. So lassen sich die Fenstergröße einstellen und über einen Schalter Messmetriken aktivieren. Wird das Szenario Vergleich gewählt, kann eine zusätzliche Session ausgewählt werden, die als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert und in \autoref{fig:analyse-dialog} dargestellt. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die Analyse beginnt.
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es unten im Dialog weitere Optionen. So lassen sich die Fenstergröße bis 131072 Samples einstellen und über einen Schalter Messmetriken aktivieren. Wird das Szenario Vergleich gewählt, kann eine zusätzliche Session ausgewählt werden, die als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert und in \autoref{fig:analyse-dialog} dargestellt. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die Analyse beginnt.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -417,7 +410,10 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
-Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst die gesamte Eingabe erstellt. Diese wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell übergeben. Da die Ausgabe streamend verläuft, ist als Callback ein Interface \texttt{LlmEngine.StreamCallback} implementiert (\autoref{lst:onchunk}). Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst die gesamte Eingabe erstellt. Diese wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell übergeben. Da die Ausgabe streamend verläuft, ist als Callback ein Interface \texttt{LlmEngine.StreamCallback} implementiert. Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+
+\newpage
+\noindent Die Methode \texttt{onChunk} sieht wie folgt aus (\autoref{lst:onchunk}):
 \begin{lstlisting}[style=code, caption={[Live-Anzeige der Ausgabe]Live-Anzeige der streamenden Ausgabe. Jedes Teilstück wird angehängt statt gesetzt, damit der Text während der Erzeugung wächst.}, label={lst:onchunk}]
 @Override
 public void onChunk(String partial) {
@@ -430,12 +426,10 @@ public void onChunk(String partial) {
 }
 \end{lstlisting}
 
-\newpage
-\noindent Ein Modell kann mehrere Gigabyte groß sein, weshalb die Analyse in einem eigenen Thread läuft. Ansonsten könnte das Laden die Oberfläche blockieren. Änderungen an der Benutzeroberfläche können in Android nur im Haupt-Thread erfolgen, weshalb dafür \texttt{runOnUiThread} verwendet wird. Falls beim Vorbereiten der Daten oder beim Laden des Modells ein Fehler auftreten sollte, wird eine dementsprechende Fehlermeldung im Textbereich angezeigt, sodass kein Absturz erfolgt.
+\noindent Da ein Modell mehrere GB groß sein kann, läuft die Analyse in einem eigenen Thread, damit das Laden die Oberfläche nicht blockt. Änderungen an der Benutzeroberfläche gehen nur im Haupt-Thread, weshalb dafür \texttt{runOnUiThread} verwendet wird. Tritt beim Vorbereiten der Daten oder beim Laden ein Fehler auf, fängt ihn ein \texttt{try}-\texttt{catch}-Block ab und zeigt eine Fehlermeldung im Textbereich an, sodass die Anwendung nicht abstürzt.
 \vspace{\baselineskip}
 
-\noindent Die Ergebnis-Ansicht (\autoref{fig:analyse-ergebnis}) zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach. Ganz oben ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. Sobald die Ausgabe vollständig ist, erscheint unten rechts ein Knopf zum Teilen der Analyse.
-
+\noindent Die Ergebnis-Ansicht (\autoref{fig:analyse-ergebnis}) zeigt als Erstes eine Ladeanimation an. Währenddessen wird das Modell geladen. Sobald die Ausgabe beginnt, wächst der Text aufgrund der Streaming-Mechanik nach und nach.
 
 \begin{figure}[H]
     \centering
@@ -462,7 +456,7 @@ public void onChunk(String partial) {
     \label{fig:analyse-ergebnis}
 \end{figure}
 
-\noindent Mit dem Knopf kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist. 
+\noindent Ganz oben auf der Abbildung ist sichtbar, welches Modell und Szenario ausgewählt wurde. Wenn der Metrik-Schalter im Dialog aktiviert wird, sind zusätzlich die Latenz-Werte (erstes Token, Dauer und Tokens pro Sekunde) sichtbar. Sobald die Ausgabe vollständig ist, erscheint unten rechts ein Knopf zum Teilen der Analyse. Mit dem Knopf kann man die Ausgabe als .txt-Datei teilen. Für diese Funktion wird ein \texttt{FileProvider} verwendet, der in der bestehenden Anwendung bereits für den Export der Messdaten eingerichtet ist. 
 Beim Scrollen wird die Deckkraft des Knopfes auf 30\,\% reduziert, damit der Nutzer den kompletten Text unverdeckt lesen kann. Nach einer Sekunde ohne weitere Scrollbewegung erlischt der Effekt und die Deckkraft steigt wieder auf das Maximum.
 \vspace{\baselineskip}
 

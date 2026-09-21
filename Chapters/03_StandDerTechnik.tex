@@ -18,7 +18,7 @@ Das systemintegrierte Modell Gemini Nano ist stark an die Hardware gebunden, da 
 
 \subsection{Frei deploybare Lösung}
 \label{subsec:frei-deploybare-loesung}
-Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploybare Lösung für die lokale Ausführung von Sprachmodellen auf mobilen Geräten \autocite{mediapipe_llm}. Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem \ac{CPU} oder dem \ac{GPU} des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}. Über sie lassen sich auch mehrere Parameter an der Textgenerierung ändern, darunter die maximale Anzahl an Tokens aus Eingabe und Ausgabe, die Anzahl der wahrscheinlichsten Kandidaten (Top-K), die Zufälligkeit der Auswahl (Temperatur) sowie ein Zufallsstartwert. Darüber hinaus kann ein \ac{LoRA}-Modell eingebunden werden, um bei Bedarf ein Modell an seine Aufgaben anzupassen \autocite{mediapipe_llm}.
+Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploybare Lösung für die lokale Ausführung von Sprachmodellen auf mobilen Geräten \autocite{mediapipe_llm}. Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem \ac{CPU} oder dem \ac{GPU} des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}. Über sie lassen sich auch mehrere Parameter an der Textgenerierung ändern, darunter die maximale Anzahl an Tokens aus Eingabe und Ausgabe, die Anzahl der wahrscheinlichsten Kandidaten (Top-K), die Zufälligkeit der Auswahl (Temperatur) sowie ein Zufallsstartwert. Darüber hinaus kann ein \ac{LoRA}-Modell eingebunden werden, um bei Bedarf ein Modellverhalten mithilfe eines kostengünstigen Trainings anzupassen \autocite{mediapipe_llm}.
 \vspace{\baselineskip}
 
 \newpage
@@ -58,7 +58,7 @@ Das in dieser Arbeit verwendete Unicorn Hybrid Black ist eine mobile \ac{BCI}-Pl
 \autoref{fig:unicorn} zeigt die markierten Komponenten des Geräts, die für die Messungen dieser Arbeit verwendet wurden.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{Graphics/UnicornHybrid.pdf}
+    \includegraphics[width=0.83\textwidth]{Graphics/UnicornHybrid.pdf}
     \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung, erstellt mit draw.io) \autocite{unicornproduct}.}
     \label{fig:unicorn}
 \end{figure}
