@@ -51,6 +51,62 @@ Abschnitt 4 (91.596--122.128s):\\
 \label{fig:ft-session-b}
 \end{figure}
 
+\chapter{Vollständige Modellausgaben}
+\label{app:ausgaben}
+\newcommand{\ausgabe}[4]{%
+\begin{figure}[H]
+\centering
+\scalebox{0.92}{\setlength{\fboxsep}{9pt}\fcolorbox{black!30}{lstbg}{%
+\begin{minipage}{0.75\linewidth}
+\fontfamily{phv}\selectfont\footnotesize\raggedright
+#1
+\end{minipage}}}
+\caption[#2]{#3}
+\label{#4}
+\end{figure}}
+\newcommand{\bsn}{\textbackslash n}
+Im Folgenden sind alle Ausgaben vollständig gelistet. Die Reihenfolge der Szenarien ist Report, Artefakt und Vergleich, je Modell von Gemma 3 1B, Qwen 2.5 1.5B und Gemma 2 2B. Die Ausgaben sind originalgetreu, Lücken oder Formatierungsfehler gehören dazu und wurden übernommen.
+
+% ---------------- Gemma 3 1B ----------------
+\ausgabe{Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\%), Theta-Zuständen (16\%), Alpha-Zuständen (13\%), Beta-Zuständen (6\%) und Gamma-Zuständen (5\%). Der größte Ausschlag wurde am Kanal 2 (3309 µV) festgestellt. Der Schwerpunkt lag hauptsächlich in den Sekundenbereichen 0-30, 30-60 und 60-91 Sekunden, wobei Delta- und Theta-Zustände am stärksten ausgeprägt waren. Es gab einige ungültige Messwerte, darunter ein signifikanter Ausschlag am Kanal 2.}
+{Gemma 3 1B, Report}{Vollständige Ausgabe von Gemma 3 1B im Report-Szenario.}{fig:app-1b-report}
+
+\ausgabe{\bsn Die EEG-Messwerte zeigen unterschiedliche Schwellenwerte und Ausreißer. Der größte Ausschlag im Abschnitt 1 (Kanal 4) mit einer Schwellenwert aus 4419 µV deutet auf möglicherweise eine erhöhte Aktivität des Delta-Zell-Schwellenwertes hin. Der größte Ausschlag im Abschnitt 2 (Kanal 2) mit einer Schwellenwert von 3309 µV könnte auf eine erhöhte Aktivität des Theta-Zell-Schwellenwertes hindeuten. Der ausschlagreiche Ausschlag im Abschnitt 3 (Kanal 2) mit einer Schwellenwert von 2874 µV könnte auf eine erhöhte Aktivität des Gamma-Zell-Schwellenwertes hindeuten. Im Abschnitt 4 (91.068--121.432s) sind Ausschläge im Kanal 2 erkennbar, wobei ein signifikanter Anteil, 2948 µV, zu einem möglichen erhöhten Aktivitätsniveau des Gamma-Zell-Schwellenwertes geführt hat. Es ist wichtig zu beachten, dass die Ungültigkeit von Messwerten ein Problem darstellt, das mit möglicher Sensor- oder Elektroden-Kompatibilität oder einer veränderten Gehäuse- oder Elektrodenposition zusammenhängen könnte.}
+{Gemma 3 1B, Artefakt-Erklärung}{Vollständige Ausgabe von Gemma 3 1B im Artefakt-Szenario.}{fig:app-1b-artefakt}
+
+\ausgabe{Session A zeigt einen deutlich größeren Ausschlag am zweiten Kanal (2) als Session B. Session B zeigt ebenfalls einen größeren Ausschlag am zweiten Kanal. Beide Sessions haben eine relativ ähnliche Delta- und Alpha-Werteverteilung, wobei Session A einen etwas höheren Delta-Wert aufweist. Session B weist einen etwas höheren Theta-Wert auf, aber die Ausschläge sind im Verhältnis zur Delta-Werteverteilung geringer. Session A hat über den gesamten Zeitraum einen größeren Ausschlag am Kanal 2, während Session B einen größeren Ausschlag am Kanal 2 aufweist.}
+{Gemma 3 1B, Vergleich}{Vollständige Ausgabe von Gemma 3 1B im Vergleichsszenario.}{fig:app-1b-vergleich}
+
+% ---------------- Qwen 2.5 1.5B ----------------
+\ausgabe{\#\#\# Bericht\par\medskip
+Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8 KanÃ¤len gezählt. Die Signalqualität ist gut mit einer overall Signalqualität von 86\%. Es gibt keinen Fall von ungültigen Messwerten. Die dominante Frequenzbänder sind Delta (16\%), Theta (33\%), Alpha (60\%), Beta (15\%) und Gamma (13\%), wobei Delta und Theta die hauptsächlichste Frequenz bilden.\par\medskip
+In den ersten drei Abschnitten (0.0--30.352 s, 30.356--60.708 s, und 60.712--91.064 s) gibt es einen starken Ausschlag am Kanal 2 mit einem Maximum von 4419 µV. Dieser Ausschlag ist unter Abstand von 3.48 s und ist sehr stark.\\
+In den letzten beiden Abschnitten (91.068 s -- 121.432 s), zeigt der Kanal 2 ein geringeres Ausschlag bei 2948 µV und gibt keine ungültige Messwerte. Mit einer Signalqualität von 55\%, ist die letzte Phase der EEG-Messung eher anfänglich gedämpft als zuvor.\par\medskip
+Die Zeitstruktur der EEG-Daten, so wie sie in den gegebenen Abschnitten aufgeteilt ist, deutet auf eine mögliche Verwirrung oder eine Art von Bewegungserfahrung auf. Es ist jedoch unklar, ob der Ausschlag am Kanal 2 tatsächlich auf eine zeitliche Änderung hindeutet oder ob er eine andere Ursache hat. Es könnte sich dabei möglicherweise um einen Ausdruck der sich ändringenden Sensationsstärken handeln, in dem das Konsistenz von Alpha oder Beta Wiederholungen nicht konsequent sein kann. Der Ausschlag könnte auch als Nebeneffekt einer starken Welle von Daten angesprochen werden, die in diesem Abschnitt der EEG-Daten enthalten ist.}
+{Qwen 2.5 1.5B, Report}{Vollständige Ausgabe von Qwen 2.5 1.5B im Report-Szenario (gekürzt in \autoref{fig:out-report-qwen}).}{fig:app-qwen-report}
+
+\ausgabe{Die EEG-Messung aus dieser Session gibt folgende Ergebnisse zurück:\par\medskip
+1. **Delta**: Der Alpha-Band ist stark dominierend in den ersten drei Abschnitten, während der Beta-Band und der Gamma-Band in den letzten Abschnitten dominant sind. Der Delta-Band ist dominanter als der Theta-Band. Das größte Ungültige Messergegenstand ist in den spÃ¤testen Abschnitten, spezifisch Kanal 4, mit einem Ausschlag von 4419 µV.\par\medskip
+2. **Theta**: Der Theta-Band ist im zweiten Abschnitt dominierend, im dritten und vierten Abschnitt dominanter als der Delta-Band. Der Beta-Band ist stark dominierend im vierten Abschnitt.\par\medskip
+3. **Alpha**: Der Alpha-Band ist im ersten Abschnitt dominierend, im zweiten und dritten Abschnitt ebenfalls dominierend. Die Gamma-Band ist stark dominierend im vierten Abschnitt. In den ersten drei Abschnitten sind die Alpha-Band und der Gamma-Band gleichmäßig dominant, im letzten Abschnitt dominierend Alpha.\par\medskip
+Insgesamt gibt es keinen wesentlichen technischen Ursache für die Überschreitung oder Anpassung der Messwerte, da der Alpha-Band in den letzten Abschnitten stärker dominant ist als in den früheren. Es gibt keinen ungewÃ¶hnlichen Ausschlag, der einem technischen Problem zu verdanken ist. Es ist jedoch wichtig zu beachten, dass bei der Interpretation der EEG-Messwerte kritisch die Kontrolle der Messprozesse und Kontrolle über die Qualität der Messungen ist.}
+{Qwen 2.5 1.5B, Artefakt-Erklärung}{Vollständige Ausgabe von Qwen 2.5 1.5B im Artefakt-Szenario.}{fig:app-qwen-artefakt}
+
+\ausgabe{\bsn Session A und Session B unterscheiden sich sowohl in den Basisszenarien als auch in den Details, die bei den beiden Aufnahmen festgestellt wurden.\bsn\bsn**Abgassen und Frequenzbereiche:**\bsn\bsn In Session A, der dauerhafte Basisszenario mit langen Zeitintervallen und einer Reihe von Abgassen wie Delta, Theta, Alpha und Beta zu den Gammabändern betrachtet, unterscheiden sich die Anzahl der Abgassen und die Gammabänder nicht signifikant: alle Bereiche sind ähnlich stark ausgeprÃ¤gt, mit Delta und Theta in der Regel die mächtigste und Delta und Theta im Gammabereich.\bsn\bsn**Ausschläge und Ungültige Messwerte:**\bsn\bsn In Session A finden sich Ausschläge, die jedoch nicht unerwartet groß sind:\bsn\bsn- In Abschnitt 1: Der größte Ausschlag ist bei Kanal 4, mit 4419 µV.\bsn- In Abschnitt 3: Der größte Ausschlag ist bei Kanal 2, mit 2874 µV.\bsn- In Abschnitt 4: Der größte Ausschlag ist auch bei Kanal 2, mit 2948 µV.\bsn\bsn In Session B:\bsn\bsn- Der größte Ausschlag ist bei Kanal 2 in Abschnitt 1, mit 5230 µV.\bsn- Der größte Ausschlag ist bei Kanal 2 in Abschnitt 2, mit 4772 µV.\bsn- Der größte Ausschlag ist bei Kanal 2 in Abschnitt 3, mit 3878 µV.\bsn\bsn**Sicherheit der Messung:**\bsn\bsn In Session A: Die Messwerte sind gut festgestellt, und die Ungültigkeitsrate liegt bei 0\%. In Session B: Auch diese ist gut festgestellt, aber die Ungültigkeitsrate liegt bei nur 0,43\%.\bsn\bsn**Bezeichnung und Anmerkungen:**\bsn\bsn In Session A wird das EEG-Modell als \textquotedbl Session A\textquotedbl}
+{Qwen 2.5 1.5B, Vergleich}{Vollständige Ausgabe von Qwen 2.5 1.5B im Vergleichsszenario. Die Ausgabe endet mitten im Satz.}{fig:app-qwen-vergleich}
+
+% ---------------- Gemma 2 2B ----------------
+\ausgabe{Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwischen 56\% und 86\% lag. Die Signalqualität der Messungen war in allen Abschnitten gut. Auffällig waren Ausschlagsignale in den Abschnitten 1 und 4, wobei Kanal 4 und Kanal 2 jeweils die höchsten Werte erreichte.}
+{Gemma 2 2B, Report}{Vollständige Ausgabe von Gemma 2 2B im Report-Szenario.}{fig:app-2b-report}
+
+\ausgabe{Die größten Ausschläge des EEG wurden von den Kanälen 4 und 2 im Zeitraum von 0.0 bis 121.432s und 91.064s beobachtet.\\
+Diese Werte könnten auf leichte Bewegungen, Elektrodenfehler oder Verbindungsprobleme im Gerät hinweisen.\\
+Das hohe Delta-Niveau im gesamten Zeitraum stellt sicher, dass die Daten präzise sind.}
+{Gemma 2 2B, Artefakt-Erklärung}{Vollständige Ausgabe von Gemma 2 2B im Artefakt-Szenario.}{fig:app-2b-artefakt}
+
+\ausgabe{Die beiden Sessions zeigen eine ähnliche Banddominanz und Signalqualität mit einigen Unterschieden. Die Session A weist im Allgemeinen einen höheren Deltaanteil auf als Session B. In beiden Sessions sind die Ausschläge gering, wobei Session A im Durchschnitt höhere Ausschläge im Vergleich zu Session B aufweist. Die beiden Sessions weisen ähnliche Beta- und Gamma-Dominanz auf.}
+{Gemma 2 2B, Vergleich}{Vollständige Ausgabe von Gemma 2 2B im Vergleichsszenario.}{fig:app-2b-vergleich}
+
 \chapter{Rohdaten der Benchmark-Messungen}
 \label{app:rohdaten}
 In \autoref{tab:app-rohdaten} sind alle 45 Messungen vollständig aufgelistet. Diese dienen zur Nachvollziehbarkeit der Evaluation.
