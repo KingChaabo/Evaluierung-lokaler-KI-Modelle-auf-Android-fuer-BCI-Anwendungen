@@ -44,14 +44,14 @@ Im Folgenden werden die Ergebnisse der Latenzmessungen vorgestellt.
     \end{tabular}
 \end{table}
 
-\noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma 3 1B am höchsten ist (bis zu 25,34 Tok/s), während das Modell Gemma 2 2B den geringsten Durchsatz aufweist (minimal 2,87 Tok/s). Der Durchsatz ist dabei im Vergleichsszenario über alle Modelle hinweg am geringsten.
-Die \textbf{Ladezeit} ist bei Gemma 2 2B am höchsten; die beiden kleineren Modelle Gemma 3 1B und Qwen 2.5 1.5B laden schneller. Sie liegt durchweg unter einer Sekunde (zwischen 0,27 und 0,87\,s).
-Die \textbf{\ac{TTFT}} ist bei Gemma 3 1B am geringsten, während sie bei Gemma 2 2B am höchsten ist. Mit Ausnahme von Qwen 2.5 1.5B/Artefakt steigt die \ac{TTFT} mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma 2 2B mit 16,60\,s.
-Die \textbf{Inferenzdauer} reicht von 6,70 bis 42,00\,s und variiert stark zwischen den Modellen und Szenarien.
+\noindent \autoref{tab:eval-latenz} zeigt, dass der \textbf{Durchsatz (Tok/s)} bei dem Modell Gemma~3~1B am höchsten ist (bis zu 25{,}34\,Tok/s), während das Modell Gemma~2~2B den geringsten Durchsatz aufweist (minimal 2{,}87\,Tok/s). Qwen liegt mit ca.~12{,}91\,Tok/s im Mittelfeld. Dabei ist der Durchsatz im Vergleichsszenario über alle Modelle hinweg am geringsten.
+Die \textbf{Ladezeit} ist bei Gemma~2~2B am längsten (bis zu 0{,}87\,s), während Gemma~3~1B und Qwen~2.5~1.5B darunter liegen (zwischen 0{,}27 und 0{,}73\,s).
+Die \textbf{\ac{TTFT}} ist bei Gemma~3~1B am geringsten, während sie bei Gemma~2~2B am höchsten ist. Mit Ausnahme von Qwen~2.5~1.5B/Artefakt steigt die \ac{TTFT} mit dem Szenarioniveau an und erreicht ihren Höchstwert bei Gemma~2~2B mit 16{,}60\,s.
+Die \textbf{Inferenzdauer} reicht von 6{,}70 bis 42{,}00\,s und variiert stark zwischen den Modellen und Szenarien.
 \vspace{\baselineskip}
 
-\noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen 2.5 1.5B/Vergleich ist die Standardabweichung mit 1,94\,s (Inferenzdauer) deutlich höher als bei allen anderen Messungen.
-Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgabe liefern. Der Inhalt bleibt gleich, ebenso die Anzahl der Tokens (\autoref{tab:app-rohdaten}). Die verbleibende Streuung geht dementsprechend auf die Messumgebung zurück und nicht auf unterschiedlich lange Antworten.
+\noindent Die \textbf{Standardabweichungen} fallen überwiegend gering aus. Von den 27 erfassten Werten liegt bei 26 eine Streuung von unter eins vor, was auf eine stabile Messung hinweist. Lediglich bei Qwen~2.5~1.5B/Vergleich ist die Standardabweichung mit 1{,}94\,s (Inferenzdauer) deutlich höher als bei allen anderen Messungen.
+Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgabe liefern. Der Inhalt bleibt gleich, ebenso die Anzahl der Tokens (\autoref{tab:app-rohdaten}). Die verbleibende Streuung kann daher nicht auf unterschiedlich lange Antworten zurückgehen.
 \vspace{\baselineskip}
 
 \noindent Zur besseren Vergleichbarkeit sind die Latenzmetriken in \autoref{fig:eval-latenz} zusätzlich grafisch dargestellt.
@@ -100,7 +100,7 @@ Beobachten lässt sich, dass die Modelle bei identischer Eingabe dieselbe Ausgab
 \end{figure}
 \newpage
 
-\noindent Die \ac{TTFT} kann im Allgemeinen von der Länge der Eingabe abhängen. Wie schon in \autoref{subsec:messbedingungen} beschrieben, kann sich die Anzahl der Eingabe-Tokens trotz gleicher Promptlänge je Modell aufgrund der verschiedenen verwendeten Tokenizer unterscheiden. \autoref{tab:eval-eingabetokens} stellt diese Werte dar.
+\noindent Die \ac{TTFT} kann von der Länge der Eingabe abhängen. Wie schon in \autoref{subsec:messbedingungen} beschrieben, kann sich die Anzahl der Eingabe-Tokens trotz gleicher Promptlänge je Modell aufgrund der verschiedenen verwendeten Tokenizer unterscheiden. \autoref{tab:eval-eingabetokens} stellt diese Werte dar.
 
 \begin{table}[H]
     \centering
@@ -208,10 +208,10 @@ Das größere Modell Gemma 2 2B läuft ebenso stabil, obwohl es mit ca.\ 3798\,M
 Die Ausgaben werden anhand der in \autoref{subsec:metriken} definierten Kriterien bewertet. Dies geschieht anhand mehrerer Beispiele. Da alle drei Modelle denselben Prompt (\autoref{sec:impl-prompt}) verwenden, ist es möglich, die Qualität der Ausgaben direkt miteinander zu vergleichen.
 \vspace{\baselineskip}
 
-\noindent Für die Bewertung wird eine artefaktbehaftete Session verwendet, die eine Delta-Dominanz aufweist. Der Fokus liegt auf dem Report-Szenario für alle drei Modelle, bei dem sie im Detail betrachtet werden. Anschließend werden die anspruchsvolleren Szenarien Artefakt-Erklärung und Vergleich zusammengefasst. Dadurch ist erkennbar, wie die Modelle mit steigenden Anforderungen umgehen.
+\noindent Für die Bewertung werden zwei artefaktbehaftete Sessions mit einer Dominanz im Delta-Band verwendet. Im Report- und Artefakt-Szenario wird nur Session A übergeben, während im Vergleichsszenario beide herangezogen werden. Um den folgenden Teil kompakt zu halten, wird nur das Report-Szenario im Detail betrachtet. Die beiden anspruchsvolleren Szenarien werden zusammengefasst, sodass erkennbar bleibt, wie die Modelle mit steigenden Anforderungen umgehen.
 \vspace{\baselineskip}
 
-\noindent Die an die Modelle übergebenen Feature-Texte beider Sessions sind in \autoref{fig:ft-session-a} und \autoref{fig:ft-session-b} im Anhang abgedruckt und ermöglichen den Abgleich der Ausgaben mit der tatsächlichen Eingabe.
+\noindent Die Feature-Texte beider Sessions stehen im Anhang (\autoref{fig:ft-session-a} und \autoref{fig:ft-session-b}), so wie sie den Modellen übergeben wurden. Damit lassen sich die Ausgaben mit der Eingabe abgleichen.
 
 \begin{figure}[H]
 \centering
@@ -225,7 +225,7 @@ Das dominante Frequenzband war Delta, dessen Anteil in allen Abschnitten zwische
 \label{fig:out-report-2b}
 \end{figure}
 
-\noindent Die Ausgabe von Gemma 2 2B (\autoref{fig:out-report-2b}) erkennt die Delta-Dominanz korrekt, bewertet die Signalqualität zutreffend und nennt die auffälligen Kanäle. Sie ist knapp und hält das Format ein. Alle vier Kriterien sind erfüllt.
+\noindent Die Ausgabe von Gemma 2 2B (\autoref{fig:out-report-2b}) erkennt, dass es eine Delta-Dominanz gibt. Sie bewertet die Qualität des Signals korrekt und nennt den Kanal mit dem höchsten Ausschlag. Länge und Format werden eingehalten. Alle vier Kriterien sind erfüllt.
 
 \begin{figure}[H]
 \centering
@@ -239,7 +239,7 @@ Die EEG-Session verzeichnete eine Konzentration von Delta-Zuständen (86\,\%), T
 \label{fig:out-report-1b}
 \end{figure}
 
-\noindent Bei der Ausgabe von Gemma 3 1B (\autoref{fig:out-report-1b}) gibt es trotz übereinstimmender Delta-Dominanz einen logischen Fehler. Die erwähnten Bandanteile summieren sich auf über 100\,\%, da Werte verschiedener Segmente vermischt werden. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
+\noindent Obwohl bei der Ausgabe von Gemma 3 1B (\autoref{fig:out-report-1b}) die Delta-Dominanz richtig erkannt wird, gibt es einen wichtigen Fehler. Summiert man alle Bandanteile, kommt man auf über 100\,\%. Es werden verschiedene Segmente vermischt. Außerdem wird behauptet, dass es einen Anteil ungültiger Werte gibt, obwohl keine vorliegen. Korrektheit und Halluzinationsfreiheit sind daher nur eingeschränkt erfüllt.
 
 \begin{figure}[H]
 \centering
@@ -257,12 +257,11 @@ Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8
 \noindent Bei der Ausgabe von Qwen 2.5 1.5B (\autoref{fig:out-report-qwen}) treten mehrere Fehler auf. Vor allem die Formatvorgabe wird deutlich verletzt. Zunächst beginnt die Ausgabe mit einer Markdown-Überschrift (\#\#\#), darüber hinaus enthält die Ausgabe fehlerhaft kodierte Umlaute wie \enquote{KanÃ¤len} und ist zu lang. Zudem sind die Bandanteile falsch (Alpha mit 60\,\% als stärkstes Band, Summe über 100\,\%) und die Signalqualität ist frei erfunden. Keines der vier Kriterien wird in diesem Fall zuverlässig erfüllt.
 \vspace{\baselineskip}
 
-\noindent Diese Erkenntnisse lassen sich auch in den anspruchsvolleren Szenarien beobachten.
-\noindent Obwohl Gemma 2 2B in der Artefakt-Erklärung korrekte technische Ursachen wie Bewegung, Elektroden oder Verbindung benennt, wird am Ende eine falsche Schlussfolgerung gezogen (\enquote{das hohe Delta-Niveau stellt sicher, dass die Daten präzise sind}). Bei Gemma 3 1B werden neue Fachbegriffe wie \enquote{Delta-/Theta-/Gamma-Zell-Schwellenwert} erfunden und weiterhin ungültige Messwerte behauptet. Qwen 2.5 1.5B liefert eine sehr schwache Ausgabe, bei der die Bandzuordnungen widersprüchlich sind und Begriffe wie \enquote{Ungültiger Messergegenstand} erfunden werden. Zudem treten hier wieder Formatierungsfehler auf.
-\noindent Gemma 2 2B vergleicht im Vergleich-Szenario die zwei Sessions sauber, bezeichnet die Ausschläge jedoch fälschlicherweise als zu gering, obwohl Werte über 4000 µV auftreten. Gemma 3 1B widerspricht sich selbst, indem beiden Sessions zugleich der größere Ausschlag an Kanal 2 zugeschrieben wird. Qwen 2.5 1.5B schneidet erneut schlecht ab. Es halluziniert mit Begriffen wie \enquote{Abgassen} statt Frequenzbänder und gibt Steuerzeichen wörtlich aus (\enquote{\texttt{\textbackslash n\textbackslash n}}). Auch hier werden erneut Formatierungsfehler gemacht.
+\noindent In den anspruchsvolleren Szenarien ist das Verhalten ähnlich. Gemma 2 2B benennt in der Artefakt-Erklärung korrekte technische Ursachen wie Bewegung, Elektroden oder Verbindung, zieht am Ende aber eine falsche Schlussfolgerung (\enquote{das hohe Delta-Niveau stellt sicher, dass die Daten präzise sind}). Gemma 3 1B erfindet neue Fachbegriffe wie \enquote{Delta-/Theta-/Gamma-Zell-Schwellenwert} und behauptet weiterhin ungültige Messwerte. Qwen 2.5 1.5B ordnet die Bänder widersprüchlich zu, erfindet Begriffe wie \enquote{Ungültiger Messergegenstand} und hält das Format nicht ein.
+Im Vergleichsszenario stellt Gemma 2 2B die zwei Sessions sauber gegenüber, bezeichnet die Ausschläge jedoch fälschlicherweise als zu gering, obwohl Werte über 4000 µV auftreten. Gemma 3 1B widerspricht sich selbst und schreibt beiden Sessions zugleich den größeren Ausschlag an Kanal 2 zu. Qwen 2.5 1.5B steht auch hier schlecht da. Es halluziniert mit Begriffen wie \enquote{Abgassen} statt Frequenzbändern, gibt Steuerzeichen wörtlich aus (\enquote{\texttt{\textbackslash n\textbackslash n}}) und macht wieder Formatierungsfehler.
 \vspace{\baselineskip}
 
-\noindent Über alle Szenarien hinweg nehmen die Fehler mit steigender Komplexität zu, und die Modelle trennen sich klar nach Fähigkeit.
+\noindent Die Fehler nehmen von Szenario zu Szenario zu, je komplizierter es wird.
 
 \section{Zusammenfassende Gegenüberstellung}
 \label{sec:eval-vergleich}
