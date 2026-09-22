@@ -126,17 +126,12 @@ Cloud-Server zu senden \autocite{edgellm_review}. Hierbei gibt es wesentliche Vo
 \vspace{\baselineskip}
 
 \noindent Jedoch gibt es neben den Vorteilen auch Nachteile. Es gibt Herausforderungen, die man zu bewältigen hat. Ein großer Aspekt ist dabei die begrenzte Speicher- und Rechenleistung des Endgeräts, da sie bestimmt, ob ein lokales Modell überhaupt ausgeführt werden kann. \acp{LLM} sind sehr große Sprachmodelle, die wegen ihrer hohen Anzahl an Parametern ausreichend großen \ac{RAM} und Rechenkapazität benötigen. Oft ist dies mehr, als herkömmliche Smartphones bieten, was im Extremfall zu einem Speicherüberlauf führt, im Englischen als memory overflow oder \ac{OOM} bezeichnet \autocite{edgellm_review, android_oom}. \ac{OOM} beschreibt einen Zustand, in dem kein Arbeitsspeicher mehr für neue Objekte verfügbar ist \autocite{android_oom}.
+Ein weiterer Punkt ist das Problem mit der Vielfalt der Geräte. Da es viele Variationen mit unterschiedlichen Prozessoren und Spezialchips gibt, ist die Programmierung einer einheitlichen Lösung, die auf allen Endgeräten funktioniert, herausfordernd \autocite{edgellm_review}.
+Zusätzlich gibt es das Phänomen des katastrophalen Vergessens, bei dem ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
+Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöhen kann \autocite{zhou2022throttling}.
 \vspace{\baselineskip}
 
-\noindent Ein weiterer Punkt ist das Problem mit der Vielfalt der Geräte. Da es viele Variationen mit unterschiedlichen Prozessoren und Spezialchips gibt, ist die Programmierung einer einheitlichen Lösung, die auf allen Endgeräten funktioniert, herausfordernd \autocite{edgellm_review}.
-\vspace{\baselineskip}
-
-\noindent Zusätzlich gibt es das Phänomen des katastrophalen Vergessens, bei dem ein Modell unweigerlich zuvor erlerntes Wissen vergisst, wenn es neue Informationen lernt \autocite{edgellm_review}.
-\vspace{\baselineskip}
-
-\noindent Ein weiteres Problem ist das Thermal Throttling, also ein Schutzmechanismus mobiler Geräte, der automatisch bei Überhitzung die Rechenleistung drosselt und dadurch die Latenz der Modelle erhöhen kann \autocite{zhou2022throttling}.
-
-\noindent In dieser Arbeit spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Die Herausforderung liegt bei den übrigen Punkten: Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
+\noindent In dieser Arbeit spielen nicht alle Punkte eine gleich große Rolle. Datenschutz und Offline-Fähigkeit sind hier keine offenen Fragen, sondern der Grund für die lokale Ausführung. Von diesen genannten Nachteilen gibt es drei, die sich in dieser Arbeit auswirken. Speicher und Rechenleistung entscheiden darüber, ob, welches und wie ein Modell auf dem Testgerät läuft (\autoref{subsec:metriken}), die Drosselung kann die gemessenen Latenzen beeinflussen \autocite{zhou2022throttling} und die Gerätevielfalt kann die Übertragbarkeit begrenzen. Das katastrophale Vergessen spielt hierzu keine Rolle, da alle Modelle unverändert übernommen werden.
 \vspace{\baselineskip}
 
 \noindent Damit diese Modelle auf Mobilgeräten laufen können, ist die sogenannte Quantisierung ein notwendiges Verfahren. Die Dateigröße des Modells wird reduziert, indem die Genauigkeit der gespeicherten Zahlenwerte künstlich verringert wird. Wechselt man beispielsweise von einer 32-Bit- auf eine 8-Bit-Speicherung, sinkt der Arbeitsspeicherbedarf und es kommt zu schnelleren Berechnungen auf dem Endgerät \autocite{edgellm_review}. Dieser Gewinn an Speicher- und Recheneffizienz kann jedoch zu Leistungseinbußen und Genauigkeitsverlusten führen \autocite{edgellm_review}. Sprachmodelle reagieren aufgrund ihrer Architektur empfindlich auf eine verringerte numerische Präzision \autocite{edgellm_review}.

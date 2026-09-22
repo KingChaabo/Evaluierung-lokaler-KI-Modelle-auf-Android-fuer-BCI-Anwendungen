@@ -11,7 +11,7 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
     \label{fig:architektur}
 \end{figure}
 
-\noindent Der Weg startet über die Datenbank, die schon Teil der bestehenden Anwendung war und aus der die Samples abgerufen werden:
+\noindent Der Weg startet über die Datenbank, die schon Teil der bestehenden Anwendung war. Das funktioniert anhand der Klasse \texttt{UnicornRepository} (auch Teil des Ursprungscodes), die alle Samples einer Session liefert. Wichtig sind hier nur die acht \ac{EEG}-Kanäle und das Gültigkeitskennzeichen, die auch die einzigen Informationen sind, die die Merkmalsextraktion nutzt.
 \begin{itemize}
 \item \textbf{EegFeatureExtractor} (\texttt{features})\textbf{:} Hier werden die Samples verarbeitet, indem Merkmale berechnet werden.
 \item \textbf{FeatureFormatter} (\texttt{features})\textbf{:} Wandelt die Merkmale in ein für das Sprachmodell verständliches Format um.
@@ -23,22 +23,12 @@ Die Implementierung der Anwendung besteht aus den farblich gekennzeichneten Komp
 
 
 \noindent Durch die Trennung dieser Pakete bleibt der Code übersichtlich und erweiterbar.
-\vspace{\baselineskip}
-
-\noindent Die Architektur enthält wichtige Merkmale, wie zum Beispiel, dass die gesamte Logik des Modells in der Klasse \texttt{LlmEngine} gekapselt ist. Dort wird eine Schnittstelle bereitgestellt, die das Laden, Anfragen und Freigeben ermöglicht. Äußere Änderungen beeinflussen die Klasse nicht, da Modell- und Laufzeitumgebung vom Rest der Anwendung unabhängig sind. Die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B lassen sich daher einfach durch den Wechsel des Modellpfads austauschen und laden. Andere Modelle oder sogar Laufzeitumgebungen sind bei Bedarf auch möglich. Wenn das Gerät es unterstützt, können systemintegrierte Modelle eingebunden werden.
-\vspace{\baselineskip}
-
-\noindent Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich neue Szenarien ergänzen, ohne die restliche Anwendung anpassen zu müssen.
-\vspace{\baselineskip}
-
-\noindent Auch mit dem \texttt{FeatureFormatter} ist eine einfache Änderung des Textes umsetzbar, da die Textdarstellung von der Berechnungslogik aller Merkmale entkoppelt ist.
-\vspace{\baselineskip}
-
-\noindent Die Erweiterung baut auf der bestehenden Infrastruktur auf. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
+Die Architektur enthält wichtige Merkmale, wie zum Beispiel, dass die gesamte Logik des Modells in der Klasse \texttt{LlmEngine} gekapselt ist. Dort wird eine Schnittstelle bereitgestellt, die das Laden, Anfragen und Freigeben ermöglicht. Äußere Änderungen beeinflussen die Klasse nicht, da Modell- und Laufzeitumgebung vom Rest der Anwendung unabhängig sind. Die Modelle Gemma 3 1B, Gemma 2 2B und Qwen 2.5 1.5B lassen sich daher einfach durch den Wechsel des Modellpfads austauschen und laden. Andere Modelle oder sogar Laufzeitumgebungen sind bei Bedarf auch möglich. Wenn das Gerät es unterstützt, können systemintegrierte Modelle eingebunden werden.
+Das Gleiche lässt sich mit dem \texttt{PromptBuilder} erreichen. Dort lassen sich neue Szenarien ergänzen, ohne die restliche Anwendung anpassen zu müssen.
+Auch mit dem \texttt{FeatureFormatter} ist eine einfache Änderung des Textes umsetzbar, da die Textdarstellung von der Berechnungslogik aller Merkmale entkoppelt ist.
+Die Erweiterung baut auf der bestehenden Infrastruktur auf. So wird beispielsweise die bestehende Datenbank verwendet und Neuerungen implementiert, ohne die vorhandene Live-Chart-Verarbeitung zu verändern. Zudem werden die Sessions am Anfang auf ihre Verwertbarkeit validiert.
 Neue Ansichten fügen sich in die bestehenden Konzepte der Anwendung ein. Neben dem hellen Modus unterstützt die neue Implementierung den Dunkelmodus sowie die Sprachen Deutsch und Englisch.
-\vspace{\baselineskip}
-
-\noindent Der Benchmark verwendet denselben Analyseablauf wie eine vom Nutzer ausgelöste Einzelanalyse.
+Der Benchmark verwendet denselben Analyseablauf wie eine vom Nutzer ausgelöste Einzelanalyse.
 \newpage
 
 \noindent Zusätzlich zum Architekturdiagramm zeigt die folgende \autoref{fig:seq-analyse} den zeitlichen Ablauf einer Analyse.
@@ -163,7 +153,7 @@ private double[] powerSpectrum(double[] window) {
 }
 \end{lstlisting}
 
-\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Mit ihr wird die Fourier-Transformation in der Programmiersprache Java berechnet. Dafür wird der Aufruf \texttt{realForward} verwendet, der reelle Eingangssignale entgegennimmt. Die Ergebnisse werden dann in dasselbe Array geschrieben. Die geraden Indizes enthalten die Realteile, während die ungeraden die Imaginärteile der Frequenz-Bins enthalten.
+\noindent Die eigentliche Fourier-Transformation (\texttt{fft.realForward}) wird dabei durch die Bibliothek JTransforms bereitgestellt und nicht selbst implementiert \autocite{jtransforms}. Mit ihr wird die Fourier"=Transformation in der Programmiersprache Java berechnet. Dafür wird der Aufruf \texttt{real\-Forward} verwendet, der reelle Eingangssignale entgegennimmt. Die Ergebnisse werden dann in dasselbe Array geschrieben. Die geraden Indizes enthalten die Realteile, während die ungeraden die Imaginärteile der Frequenz-Bins enthalten.
 \newpage
 
 \subsection{Zuordnung zu den Frequenzbändern} Das Spektrum liefert die Leistung je Frequenz-Bin. Diese müssen noch den Frequenzbändern zugeordnet werden (\autoref{lst:sumbands}). Dazu wird jeder Bin-Index über die Formel \(\text{freq} = i \cdot f_s / N\) in eine Frequenz umgerechnet. Der Faktor \(f_s / N\) entspricht dabei der Frequenzauflösung \(\Delta f\) (\autoref{eq:freqaufloesung}), also dem Frequenzabstand zwischen zwei benachbarten Bins. Dadurch können für jedes Frequenzband die entsprechenden Bins summiert werden.
@@ -377,7 +367,7 @@ Für die Benutzeroberfläche werden zwei verschiedene Arten verwendet. Zum einen
 \end{figure}
 
 \subsection{Analyse-Dialog}
-Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es unten im Dialog weitere Optionen. So lassen sich die Fenstergröße bis 131072 Samples einstellen und über einen Schalter Messmetriken aktivieren. Wird das Szenario Vergleich gewählt, kann eine zusätzliche Session ausgewählt werden, die als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert und in \autoref{fig:analyse-dialog} dargestellt. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die Analyse beginnt.
+Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein kompaktes Fenster auf derselben Oberfläche, in dem der Nutzer die Parameter der Analyse festlegen kann. Dazu zählen die Szenarien (Report, Artefakt-Erklärung oder Vergleich) sowie die Sprachmodelle (Gemma 3 1B, Gemma 2 2B oder Qwen 2.5 1.5B). Für Entwickler gibt es unten weitere Optionen. So lassen sich die Fenstergröße bis 131072 Samples einstellen und über einen Schalter Messmetriken aktivieren. Wird das Szenario Vergleich gewählt, kann eine zusätzliche Session ausgewählt werden, die als Vergleich herangezogen wird. Der Dialog ist in der Klasse \texttt{AnalyseDialog} implementiert und in \autoref{fig:analyse-dialog} dargestellt. Nachdem der Start-Knopf betätigt wird, werden die ausgewählten Parameter als Intent-Extras an die Klasse \texttt{AnalyseErgebnisActivity} übergeben, in der die Analyse beginnt.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -410,9 +400,9 @@ Nachdem man auf \enquote{Analysieren} drückt, öffnet sich ein Dialog, also ein
 \end{figure}
 
 \subsection{Ergebnis-Ansicht}
-Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst die gesamte Eingabe erstellt. Diese wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell übergeben. Da die Ausgabe streamend verläuft, ist als Callback ein Interface \texttt{LlmEngine.StreamCallback} implementiert. Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+Die Logik der Ergebnis-Ansicht befindet sich in der Klasse \texttt{AnalyseErgebnis\-Activity}. Anhand der ausgewählten Parameter wird zunächst die gesamte Eingabe erstellt. Diese wird dann über die in \autoref{sec:impl-llm} beschriebene \texttt{LlmEngine} an das Sprachmodell übergeben. Da die Ausgabe streamend verläuft, ist als Callback ein Interface \texttt{LlmEngine.\allowbreak StreamCallback} implementiert. Dort befinden sich die Methoden \texttt{onChunk} und \texttt{onDone}. Für die Anzeige der Ausgabe ist die Methode \texttt{onChunk} zuständig. Diese sorgt für die fortlaufende Aktualisierung der Antwort vom Modell an die Ergebnis-Ansicht. Mit \texttt{onDone} wird das Ende der Ausgabe signalisiert, sodass die Metriken nachträglich angezeigt werden können.
+\vspace{\baselineskip}
 
-\newpage
 \noindent Die Methode \texttt{onChunk} sieht wie folgt aus (\autoref{lst:onchunk}):
 \begin{lstlisting}[style=code, caption={[Live-Anzeige der Ausgabe]Live-Anzeige der streamenden Ausgabe. Jedes Teilstück wird angehängt statt gesetzt, damit der Text während der Erzeugung wächst.}, label={lst:onchunk}]
 @Override
@@ -498,7 +488,7 @@ Dieser Ablauf ist in \autoref{fig:seq-benchmark} dargestellt.
 
 \noindent Die einzelnen Schritte dieses Ablaufs werden in den folgenden Abschnitten anhand des Codes näher erläutert.
 \newpage
-\subsection{Ablauf} Der Hintergrund-Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
+\subsection{Ablauf} Der Hintergrund"=Thread \texttt{runAll} ist für den gesamten Messlauf verantwortlich (\autoref{lst:runall}). Dieser sorgt dafür, dass die Oberfläche nicht blockiert wird. Zum Start wird eine einzelne Wegwerf-Messung durchgeführt, um einen Kaltstart zu vermeiden. Danach startet die eigentliche Messung über alle Kombinationen. Ist der gesamte Lauf beendet, wird der übergebene \texttt{done}-Callback aufgerufen, über den die Oberfläche informiert wird.
 \begin{lstlisting}[style=code, caption={[Ablauf des Benchmarks]Ablauf des Benchmarks mit Aufwaermphase. Vor der eigentlichen Messreihe wird eine Wegwerf-Inferenz ausgefuehrt.}, label={lst:runall}]
 public void runAll(long sessionA, long sessionB, int numberConfig, 
 Runnable done) {

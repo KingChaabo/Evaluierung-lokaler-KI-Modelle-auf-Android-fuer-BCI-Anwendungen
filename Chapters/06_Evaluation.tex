@@ -259,9 +259,7 @@ Die EEG-Messungen umfassen die Zeitraum von 0.0 s bis 121.432 s und wurden auf 8
 
 \noindent In den anspruchsvolleren Szenarien ist das Verhalten ähnlich. Gemma 2 2B benennt in der Artefakt-Erklärung korrekte technische Ursachen wie Bewegung, Elektroden oder Verbindung, zieht am Ende aber eine falsche Schlussfolgerung (\enquote{das hohe Delta-Niveau im gesamten Zeitraum stellt sicher, dass die Daten präzise sind}). Gemma 3 1B erfindet neue Fachbegriffe wie \enquote{Delta-/Theta-/Gamma-Zell-Schwellenwert} und behauptet weiterhin ungültige Messwerte. Qwen 2.5 1.5B ordnet die Bänder widersprüchlich zu, erfindet Begriffe wie \enquote{Ungültige Messergegenstand} und hält das Format nicht ein.
 Im Vergleichsszenario werden bei Gemma 2 2B die zwei Sessions sauber verglichen, jedoch wird gesagt, dass die klar erhöhten Ausschläge von über 4000\,µV gering seien. Gemma 3 1B widerspricht sich selbst und schreibt beiden Sessions zugleich den größeren Ausschlag an Kanal 2 zu. Qwen 2.5 1.5B steht auch hier schlecht da. Es halluziniert mit Begriffen wie \enquote{Abgassen} statt Frequenzbändern, gibt Steuerzeichen wörtlich aus (\enquote{\texttt{\textbackslash n\textbackslash n}}) und macht wieder Formatierungsfehler. Für Session B nennt es einen Anteil ungültiger Werte von 0,43\,\%, obwohl keine vorliegen. Zudem bricht die Ausgabe am Ende mitten im Satz ab.
-\vspace{\baselineskip}
-
-\noindent Die Fehler nehmen von Szenario zu Szenario zu, je komplizierter es wird.
+Die Fehler nehmen von Szenario zu Szenario zu, je komplizierter es wird.
 
 \section{Zusammenfassende Gegenüberstellung}
 \label{sec:eval-vergleich}
@@ -305,5 +303,3 @@ In \autoref{fig:eval-gesamt} sind jeweils die Stärken und Schwächen jedes Mode
 
 \noindent Der Vergleich zeigt, dass kein Modell in allen Bereichen überlegen ist. Während Qwen 2.5 1.5B am schwächsten ausfällt, besitzen die Gemma-Modelle jeweils unterschiedliche Stärken. Gemma 3 1B ist in den Punkten hohe Effizienz sowie wenig Speicher- und Akkuverbrauch Vorreiter, bei der Qualität liegt es jedoch hinter Gemma 2 2B zurück. Letzteres liefert die höchste Ausgabequalität, verbraucht aber mehr Ressourcen und ist langsamer.
 \vspace{\baselineskip}
-
-\noindent Interessant wird es bei der Frage, ob oder welches Modell sich für den praktischen Einsatz eignet und inwiefern, was nachfolgend in \autoref{ch:diskussion} besprochen wird.

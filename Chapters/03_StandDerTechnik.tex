@@ -9,19 +9,13 @@ Diese lassen sich, wie in \autoref{subsec:systemintegrierte-und-frei-deploybare-
 \subsection{Systemintegrierte Lösung}
 \label{subsec:systemintegrierte-loesung}
 Das systemintegrierte Modell Gemini Nano ist stark an die Hardware gebunden, da AICore spezifische On-Device-Hardwarekomponenten nutzt, um die Inferenz zu beschleunigen \autocite{gemininano}. Aus diesem Grund setzt Gemini Nano bestimmte von Google freigegebene Hardware voraus. Das für diese Arbeit verwendete Testgerät Samsung Galaxy S23 erfüllt diese Anforderungen nicht, sodass Gemini Nano nicht genutzt werden kann \autocite{mlkit_genai_devices}.
-\vspace{\baselineskip}
-
-\noindent Die Möglichkeit einer virtuellen Testumgebung wie eines Android-Emulators ist ausgeschlossen, da die physische Präsenz der Gerätehardware benötigt wird \autocite{gemininano,edgellm_review}.
-\vspace{\baselineskip}
-
-\noindent Aufgrund dieser Einschränkungen steht die systemintegrierte Lösung Gemini Nano für diese Arbeit nicht zur Verfügung. Deshalb wird im Folgenden die frei deploybare Lösung betrachtet, die auf dem Testgerät Samsung Galaxy S23 genutzt werden kann.
+Die Möglichkeit einer virtuellen Testumgebung wie eines Android-Emulators ist ausgeschlossen, da die physische Präsenz der Gerätehardware benötigt wird \autocite{gemininano,edgellm_review}.
+Aufgrund dieser Einschränkungen steht die systemintegrierte Lösung Gemini Nano für diese Arbeit nicht zur Verfügung. Deshalb wird im Folgenden die frei deploybare Lösung betrachtet, die auf dem Testgerät Samsung Galaxy S23 genutzt werden kann.
 
 \subsection{Frei deploybare Lösung}
 \label{subsec:frei-deploybare-loesung}
 Die MediaPipe LLM Inference API ist eine von Google bereitgestellte, frei deploybare Lösung für die lokale Ausführung von Sprachmodellen auf mobilen Geräten \autocite{mediapipe_llm}. Abhängig vom Modelltyp und den Einstellungen können die Berechnungen entweder auf dem \ac{CPU} oder dem \ac{GPU} des mobilen Geräts durchgeführt werden \autocite{mediapipe_llm}. Über sie lassen sich auch mehrere Parameter an der Textgenerierung ändern, darunter die maximale Anzahl an Tokens aus Eingabe und Ausgabe, die Anzahl der wahrscheinlichsten Kandidaten (Top-K), die Zufälligkeit der Auswahl (Temperatur) sowie ein Zufallsstartwert. Darüber hinaus kann ein \ac{LoRA}-Modell eingebunden werden, um bei Bedarf ein Modellverhalten mithilfe eines kostengünstigen Trainings anzupassen \autocite{mediapipe_llm}.
 \vspace{\baselineskip}
-
-\newpage
 
 \noindent Die Schnittstelle unterstützt von Haus aus kompakte, speziell für mobile Geräte entwickelte Modelle. Dazu gehört insbesondere die Gemma-Familie von Google, wie Gemma 3 1B und Gemma 2 2B \autocite{mediapipe_llm}. Darüber hinaus lassen sich über die LiteRT-Community vorkonvertierte Modelle im MediaPipe-Format einbinden \autocite{mediapipe_llm}, darunter Qwen 2.5 1.5B \autocite{qwen_litert}. Diese drei Modelle werden für den weiteren Verlauf der Arbeit verwendet und sind in \autoref{fig:modelle} zusammengefasst.
 \begin{figure}[H]
@@ -58,7 +52,7 @@ Das in dieser Arbeit verwendete Unicorn Hybrid Black ist eine mobile \ac{BCI}-Pl
 \autoref{fig:unicorn} zeigt die markierten Komponenten des Geräts, die für die Messungen dieser Arbeit verwendet wurden.
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.83\textwidth]{Graphics/UnicornHybrid.pdf}
+    \includegraphics[width=0.90\textwidth]{Graphics/UnicornHybrid.pdf}
     \caption{Komponenten des verwendeten EEG-Geräts g.tec Unicorn Hybrid Black (eigene Beschriftung, erstellt mit draw.io) \autocite{unicornproduct}.}
     \label{fig:unicorn}
 \end{figure}
