@@ -187,3 +187,82 @@ In \autoref{tab:app-rohdaten} sind alle 45 Messungen vollständig aufgelistet. D
 19:48:15 & qwen & vergleich & 770 & 474 & 272 & 43523 & 14613 & 10.89 & 2165 & 1830270 & 49 & ok \\
 \end{longtable}
 }
+
+\chapter{Messprotokoll}
+\label{app:messprotokoll}
+% TODO Einleitungssatz selbst einfuegen
+
+\begin{table}[H]
+\centering
+\caption[Hard- und Software der Messung]{Hard- und Software, auf der alle Messungen ausgeführt wurden. Die Gerätedaten stammen vom Hersteller \autocite{samsung_s23_specs,s23_oneui85_android16}.}
+\label{tab:app-hardsoft}
+\begin{tabular}{ll}
+\toprule
+\textbf{Bestandteil} & \textbf{Wert} \\
+\midrule
+Testgerät              & Samsung Galaxy S23 \\
+Prozessor              & Qualcomm Snapdragon~8 Gen~2 \\
+Arbeitsspeicher        & 8\,GB \\
+Akkukapazität          & 3900\,mAh \\
+Betriebssystem         & Android~16 (One~UI~8.5) \\
+Spracheinstellung      & Deutsch \\
+\midrule
+Programmiersprache     & Java (Quellcode-Kompatibilität 8) \\
+Entwicklungsumgebung   & Android Studio, Build über Gradle \\
+\texttt{compileSdk} / \texttt{targetSdk} & 34 \\
+\texttt{minSdk}        & 23 \\
+Inferenz-Bibliothek    & \texttt{com.google.\allowbreak mediapipe:\allowbreak tasks-genai} 0.10.27 \\
+\ac{FFT}-Bibliothek    & JTransforms 3.1 \\
+Inferenz-Backend       & CPU (XNNPACK-Delegate) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption[Verwendete Modelldateien]{Verwendete Modelldateien, jeweils mit der Bezugsquelle des Modells. Alle drei liegen unter ihrem ursprünglichen Namen auf dem Gerät im Verzeichnis \texttt{/data/\allowbreak local/\allowbreak tmp/\allowbreak llm/} und sind 8-Bit-quantisiert mit einem Kontextfenster von 1280 Token.}
+\label{tab:app-modelldateien}
+{\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lll}
+\toprule
+\textbf{Modell} & \textbf{Dateiname} & \textbf{Größe (Byte)} \\
+\midrule
+Gemma 3 1B \autocite{gemma3_litert}    & \texttt{Gemma3-1B-IT\_\allowbreak multi-prefill-seq\_\allowbreak q8\_ekv1280.task} & 1\,054\,012\,582 \\
+Qwen 2.5 1.5B \autocite{qwen_litert}   & \texttt{Qwen2.5-1.5B-Instruct\_\allowbreak multi-prefill-seq\_\allowbreak q8\_ekv1280.task} & 1\,597\,913\,616 \\
+Gemma 2 2B \autocite{gemma2_litert}    & \texttt{Gemma2-2B-IT\_\allowbreak multi-prefill-seq\_\allowbreak q8\_ekv1280.task} & 2\,713\,274\,466 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption[Parameter der Messung]{Parameter der Merkmalsextraktion, der Modelle und des Messablaufs. Die Begründungen stehen in \autoref{sec:modellauswahl} und \autoref{subsec:messbedingungen}. Top-K und Temperatur sind die Standardwerte der Schnittstelle \autocite{mediapipe_llm}.}
+\label{tab:app-parameter}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Wert} \\
+\midrule
+Abtastrate                  & 250\,Hz \\
+Ausgewertete Kanäle         & 8 \\
+Fenstergröße (Welch)        & 256 Samples \\
+Überlappung                 & 50\,\% \\
+Fensterfunktion             & Hann \\
+Segmente je Session         & 4 \\
+Grenze ungültiger Samples   & 50\,\% \\
+\midrule
+Kontextfenster              & 1280 Token \\
+Top-K                       & 40 (Standard; im Code Obergrenze 64) \\
+Temperatur                  & 0,8 \\
+Zufallsstartwert            & 0 \\
+\midrule
+Eingabe Session A           & 121,432\,s (\autoref{fig:ft-session-a}) \\
+Eingabe Session B           & 122,128\,s (\autoref{fig:ft-session-b}) \\
+Kombinationen               & 9 (3 Modelle $\times$ 3 Szenarien) \\
+Messungen je Kombination    & 5, davon die erste verworfen \\
+Aufwärmlauf                 & einmalig vor der Messreihe, nicht protokolliert \\
+Protokollierte Messungen    & 45 (\autoref{tab:app-rohdaten}) \\
+\bottomrule
+\end{tabular}
+\end{table}
