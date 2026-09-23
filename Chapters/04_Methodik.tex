@@ -70,7 +70,7 @@ Für jedes dieser Fenster wird das Leistungsspektrum berechnet, das anschließen
 \subsection{Zeitstatistische Merkmale}
 Neben den spektralen Merkmalen gibt es auch die zeitstatistischen Merkmale. Sie werden für jedes Segment berechnet \autocite{10353995}. Hierfür ist keine \ac{FFT} notwendig, da die Merkmale direkt aus dem Zeitsignal extrahiert werden \autocite{10353995}.
 Zum einen gibt es die Spannweite (Peak-to-Peak-Amplitude), die die Differenz zwischen dem größten und dem kleinsten Amplitudenwert aufzeigt \autocite{jas2017}.
-Der Vorteil dieser Herangehensweise ist, dass sie im Gegensatz zur Betrachtung eines absoluten Maximalwertes die Unabhängigkeit von einem potenziellen Gleichanteil des Signals gewährleistet. Aus diesem Grund stellt die Peak-to-Peak-Amplitude ein Kriterium dar, um extreme Signalausschläge und Drifts zu identifizieren, wie sie bei Artefakten auftreten können \autocite{jas2017}.
+Der Vorteil gegenüber einem absoluten Maximalwert ist, dass die Spannweite unabhängig von einem möglichen Gleichanteil des Signals bleibt. Damit ist die Peak-to-Peak-Amplitude ein Kriterium für extreme Signalausschläge und Drifts, wie sie bei Artefakten auftreten können \autocite{jas2017}.
 \vspace{\baselineskip}
 
 \noindent Des Weiteren wird zur Beurteilung der Übertragungsqualität der Anteil der ungültigen Messwerte betrachtet. Dies ist der Anteil der Datenpunkte, die nicht empfangen wurden und deshalb bei der Übertragung durch eine Kopie des letzten Samples ersetzt und als ungültig markiert wurden. Man kann durch diesen Indikator erkennen, wie lückenhaft eine Aufnahme ist, wobei er keine Aussage über die Qualität des abgeleiteten Signals trifft.
@@ -134,7 +134,7 @@ Bevor die eigentliche Messung beginnt, wird einmalig eine Aufwärmphase durchgef
 Dadurch wird die Stabilität der Messungen sichtbar. Ein hoher Wert deutet auf eine starke Streuung hin, während ein niedriger Wert eine geringe Streuung und damit eine hohe Stabilität der Messungen anzeigt.
 \vspace{\baselineskip}
 
-\noindent Die anfängliche Aufwärm-Messung wird von der Anwendung selbst ausgeführt. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen dagegen nicht in der Anwendung. Sie werden stattdessen manuell auf Grundlage der in der \ac{CSV}-Datei gespeicherten Rohwerte durchgeführt.
+\noindent Die am Anfang stattfindende Aufwärm-Messung wird von der Anwendung selbst ausgeführt. Das Verwerfen der ersten Messung je Kombination, die Mittelung der verbleibenden Messungen sowie die Berechnung der Standardabweichung erfolgen dagegen nicht in der Anwendung. Sie werden stattdessen manuell auf Grundlage der in der \ac{CSV}-Datei gespeicherten Rohwerte durchgeführt.
 
 \subsection{Metriken}
 \label{subsec:metriken}
