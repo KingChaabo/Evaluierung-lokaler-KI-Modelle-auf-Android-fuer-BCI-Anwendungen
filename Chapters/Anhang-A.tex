@@ -3,7 +3,7 @@
 %*******************************************************
 \chapter{Aufbereitete Feature-Texte der Evaluation}
 \label{app:featuretexte}
-Die folgenden Feature"=Texte (\autoref{fig:ft-session-a}, \autoref{fig:ft-session-b}) wurden vom \texttt{Feature\-Formatter} aus den beiden Sessions erzeugt und den Modellen als Eingabe übergeben (vgl.\ \autoref{subsec:eval-beispiele}). Sie ermöglichen es, die Modellausgaben gegen die tatsächliche Eingabe zu prüfen.
+Die folgenden Feature"=Texte (\autoref{fig:ft-session-a}, \autoref{fig:ft-session-b}) hat der \texttt{Feature\-Formatter} aus den beiden Sessions erzeugt und so an die Modelle übergeben (vgl.\ \autoref{subsec:eval-beispiele}). An ihnen lässt sich jede einzelne Aussage der Modelle gegen die Eingabe prüfen.
 
 \begin{figure}[H]
 \centering
@@ -194,7 +194,7 @@ In \autoref{tab:app-rohdaten} sind alle 45 Messungen vollständig aufgelistet. D
 
 \begin{table}[H]
 \centering
-\caption[Hard- und Software der Messung]{Hard- und Software, auf der alle Messungen ausgeführt wurden. Die Gerätedaten stammen vom Hersteller \autocite{samsung_s23_specs,s23_oneui85_android16}.}
+\caption[Hard- und Software der Messung]{Die verwendete Hardware und Software, bei der die Messungen stattfanden. Alle Gerätedaten sind vom Hersteller \autocite{samsung_s23_specs,s23_oneui85_android16}.}
 \label{tab:app-hardsoft}
 \begin{tabular}{ll}
 \toprule
@@ -220,7 +220,7 @@ Inferenz-Backend       & CPU (XNNPACK-Delegate) \\
 
 \begin{table}[H]
 \centering
-\caption[Verwendete Modelldateien]{Verwendete Modelldateien, jeweils mit der Bezugsquelle des Modells. Alle drei liegen unter ihrem ursprünglichen Namen auf dem Gerät im Verzeichnis \texttt{/data/\allowbreak local/\allowbreak tmp/\allowbreak llm/} und sind 8-Bit-quantisiert mit einem Kontextfenster von 1280 Token.}
+\caption[Verwendete Modelldateien]{Alle verwendeten Modelle mit ihren Originalnamen und ihrer Größe. Sie liegen genauso auf dem Handy.}
 \label{tab:app-modelldateien}
 {\footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -238,7 +238,7 @@ Gemma 2 2B \autocite{gemma2_litert}    & \texttt{Gemma2-2B-IT\_\allowbreak multi
 
 \begin{table}[H]
 \centering
-\caption[Parameter der Messung]{Parameter der Merkmalsextraktion, der Modelle und des Messablaufs. Die Begründungen stehen in \autoref{sec:modellauswahl} und \autoref{subsec:messbedingungen}. Top-K und Temperatur sind die Standardwerte der Schnittstelle \autocite{mediapipe_llm}.}
+\caption[Parameter der Messung]{Alle Informationen der Parameter, die für diese Arbeit verwendet wurden, zusammengefasst. Darunter die der Merkmalsextraktion, der Modelle und des Messablaufs. Begründungen stehen in \autoref{sec:modellauswahl} und \autoref{subsec:messbedingungen} \autocite{mediapipe_llm}.}
 \label{tab:app-parameter}
 \begin{tabular}{ll}
 \toprule
@@ -253,7 +253,7 @@ Segmente je Session         & 4 \\
 Grenze ungültiger Samples   & 50\,\% \\
 \midrule
 Kontextfenster              & 1280 Token \\
-Top-K                       & 40 (Standard; im Code Obergrenze 64) \\
+Top-K                       & 40 (Obergrenze 64) \\
 Temperatur                  & 0,8 \\
 Zufallsstartwert            & 0 \\
 \midrule

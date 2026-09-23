@@ -88,9 +88,7 @@ Dabei enthält der Text folgende Informationen:
 \end{itemize}
 
 \noindent Die Merkmale werden neben der zeitlichen Aufteilung über die acht Kanäle zusammengefasst. Dabei wird die Bandleistung je Segment über alle acht Kanäle summiert und dann relativ zur Gesamtleistung gesetzt. Bei der Spannweite selbst wird nicht vorher gemittelt. Stattdessen wird der Kanal mit dem größten Ausschlag genannt, da sonst einzelne starke Artefakte verdeckt werden könnten.
-\vspace{\baselineskip}
-
-\noindent Dabei werden bewusst keine Bewertungen oder Interpretationen in den Text aufgenommen.
+Dabei werden bewusst keine Bewertungen oder Interpretationen in den Text aufgenommen.
 Alle Informationen sind objektive Messwerte, deren Bedeutung allein dem Sprachmodell überlassen wird.
 Dadurch wird gewährleistet, dass die eigentliche Analysearbeit vom Modell erledigt wird.
 \vspace{\baselineskip}
@@ -167,9 +165,7 @@ Bei der Bewertung der Modelle werden bestimmte Metriken verwendet. Diese werden 
 \end{table}
 
 \noindent Die Zeitmessungen laufen alle über \texttt{System.nanoTime()}, bei der die Differenz in Nanosekunden durch eine Million geteilt wird. So erhält man die Angabe als Millisekunde.
-\vspace{\baselineskip}
-
-\noindent Die Tokens pro Sekunde erlauben einen fairen Vergleich unabhängig von der Länge der Ausgabe. Eine reine Zeitmessung würde längere Antworten benachteiligen. Die Metrik erhält man, wie in folgender Gleichung dargestellt, indem man die Anzahl der erzeugten Token durch die gesamte Inferenzdauer teilt:
+Die Tokens pro Sekunde erlauben einen fairen Vergleich unabhängig von der Länge der Ausgabe. Eine reine Zeitmessung würde längere Antworten benachteiligen. Die Metrik erhält man, wie in folgender Gleichung dargestellt, indem man die Anzahl der erzeugten Token durch die gesamte Inferenzdauer teilt:
 \begin{equation}
     \text{Tokens/s} = \frac{N_{\text{Token}}}{t_{\text{Inferenz}}}
 \end{equation}
@@ -178,15 +174,15 @@ wobei $N_{\text{Token}}$ die Anzahl der erzeugten Token und $t_{\text{Inferenz}}
 
 \noindent Der Speicherverbrauch wird über die \ac{PSS} erfasst, da diese exklusiv von der Applikation genutzte Speicherseiten sowie den proportionalen Anteil an gemeinsam verwendeten Seiten (Shared Pages) berücksichtigt.
 Dadurch eignet sie sich zur präzisen Bestimmung des tatsächlichen Speicherbedarfs, da durch sie gemeinsam genutzte Ressourcen (wie beispielsweise Bibliotheken oder Systemdienste) nicht mehrfach gezählt werden \autocite{android_memory}. Der Wert wird direkt nach dem Abschluss einer Inferenz ermittelt, während das Modell selbst noch geladen ist. Es handelt sich um einen aktuellen Wert, bei dem keine Speicherbereinigung ausgelöst wird. Bereiche, die noch nicht freigegeben wurden, werden mit eingeschlossen. Dabei sollten die erfassten Werte als obere Schranke des tatsächlichen Bedarfs behandelt werden.
-\vspace{\baselineskip}
-
-\noindent Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
+Der Akkuverbrauch wird über den BatteryManager des Geräts vor und nach einer Messreihe ermittelt. Die Messung erfolgt in Mikroamperestunden (µAh), da diese eine feinere Auflösung als die Angabe in Prozent bietet \autocite{android_batterymanager}.
 \vspace{\baselineskip}
 
 \noindent Im Gegensatz zum Benchmark, bei dem es gleich fünf Messungen gibt, werden für die reine Analyse einer Session nur Latenzmetriken erfasst. Der Grund liegt hierbei an der Menge der Messungen. Der Energieverbrauch lässt sich nur über eine ganze Messreihe sinnvoll bestimmen, da er sich erst aus der Differenz des Akkustands über mehrere aufeinanderfolgende Durchläufe ergibt. Zudem schwankt der Arbeitsspeicherbedarf stark \autocite{android_memory}, sodass eine Messung keine verlässliche Aussage über den Speicherbedarf zulässt. Die Metriken Status und Ausgabequalität sind nur für die Evaluation relevant und werden daher nicht in der Analyse erfasst.
 \vspace{\baselineskip}
 
 \noindent Bei der Ausgabequalität geht es um die Qualität der vom Modell gegebenen Antwort. Hierfür wird keine automatisierte Messung benötigt, da es keine feste Musterlösung gibt, mit der man sie vergleichen könnte. Ein eindeutiges Richtig oder Falsch existiert nicht. Stattdessen wird der Inhalt der Ausgabe anhand der folgenden vier Kriterien bewertet: als Erstes die Korrektheit, also ob die Aussage mit den extrahierten Merkmalen übereinstimmt. Dann die Halluzinationsfreiheit, bei der keine Werte oder Begriffe erfunden werden dürfen, die nicht in den Daten stehen. Daraufhin die Verständlichkeit, das heißt, ob die Ausgabe sprachlich klar und lesbar ist, und als Letztes die Formattreue, also ob die Ausgabe die Vorgaben einhält (Fließtext, kein Markdown, knappe Länge).
+
+\newpage
 \subsection{Messbedingungen}
 \label{subsec:messbedingungen}
 Damit die Messungen unter vergleichbaren und technisch einheitlichen Bedingungen erfolgen können, werden sie unter den folgenden Rahmenbedingungen durchgeführt:
